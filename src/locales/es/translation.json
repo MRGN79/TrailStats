@@ -1,0 +1,50 @@
+{
+  "app": {
+    "title": "TrailStats",
+    "tagline": "Tu histórico de Strava, en números"
+  },
+  "upload": {
+    "dropzone": "Arrastra aquí tu ZIP de export de Strava o haz clic para buscarlo",
+    "processing": "Leyendo tus actividades…",
+    "loadAnother": "Cargar otro export",
+    "error": {
+      "invalidZip": "Esto no parece un export de Strava. Asegúrate de que es el ZIP completo que descargaste.",
+      "noActivities": "No se han encontrado actividades en este export."
+    },
+    "discarded": "{{count}} filas no se pudieron leer y se han descartado."
+  },
+  "stats": {
+    "totals": {
+      "title": "Totales históricos",
+      "activities": "Actividades",
+      "distance": "Distancia",
+      "time": "Tiempo en movimiento",
+      "elevation": "Desnivel positivo"
+    },
+    "view": {
+      "weekly": "Semanal",
+      "monthly": "Mensual"
+    },
+    "trends": {
+      "title": "Tendencias",
+      "distanceLabel": "Distancia (km)",
+      "showTable": "Mostrar tabla de datos",
+      "hideTable": "Ocultar tabla de datos",
+      "period": "Periodo"
+    }
+  },
+  "filter": {
+    "activityType": "Tipo de actividad",
+    "allTypes": "Todos los tipos"
+  },
+  "units": {
+    "km": "km",
+    "m": "m"
+  },
+  "lang": {
+    "toggle": "Idioma"
+  },
+  "privacy": {
+    "note": "Todo se procesa en tu navegador. Tus datos nunca salen de este dispositivo."
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "app": {
+    "title": "TrailStats",
+    "tagline": "Your Strava history, in numbers"
+  },
+  "upload": {
+    "dropzone": "Drop your Strava export ZIP here or click to browse",
+    "processing": "Reading your activities…",
+    "loadAnother": "Load another export",
+    "error": {
+      "invalidZip": "This doesn't look like a Strava export. Make sure it's the full ZIP you downloaded.",
+      "noActivities": "Couldn't find activities in this export."
+    },
+    "discarded": "{{count}} rows could not be read and were skipped."
+  },
+  "stats": {
+    "totals": {
+      "title": "All-time totals",
+      "activities": "Activities",
+      "distance": "Distance",
+      "time": "Moving time",
+      "elevation": "Elevation gain"
+    },
+    "view": {
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "trends": {
+      "title": "Trends",
+      "distanceLabel": "Distance (km)",
+      "showTable": "Show data table",
+      "hideTable": "Hide data table",
+      "period": "Period"
+    }
+  },
+  "filter": {
+    "activityType": "Activity type",
+    "allTypes": "All types"
+  },
+  "units": {
+    "km": "km",
+    "m": "m"
+  },
+  "lang": {
+    "toggle": "Language"
+  },
+  "privacy": {
+    "note": "Everything runs in your browser. Your data never leaves this device."
+  }
+}
