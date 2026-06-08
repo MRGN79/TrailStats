@@ -78,15 +78,24 @@ export default function App() {
 
   return (
     <div className="app">
-      <div className="topbar">
-        <div className="brand">
-          Trail<span>Stats</span>
+      {dataset && (
+        <div className="topbar">
+          <div className="brand">
+            Trail<span>Stats</span>
+          </div>
+          <LanguageToggle />
         </div>
-        <LanguageToggle />
-      </div>
+      )}
 
       {!dataset && (
         <div className="hero">
+          <div className="topbar">
+            <div className="brand">
+              Trail<span>Stats</span>
+            </div>
+            <LanguageToggle />
+          </div>
+
           <h1>{t("app.title")}</h1>
           <p className="tagline">{t("app.tagline")}</p>
 
@@ -120,23 +129,29 @@ export default function App() {
         <>
           {isDemo && <DemoBanner onExit={() => setStatus({ kind: "idle" })} />}
 
-          <Toolbar
-            activityTypes={dataset.activityTypes}
-            selectedType={selectedType}
-            onTypeChange={setSelectedType}
-            view={view}
-            onViewChange={setView}
-            onReset={() => setStatus({ kind: "idle" })}
-          />
+          <div className="dashboard">
+            <div className="dashboard__rail">
+              <Toolbar
+                activityTypes={dataset.activityTypes}
+                selectedType={selectedType}
+                onTypeChange={setSelectedType}
+                view={view}
+                onViewChange={setView}
+                onReset={() => setStatus({ kind: "idle" })}
+              />
+            </div>
 
-          {dataset.discardedRows > 0 && (
-            <p className="notice" role="status">
-              {t("upload.discarded", { count: dataset.discardedRows })}
-            </p>
-          )}
+            <div className="dashboard__main">
+              {dataset.discardedRows > 0 && (
+                <p className="notice" role="status">
+                  {t("upload.discarded", { count: dataset.discardedRows })}
+                </p>
+              )}
 
-          <TotalsCards totals={totals} locale={locale} />
-          <TrendsChart periods={periods} locale={locale} />
+              <TotalsCards totals={totals} locale={locale} />
+              <TrendsChart periods={periods} locale={locale} />
+            </div>
+          </div>
         </>
       )}
 

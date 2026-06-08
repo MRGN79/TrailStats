@@ -33,16 +33,57 @@ export function TrendsChart({ periods, locale }: Props) {
       <div className="chart-wrap" role="img" aria-label={t("stats.trends.chartAlt")}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="label" tick={{ fontSize: 11 }} interval="preserveStartEnd" />
-            <YAxis tick={{ fontSize: 11 }} />
+            <CartesianGrid
+              vertical={false}
+              stroke="var(--border)"
+              strokeDasharray="0"
+            />
+            <XAxis
+              dataKey="label"
+              interval="preserveStartEnd"
+              stroke="var(--border-strong)"
+              axisLine={false}
+              tickLine={false}
+              tick={{
+                fontFamily: "var(--font-body)",
+                fontSize: 11,
+                fill: "var(--ink-muted)",
+              }}
+            />
+            <YAxis
+              stroke="var(--border-strong)"
+              axisLine={false}
+              tickLine={false}
+              tick={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 11,
+                fill: "var(--ink-muted)",
+                style: { fontFeatureSettings: '"tnum" 1' },
+              }}
+            />
             <Tooltip
+              cursor={{ fill: "rgba(63, 125, 90, 0.08)" }}
+              contentStyle={{
+                background: "var(--forest-deep)",
+                border: "none",
+                borderRadius: "6px",
+                color: "var(--paper)",
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.85rem",
+              }}
+              labelStyle={{ color: "var(--paper)", opacity: 0.7 }}
+              itemStyle={{ color: "var(--paper)" }}
               formatter={(value: number) => [
                 `${formatDistance(value, locale)} ${t("units.km")}`,
                 t("stats.totals.distance"),
               ]}
             />
-            <Bar dataKey="distance" fill="#fc5200" />
+            <Bar
+              dataKey="distance"
+              fill="var(--moss)"
+              radius={[3, 3, 0, 0]}
+              maxBarSize={48}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>
