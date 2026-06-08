@@ -11,6 +11,7 @@ vendor/
 
 # Build
 dist/
+*.tsbuildinfo
 
 # OS
 .DS_Store
