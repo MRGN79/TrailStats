@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { UploadZone } from "./components/UploadZone";
 import { TotalsCards } from "./components/TotalsCards";
@@ -22,6 +22,10 @@ type Status =
 export default function App() {
   const { t, i18n } = useTranslation();
   const locale = i18n.language.startsWith("es") ? "es" : "en";
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
 
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const [selectedType, setSelectedType] = useState<string | null>(null);
@@ -105,7 +109,7 @@ export default function App() {
           />
 
           {dataset.discardedRows > 0 && (
-            <p className="notice">
+            <p className="notice" role="status">
               {t("upload.discarded", { count: dataset.discardedRows })}
             </p>
           )}

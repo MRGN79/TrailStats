@@ -27,6 +27,7 @@
     },
     "trends": {
       "title": "Tendencias",
+      "chartAlt": "Gráfica de tendencia de distancia. Usa el botón inferior para ver los datos como tabla.",
       "distanceLabel": "Distancia (km)",
       "showTable": "Mostrar tabla de datos",
       "hideTable": "Ocultar tabla de datos",

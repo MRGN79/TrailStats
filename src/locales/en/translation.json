@@ -27,6 +27,7 @@
     },
     "trends": {
       "title": "Trends",
+      "chartAlt": "Distance trend chart. Use the button below to view the data as a table.",
       "distanceLabel": "Distance (km)",
       "showTable": "Show data table",
       "hideTable": "Hide data table",

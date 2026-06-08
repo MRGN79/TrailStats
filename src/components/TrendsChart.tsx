@@ -30,7 +30,7 @@ export function TrendsChart({ periods, locale }: Props) {
     <section aria-label={t("stats.trends.title")}>
       <h2 className="section-title">{t("stats.trends.title")}</h2>
 
-      <div className="chart-wrap" role="img" aria-label={t("stats.trends.distanceLabel")}>
+      <div className="chart-wrap" role="img" aria-label={t("stats.trends.chartAlt")}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
