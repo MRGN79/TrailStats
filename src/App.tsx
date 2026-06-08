@@ -118,6 +118,11 @@ export default function App() {
           <TrendsChart periods={periods} locale={locale} />
         </>
       )}
+
+      <footer className="app-footer">
+        <p className="privacy-note">{t("privacy.note")}</p>
+        <p className="disclaimer">{t("app.disclaimer")}</p>
+      </footer>
     </div>
   );
 }

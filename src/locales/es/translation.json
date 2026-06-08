@@ -1,7 +1,8 @@
 {
   "app": {
     "title": "TrailStats",
-    "tagline": "Tu histórico de Strava, en números"
+    "tagline": "Tu histórico de Strava, en números",
+    "disclaimer": "TrailStats no está afiliado a Strava, Inc. ni cuenta con su respaldo. \"Strava\" es una marca registrada de su titular."
   },
   "upload": {
     "dropzone": "Arrastra aquí tu ZIP de export de Strava o haz clic para buscarlo",

@@ -1,7 +1,8 @@
 {
   "app": {
     "title": "TrailStats",
-    "tagline": "Your Strava history, in numbers"
+    "tagline": "Your Strava history, in numbers",
+    "disclaimer": "TrailStats is not affiliated with or endorsed by Strava, Inc. \"Strava\" is a trademark of its respective owner."
   },
   "upload": {
     "dropzone": "Drop your Strava export ZIP here or click to browse",

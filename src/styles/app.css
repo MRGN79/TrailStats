@@ -283,6 +283,19 @@ table.data-table td:first-child {
   }
 }
 
+.app-footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.disclaimer {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin: 0.25rem 0 0;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

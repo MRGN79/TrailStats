@@ -143,3 +143,7 @@ No requiere servidor de aplicación, runtime de Node en producción ni variables
 ## Privacidad
 
 TrailStats no recoge, almacena ni transmite ningún dato. Todo el procesamiento del export ocurre localmente en tu navegador. Tus archivos nunca se suben a ningún servidor.
+
+## Aviso legal
+
+TrailStats no está afiliado a Strava, Inc. ni cuenta con su respaldo. "Strava" es una marca registrada de su titular. TrailStats trabaja exclusivamente con el archivo de export que el propio usuario descarga de su cuenta de Strava.
