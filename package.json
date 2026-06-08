@@ -2,6 +2,7 @@
   "name": "trailstats",
   "private": true,
   "version": "0.1.0",
+  "description": "Analyze your Strava export history locally in your browser — aggregated stats and trends, no backend, no data leaves your device.",
   "type": "module",
   "scripts": {
     "dev": "vite",
