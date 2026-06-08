@@ -9,6 +9,10 @@ node_modules/
 .venv/
 vendor/
 
+# Build
+dist/
+*.tsbuildinfo
+
 # OS
 .DS_Store
 Thumbs.db
