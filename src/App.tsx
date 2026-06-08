@@ -15,7 +15,7 @@ import type { ParsedDataset, ViewMode } from "./lib/types";
 
 type Status =
   | { kind: "idle" }
-  | { kind: "processing" }
+  | { kind: "processing"; done?: number; total?: number }
   | { kind: "error"; message: string }
   | { kind: "ready"; dataset: ParsedDataset };
 
@@ -35,7 +35,9 @@ export default function App() {
     setStatus({ kind: "processing" });
     setSelectedType(null);
     try {
-      const dataset = await processFile(file);
+      const dataset = await processFile(file, ({ done, total }) =>
+        setStatus({ kind: "processing", done, total })
+      );
       if (dataset.activities.length === 0) {
         setStatus({ kind: "error", message: t("upload.error.noActivities") });
         return;
@@ -81,7 +83,14 @@ export default function App() {
           {status.kind === "processing" ? (
             <div className="dropzone" aria-live="polite">
               <div className="spinner" aria-hidden="true" />
-              <span>{t("upload.processing")}</span>
+              <span>
+                {status.total
+                  ? t("upload.processingProgress", {
+                      done: status.done ?? 0,
+                      total: status.total,
+                    })
+                  : t("upload.processing")}
+              </span>
             </div>
           ) : (
             <UploadZone onFile={handleFile} />

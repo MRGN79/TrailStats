@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@zip.js/zip.js": "^2.7.45",
+    "fit-file-parser": "^3.0.2",
     "i18next": "^23.11.5",
     "papaparse": "^5.4.1",
     "react": "^18.3.1",
