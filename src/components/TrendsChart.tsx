@@ -35,29 +35,29 @@ export function TrendsChart({ periods, locale }: Props) {
           <BarChart data={data}>
             <CartesianGrid
               vertical={false}
-              stroke="var(--border)"
+              stroke="rgba(255,255,255,0.1)"
               strokeDasharray="0"
             />
             <XAxis
               dataKey="label"
               interval="preserveStartEnd"
-              stroke="var(--border-strong)"
+              stroke="rgba(255,255,255,0.15)"
               axisLine={false}
               tickLine={false}
               tick={{
                 fontFamily: "var(--font-body)",
                 fontSize: 11,
-                fill: "var(--ink-muted)",
+                fill: "rgba(250,248,243,0.5)",
               }}
             />
             <YAxis
-              stroke="var(--border-strong)"
+              stroke="rgba(255,255,255,0.15)"
               axisLine={false}
               tickLine={false}
               tick={{
                 fontFamily: "var(--font-mono)",
                 fontSize: 11,
-                fill: "var(--ink-muted)",
+                fill: "rgba(250,248,243,0.5)",
                 style: { fontFeatureSettings: '"tnum" 1' },
               }}
             />
