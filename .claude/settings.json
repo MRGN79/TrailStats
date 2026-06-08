@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(*)",
+      "Edit",
+      "Write",
+      "Read",
+      "WebFetch(*)",
+      "WebSearch(*)",
+      "mcp__*",
+      "Agent(*)"
+    ],
+    "deny": []
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'f=\".claude/pending-actions.md\"; [ -f \"$f\" ] && grep -q \"^- \\[ \\]\" \"$f\" && { echo \"\"; echo \"⚠️  HAY ACCIONES PENDIENTES (.claude/pending-actions.md):\"; grep \"^- \\[ \\]\" \"$f\"; echo \"\"; }'"
+          }
+        ]
+      }
+    ]
+  }
+}

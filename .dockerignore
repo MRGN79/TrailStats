@@ -1,0 +1,48 @@
+# ============================================================
+# ARCHIVOS PRIVADOS — nunca incluir en la imagen de producción
+# ============================================================
+
+# Configuración interna de Claude Code
+.claude/
+CLAUDE.md
+
+# Configuración de GitHub (templates, workflows de CI)
+.github/
+
+# Documentación interna y decisiones de arquitectura
+docs/
+
+# Changelogs y archivos de proceso
+CHANGELOG.md
+
+# ============================================================
+# ARCHIVOS DE DESARROLLO
+# ============================================================
+
+# Variables de entorno (nunca en la imagen)
+.env
+.env.*
+!.env.example
+
+# Git
+.git/
+.gitignore
+
+# Dependencias (se instalan dentro de la imagen en el build)
+node_modules/
+.venv/
+vendor/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tests y cobertura
+coverage/
+.nyc_output/
+__tests__/
+*.test.*
+*.spec.*
+
+# Logs locales
+*.log

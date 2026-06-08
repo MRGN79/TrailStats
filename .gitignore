@@ -1,0 +1,17 @@
+# Entorno — nunca commitear valores reales
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Dependencias
+node_modules/
+.venv/
+vendor/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
