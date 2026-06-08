@@ -1,26 +1,36 @@
 /// <reference lib="webworker" />
-import { extractActivitiesCsv } from "./zipReader";
-import { parseActivitiesCsv } from "./stravaParser";
+import { parseExport } from "./parserRegistry";
+import type { Platform } from "./zipReader";
 import type { ParsedDataset } from "./types";
 
 interface WorkerRequest {
   file: File;
 }
 
-type WorkerResponse =
-  | { ok: true; data: SerializableDataset }
-  | { ok: false; error: string };
-
 interface SerializableDataset {
-  activities: Array<Omit<ParsedDataset["activities"][number], "date"> & { date: string }>;
+  activities: Array<
+    Omit<ParsedDataset["activities"][number], "date"> & { date: string }
+  >;
   activityTypes: string[];
   discardedRows: number;
 }
 
+type WorkerResponse =
+  | { ok: true; platform: Platform; data: SerializableDataset }
+  | { ok: false; error: string }
+  | { ok: "progress"; done: number; total: number };
+
 self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
   try {
-    const csv = await extractActivitiesCsv(e.data.file);
-    const dataset = parseActivitiesCsv(csv);
+    const { platform, dataset } = await parseExport(e.data.file, (p) => {
+      const msg: WorkerResponse = {
+        ok: "progress",
+        done: p.done,
+        total: p.total,
+      };
+      self.postMessage(msg);
+    });
+
     const serializable: SerializableDataset = {
       activities: dataset.activities.map((a) => ({
         ...a,
@@ -29,7 +39,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
       activityTypes: dataset.activityTypes,
       discardedRows: dataset.discardedRows,
     };
-    const res: WorkerResponse = { ok: true, data: serializable };
+    const res: WorkerResponse = { ok: true, platform, data: serializable };
     self.postMessage(res);
   } catch (err) {
     const message = err instanceof Error ? err.message : "INVALID_ZIP";

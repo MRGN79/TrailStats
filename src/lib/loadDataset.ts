@@ -1,4 +1,5 @@
 import type { ParsedDataset } from "./types";
+import type { Platform } from "./zipReader";
 
 interface SerializableDataset {
   activities: Array<{
@@ -14,10 +15,23 @@ interface SerializableDataset {
 }
 
 type WorkerResponse =
-  | { ok: true; data: SerializableDataset }
-  | { ok: false; error: string };
+  | { ok: true; platform: Platform; data: SerializableDataset }
+  | { ok: false; error: string }
+  | { ok: "progress"; done: number; total: number };
 
-export function processFile(file: File): Promise<ParsedDataset> {
+export interface LoadResult extends ParsedDataset {
+  platform: Platform;
+}
+
+export interface LoadProgress {
+  done: number;
+  total: number;
+}
+
+export function processFile(
+  file: File,
+  onProgress?: (progress: LoadProgress) => void
+): Promise<LoadResult> {
   return new Promise((resolve, reject) => {
     const worker = new Worker(
       new URL("./processor.worker.ts", import.meta.url),
@@ -25,18 +39,25 @@ export function processFile(file: File): Promise<ParsedDataset> {
     );
 
     worker.onmessage = (e: MessageEvent<WorkerResponse>) => {
+      const msg = e.data;
+      if (msg.ok === "progress") {
+        onProgress?.({ done: msg.done, total: msg.total });
+        return;
+      }
+
       worker.terminate();
-      if (e.data.ok) {
+      if (msg.ok) {
         resolve({
-          activities: e.data.data.activities.map((a) => ({
+          platform: msg.platform,
+          activities: msg.data.activities.map((a) => ({
             ...a,
             date: new Date(a.date),
           })),
-          activityTypes: e.data.data.activityTypes,
-          discardedRows: e.data.data.discardedRows,
+          activityTypes: msg.data.activityTypes,
+          discardedRows: msg.data.discardedRows,
         });
       } else {
-        reject(new Error(e.data.error));
+        reject(new Error(msg.error));
       }
     };
 

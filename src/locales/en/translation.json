@@ -5,11 +5,12 @@
     "disclaimer": "TrailStats is not affiliated with or endorsed by Strava, Inc. \"Strava\" is a trademark of its respective owner."
   },
   "upload": {
-    "dropzone": "Drop your Strava export ZIP here or click to browse",
+    "dropzone": "Drop your Strava or Garmin export ZIP here or click to browse",
     "processing": "Reading your activities…",
+    "processingProgress": "Reading activities… {{done}} of {{total}} files",
     "loadAnother": "Load another export",
     "error": {
-      "invalidZip": "This doesn't look like a Strava export. Make sure it's the full ZIP you downloaded.",
+      "invalidZip": "This doesn't look like a Strava or Garmin export. Make sure it's the full ZIP you downloaded.",
       "noActivities": "Couldn't find activities in this export."
     },
     "discarded": "{{count}} rows could not be read and were skipped."
