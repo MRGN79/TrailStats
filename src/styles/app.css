@@ -476,6 +476,14 @@ a:focus-visible,
   color: var(--ember);
 }
 
+.value__frac {
+  font-size: 0.52em;
+  font-weight: 600;
+  letter-spacing: 0;
+  vertical-align: 0.08em;
+  opacity: 0.75;
+}
+
 .card .unit {
   display: block;
   font-family: var(--font-mono);

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { Totals } from "../lib/types";
-import { formatDistance, formatDuration, formatNumber } from "../lib/format";
+import { formatDistance, formatDuration, formatNumber, splitDecimal } from "../lib/format";
 import { ShareButton } from "./ShareButton";
 
 interface Props {
@@ -48,11 +48,14 @@ export function TotalsCards({ totals, locale }: Props) {
     <section aria-label={t("stats.totals.title")}>
       <h2 className="section-title">{t("stats.totals.title")}</h2>
       <div className="cards">
-        {cards.map((c) => (
+        {cards.map((c) => {
+          const { integer, decimal } = splitDecimal(c.value, locale);
+          return (
           <div className="card" key={c.label}>
             <div className="label">{c.label}</div>
             <div className="value">
-              {c.value}
+              {integer}
+              {decimal && <span className="value__frac">{decimal}</span>}
               {c.unit && <span className="unit">{c.unit}</span>}
             </div>
             <ShareButton
@@ -64,7 +67,8 @@ export function TotalsCards({ totals, locale }: Props) {
               })}
             />
           </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

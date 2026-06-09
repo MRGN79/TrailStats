@@ -8,6 +8,32 @@ export function formatNumber(n: number, locale: string): string {
   return new Intl.NumberFormat(locale).format(Math.round(n));
 }
 
+/**
+ * Splits a locale-formatted number string into its integer and decimal parts.
+ * Detects the locale's decimal separator via formatToParts and only splits
+ * when 1–2 digits follow it (to avoid confusing thousands separators with decimals).
+ * Returns { integer: "6379", decimal: ",2" } for "6379,2" in es-ES.
+ */
+export function splitDecimal(
+  formatted: string,
+  locale: string
+): { integer: string; decimal: string } {
+  const decimalSep =
+    new Intl.NumberFormat(locale)
+      .formatToParts(1.1)
+      .find((p) => p.type === "decimal")?.value ?? ".";
+
+  const lastIdx = formatted.lastIndexOf(decimalSep);
+  const tail = lastIdx !== -1 ? formatted.slice(lastIdx + 1) : "";
+  if (lastIdx !== -1 && /^\d{1,2}$/.test(tail)) {
+    return {
+      integer: formatted.slice(0, lastIdx),
+      decimal: formatted.slice(lastIdx),
+    };
+  }
+  return { integer: formatted, decimal: "" };
+}
+
 export function formatPace(secPerKm: number): string {
   if (!Number.isFinite(secPerKm) || secPerKm <= 0) return "—";
   const total = Math.round(secPerKm);
