@@ -33,7 +33,27 @@
       "distanceLabel": "Distancia (km)",
       "showTable": "Mostrar tabla de datos",
       "hideTable": "Ocultar tabla de datos",
-      "period": "Periodo"
+      "period": "Periodo",
+      "compareYears": "Comparar años",
+      "compareYearsHint": "Superponer {{current}} y {{previous}}",
+      "yearOverYearAlt": "Comparación de distancia entre {{current}} y {{previous}}, alineada por periodo."
+    },
+    "streak": {
+      "title": "Racha y consistencia",
+      "current": "Racha actual",
+      "longest": "Racha más larga",
+      "weeks_one": "{{count}} semana",
+      "weeks_other": "{{count}} semanas"
+    },
+    "records": {
+      "title": "Récords",
+      "bestWeek": "Mejor semana",
+      "bestMonth": "Mejor mes"
+    },
+    "breakdown": {
+      "title": "Distancia por tipo de actividad",
+      "chartAlt": "Gráfica de donut que muestra el porcentaje de distancia total por tipo de actividad. Usa el botón inferior para ver los datos como tabla.",
+      "share": "Porcentaje"
     }
   },
   "filter": {

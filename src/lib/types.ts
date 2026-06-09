@@ -30,3 +30,38 @@ export interface ParsedDataset {
 }
 
 export type ViewMode = "weekly" | "monthly";
+
+export interface StreakStats {
+  current: number;
+  longest: number;
+}
+
+export interface PeriodRecord {
+  key: string;
+  label: string;
+  distanceKm: number;
+}
+
+export interface PeriodRecords {
+  bestWeek: PeriodRecord | null;
+  bestMonth: PeriodRecord | null;
+}
+
+export interface TypeBreakdownSlice {
+  type: string;
+  distanceKm: number;
+  share: number;
+}
+
+export interface YearOverYearPoint {
+  index: number;
+  label: string;
+  current: number | null;
+  previous: number | null;
+}
+
+export interface YearOverYearData {
+  currentYear: number;
+  previousYear: number;
+  points: YearOverYearPoint[];
+}

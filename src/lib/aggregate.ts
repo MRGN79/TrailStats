@@ -1,8 +1,14 @@
 import type {
   Activity,
   AggregatedPeriod,
+  PeriodRecord,
+  PeriodRecords,
+  StreakStats,
   Totals,
+  TypeBreakdownSlice,
   ViewMode,
+  YearOverYearData,
+  YearOverYearPoint,
 } from "./types";
 
 export function filterByType(activities: Activity[], type: string | null): Activity[] {
@@ -106,4 +112,145 @@ export function aggregateByPeriod(
   }
 
   return Array.from(buckets.values()).sort((a, b) => a.key.localeCompare(b.key));
+}
+
+// Monday-anchored UTC timestamp for the ISO week containing `date`. Two dates in
+// the same ISO week map to the same number, so consecutive-week logic can step
+// in 7-day increments without parsing the year-week string.
+function isoWeekStartUtc(date: Date): number {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const day = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() - (day - 1));
+  return d.getTime();
+}
+
+const WEEK_MS = 7 * 86400000;
+
+export function computeStreak(activities: Activity[]): StreakStats {
+  if (activities.length === 0) return { current: 0, longest: 0 };
+
+  const weeks = Array.from(
+    new Set(activities.map((a) => isoWeekStartUtc(a.date)))
+  ).sort((a, b) => a - b);
+
+  let longest = 1;
+  let run = 1;
+  for (let i = 1; i < weeks.length; i++) {
+    if (weeks[i] - weeks[i - 1] === WEEK_MS) {
+      run += 1;
+    } else {
+      run = 1;
+    }
+    if (run > longest) longest = run;
+  }
+
+  // Current streak: consecutive weeks ending at the most recent active week.
+  let current = 1;
+  for (let i = weeks.length - 1; i > 0; i--) {
+    if (weeks[i] - weeks[i - 1] === WEEK_MS) current += 1;
+    else break;
+  }
+
+  return { current, longest };
+}
+
+function bestPeriod(periods: AggregatedPeriod[]): PeriodRecord | null {
+  let best: AggregatedPeriod | null = null;
+  for (const p of periods) {
+    if (p.activities === 0) continue;
+    if (!best || p.distanceKm > best.distanceKm) best = p;
+  }
+  if (!best) return null;
+  return { key: best.key, label: best.label, distanceKm: best.distanceKm };
+}
+
+export function computeRecords(activities: Activity[]): PeriodRecords {
+  if (activities.length === 0) return { bestWeek: null, bestMonth: null };
+  return {
+    bestWeek: bestPeriod(aggregateByPeriod(activities, "weekly")),
+    bestMonth: bestPeriod(aggregateByPeriod(activities, "monthly")),
+  };
+}
+
+export function computeTypeBreakdown(activities: Activity[]): TypeBreakdownSlice[] {
+  if (activities.length === 0) return [];
+  const byType = new Map<string, number>();
+  let total = 0;
+  for (const a of activities) {
+    byType.set(a.type, (byType.get(a.type) ?? 0) + a.distanceKm);
+    total += a.distanceKm;
+  }
+  if (total === 0) return [];
+  return Array.from(byType.entries())
+    .map(([type, distanceKm]) => ({
+      type,
+      distanceKm,
+      share: distanceKm / total,
+    }))
+    .sort((a, b) => b.distanceKm - a.distanceKm);
+}
+
+export function availableYears(activities: Activity[]): number[] {
+  return Array.from(new Set(activities.map((a) => a.date.getFullYear()))).sort(
+    (a, b) => a - b
+  );
+}
+
+// ISO week-of-year (1..53) used to align two years on the same X axis.
+function isoWeekOfYear(date: Date): number {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const day = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - day);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+}
+
+export function computeYearOverYear(
+  activities: Activity[],
+  mode: ViewMode,
+  monthLabels: string[]
+): YearOverYearData | null {
+  const years = availableYears(activities);
+  if (years.length < 2) return null;
+
+  const currentYear = years[years.length - 1];
+  const previousYear = years[years.length - 2];
+
+  const buckets =
+    mode === "monthly"
+      ? { count: 12, labelFor: (i: number) => monthLabels[i] ?? String(i + 1) }
+      : { count: 53, labelFor: (i: number) => `${i + 1}` };
+
+  const current = new Array<number>(buckets.count).fill(0);
+  const previous = new Array<number>(buckets.count).fill(0);
+  let currentMaxIdx = -1;
+  let previousMaxIdx = -1;
+
+  for (const a of activities) {
+    const year = a.date.getFullYear();
+    if (year !== currentYear && year !== previousYear) continue;
+    const idx =
+      mode === "monthly" ? a.date.getMonth() : isoWeekOfYear(a.date) - 1;
+    if (idx < 0 || idx >= buckets.count) continue;
+    if (year === currentYear) {
+      current[idx] += a.distanceKm;
+      if (idx > currentMaxIdx) currentMaxIdx = idx;
+    } else {
+      previous[idx] += a.distanceKm;
+      if (idx > previousMaxIdx) previousMaxIdx = idx;
+    }
+  }
+
+  const lastIdx = Math.max(currentMaxIdx, previousMaxIdx);
+  const points: YearOverYearPoint[] = [];
+  for (let i = 0; i <= lastIdx; i++) {
+    points.push({
+      index: i,
+      label: buckets.labelFor(i),
+      current: current[i] > 0 ? Number(current[i].toFixed(1)) : null,
+      previous: previous[i] > 0 ? Number(previous[i].toFixed(1)) : null,
+    });
+  }
+
+  return { currentYear, previousYear, points };
 }

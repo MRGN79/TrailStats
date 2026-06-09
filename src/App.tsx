@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { UploadZone } from "./components/UploadZone";
 import { TotalsCards } from "./components/TotalsCards";
+import { StreakRecords } from "./components/StreakRecords";
 import { TrendsChart } from "./components/TrendsChart";
+import { TypeBreakdown } from "./components/TypeBreakdown";
 import { Toolbar } from "./components/Toolbar";
 import { LanguageToggle } from "./components/LanguageToggle";
 import { PrivacyPanel } from "./components/PrivacyPanel";
@@ -11,10 +13,19 @@ import { processFile } from "./lib/loadDataset";
 import { generateDemoDataset } from "./lib/demoData";
 import {
   aggregateByPeriod,
+  computeRecords,
+  computeStreak,
   computeTotals,
+  computeTypeBreakdown,
+  computeYearOverYear,
   filterByType,
 } from "./lib/aggregate";
 import type { ParsedDataset, ViewMode } from "./lib/types";
+
+function monthLabels(locale: string): string[] {
+  const fmt = new Intl.DateTimeFormat(locale, { month: "short" });
+  return Array.from({ length: 12 }, (_, i) => fmt.format(new Date(2020, i, 1)));
+}
 
 type Status =
   | { kind: "idle" }
@@ -33,10 +44,12 @@ export default function App() {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [view, setView] = useState<ViewMode>("monthly");
+  const [compareYears, setCompareYears] = useState(false);
 
   async function handleFile(file: File) {
     setStatus({ kind: "processing" });
     setSelectedType(null);
+    setCompareYears(false);
     try {
       const dataset = await processFile(file, ({ done, total }) =>
         setStatus({ kind: "processing", done, total })
@@ -59,6 +72,7 @@ export default function App() {
   function handleDemo() {
     setSelectedType(null);
     setView("monthly");
+    setCompareYears(false);
     setStatus({ kind: "ready", dataset: generateDemoDataset(), demo: true });
   }
 
@@ -75,6 +89,15 @@ export default function App() {
     () => aggregateByPeriod(filtered, view),
     [filtered, view]
   );
+  const streak = useMemo(() => computeStreak(filtered), [filtered]);
+  const records = useMemo(() => computeRecords(filtered), [filtered]);
+  const breakdown = useMemo(() => computeTypeBreakdown(filtered), [filtered]);
+  const yearOverYear = useMemo(
+    () => computeYearOverYear(filtered, view, monthLabels(locale)),
+    [filtered, view, locale]
+  );
+  const canCompareYears = yearOverYear != null;
+  const activeYoY = canCompareYears && compareYears ? yearOverYear : null;
 
   return (
     <div className="app">
@@ -138,6 +161,9 @@ export default function App() {
                 view={view}
                 onViewChange={setView}
                 onReset={() => setStatus({ kind: "idle" })}
+                canCompareYears={canCompareYears}
+                compareYears={compareYears}
+                onCompareYearsChange={setCompareYears}
               />
             </div>
 
@@ -149,7 +175,15 @@ export default function App() {
               )}
 
               <TotalsCards totals={totals} locale={locale} />
-              <TrendsChart periods={periods} locale={locale} />
+              <StreakRecords streak={streak} records={records} locale={locale} />
+              <TrendsChart
+                periods={periods}
+                locale={locale}
+                yearOverYear={activeYoY}
+              />
+              {breakdown.length > 1 && (
+                <TypeBreakdown slices={breakdown} locale={locale} />
+              )}
             </div>
           </div>
         </>

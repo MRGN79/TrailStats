@@ -8,6 +8,9 @@ interface Props {
   view: ViewMode;
   onViewChange: (view: ViewMode) => void;
   onReset: () => void;
+  canCompareYears: boolean;
+  compareYears: boolean;
+  onCompareYearsChange: (value: boolean) => void;
 }
 
 export function Toolbar({
@@ -17,6 +20,9 @@ export function Toolbar({
   view,
   onViewChange,
   onReset,
+  canCompareYears,
+  compareYears,
+  onCompareYearsChange,
 }: Props) {
   const { t } = useTranslation();
 
@@ -58,6 +64,19 @@ export function Toolbar({
           {t("stats.view.monthly")}
         </button>
       </div>
+
+      {canCompareYears && (
+        <div className="field field--switch">
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={compareYears}
+              onChange={(e) => onCompareYearsChange(e.target.checked)}
+            />
+            <span>{t("stats.trends.compareYears")}</span>
+          </label>
+        </div>
+      )}
 
       <button type="button" className="btn-secondary" onClick={onReset}>
         {t("upload.loadAnother")}

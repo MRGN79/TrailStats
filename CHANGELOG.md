@@ -7,6 +7,17 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-06-09
+
+### Added
+- **Racha y consistencia:** semanas consecutivas con al menos una actividad — racha actual y racha más larga histórica. Se calcula sobre las actividades filtradas, así que respeta el filtro de tipo activo.
+- **Récords por periodo:** mejor semana y mejor mes por distancia, con el valor y el periodo al que corresponden.
+- **Comparativa año a año:** nuevo conmutador "Comparar años" en Tendencias que superpone el año actual y el anterior en la misma gráfica, alineados por periodo. Solo aparece cuando hay datos de al menos dos años distintos.
+- **Desglose por tipo de actividad:** gráfica de donut con el porcentaje de la distancia total que corresponde a cada tipo de actividad. Solo visible cuando el conjunto filtrado tiene más de un tipo. Incluye leyenda y tabla de datos accesible.
+
+### Notes
+- Todo el cálculo es local en el navegador; ningún dato sale del dispositivo. No se añaden dependencias nuevas.
+
 ## [0.3.0] — 2026-06-09
 
 ### Added

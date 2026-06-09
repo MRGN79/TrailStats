@@ -560,6 +560,104 @@ table.data-table td:first-child {
   font-family: var(--font-body);
 }
 
+/* ── Separación entre secciones del dashboard ─────────────── */
+
+.dashboard__main > section + section {
+  margin-top: var(--space-2xl);
+}
+
+/* ── Sublínea de tarjeta (récords) ────────────────────────── */
+
+.card__sub {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: rgba(250, 248, 243, 0.5);
+  margin-top: var(--space-2xs);
+  font-feature-settings: "tnum" 1;
+  letter-spacing: 0.04em;
+}
+
+/* ── Toggle comparar años ─────────────────────────────────── */
+
+.field--switch {
+  align-self: flex-end;
+}
+
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  color: var(--paper);
+  cursor: pointer;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.switch input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--ember);
+  color-scheme: dark;
+  cursor: pointer;
+}
+
+/* ── Desglose por tipo (donut) ────────────────────────────── */
+
+.breakdown {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-lg);
+  align-items: center;
+}
+
+@media (min-width: 640px) {
+  .breakdown {
+    grid-template-columns: 280px minmax(0, 1fr);
+  }
+}
+
+.breakdown__chart {
+  width: 100%;
+  height: 240px;
+}
+
+.breakdown__legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.breakdown__legend li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--step--1);
+  color: var(--paper);
+}
+
+.breakdown__swatch {
+  flex-shrink: 0;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 3px;
+}
+
+.breakdown__type {
+  font-family: var(--font-body);
+}
+
+.breakdown__value {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum" 1;
+  color: rgba(250, 248, 243, 0.7);
+}
+
 /* ── Botones secundarios ──────────────────────────────────── */
 
 .btn-secondary {

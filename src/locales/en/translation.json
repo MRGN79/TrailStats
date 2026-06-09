@@ -33,7 +33,27 @@
       "distanceLabel": "Distance (km)",
       "showTable": "Show data table",
       "hideTable": "Hide data table",
-      "period": "Period"
+      "period": "Period",
+      "compareYears": "Compare years",
+      "compareYearsHint": "Overlay {{current}} and {{previous}}",
+      "yearOverYearAlt": "Distance comparison between {{current}} and {{previous}}, aligned by period."
+    },
+    "streak": {
+      "title": "Streak & consistency",
+      "current": "Current streak",
+      "longest": "Longest streak",
+      "weeks_one": "{{count}} week",
+      "weeks_other": "{{count}} weeks"
+    },
+    "records": {
+      "title": "Records",
+      "bestWeek": "Best week",
+      "bestMonth": "Best month"
+    },
+    "breakdown": {
+      "title": "Distance by activity type",
+      "chartAlt": "Donut chart showing the share of total distance per activity type. Use the button below to view the data as a table.",
+      "share": "Share"
     }
   },
   "filter": {
