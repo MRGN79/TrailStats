@@ -1,16 +1,16 @@
 {
   "app": {
     "title": "TrailStats",
-    "tagline": "Tu histórico de Strava, en números",
-    "disclaimer": "TrailStats no está afiliado a Strava, Inc. ni cuenta con su respaldo. \"Strava\" es una marca registrada de su titular."
+    "tagline": "Tu histórico de entrenamiento, en números",
+    "disclaimer": "TrailStats no está afiliado a Strava, Inc. ni a Garmin Ltd., ni cuenta con su respaldo. \"Strava\" y \"Garmin\" son marcas registradas de sus respectivos titulares."
   },
   "upload": {
-    "dropzone": "Arrastra aquí tu ZIP de export de Strava o Garmin o haz clic para buscarlo",
+    "dropzone": "Arrastra aquí tu ZIP de export, o haz clic para buscarlo — Strava, Garmin y otras",
     "processing": "Leyendo tus actividades…",
     "processingProgress": "Leyendo actividades… {{done}} de {{total}} archivos",
     "loadAnother": "Cargar otro export",
     "error": {
-      "invalidZip": "Esto no parece un export de Strava o Garmin. Asegúrate de que es el ZIP completo que descargaste.",
+      "invalidZip": "Esto no parece un export compatible. Asegúrate de que es el ZIP completo que descargaste de Strava, Garmin u otra plataforma compatible.",
       "noActivities": "No se han encontrado actividades en este export."
     },
     "discarded": "{{count}} filas no se pudieron leer y se han descartado."
