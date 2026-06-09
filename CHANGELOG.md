@@ -7,6 +7,15 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-06-09
+
+### Added
+- **Modo demo:** botón "Explorar con datos de muestra" junto al área de carga que abre la aplicación con un histórico ficticio realista de ~18 meses (carrera, trail, ciclismo, senderismo, marcha). Permite ver totales, tendencias y filtros antes de subir el propio export. Banner persistente con salida clara. Los datos se generan en el navegador de forma determinista — sin peso extra en el bundle, sin archivos descargados.
+- **Panel de privacidad reforzado:** tarjeta destacada en la pantalla de inicio con tres garantías verificables (procesamiento local, sin servidor ni cuenta, sin rastreo ni cookies) y una invitación a comprobarlo con las herramientas de desarrollo del navegador.
+
+### Changed
+- El mensaje de privacidad de la pantalla de inicio pasa de una línea a un panel completo; el aviso breve se mantiene en el pie.
+
 ## [0.2.0] — 2026-06-08
 
 ### Added

@@ -48,6 +48,20 @@
     "toggle": "Idioma"
   },
   "privacy": {
-    "note": "Todo se procesa en tu navegador. Tus datos nunca salen de este dispositivo."
+    "note": "Todo se procesa en tu navegador. Tus datos nunca salen de este dispositivo.",
+    "heading": "Tus datos se quedan contigo",
+    "points": {
+      "local": "Tu export se lee y se analiza por completo dentro de esta pestaña del navegador.",
+      "noServer": "No se sube nada — no hay servidor, ni cuenta, ni almacenamiento de tus archivos.",
+      "noTracking": "Sin rastreo, sin cookies, sin analíticas. Nunca vemos tus actividades."
+    },
+    "verify": "No te fíes solo de nuestra palabra: abre las herramientas de desarrollo de tu navegador, ve a la pestaña Red y carga un archivo — verás que ningún dato sale de tu dispositivo."
+  },
+  "demo": {
+    "or": "o",
+    "cta": "Explorar con datos de muestra",
+    "badge": "Demo",
+    "bannerText": "Estás explorando TrailStats con datos de muestra ficticios. Sal del modo demo para analizar tu propio export.",
+    "exit": "Salir del demo"
   }
 }

@@ -3,9 +3,10 @@ import { useTranslation } from "react-i18next";
 
 interface Props {
   onFile: (file: File) => void;
+  onDemo: () => void;
 }
 
-export function UploadZone({ onFile }: Props) {
+export function UploadZone({ onFile, onDemo }: Props) {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragover, setDragover] = useState(false);
@@ -16,6 +17,7 @@ export function UploadZone({ onFile }: Props) {
   }
 
   return (
+    <>
     <label
       className={`dropzone${dragover ? " dragover" : ""}`}
       onDragOver={(e) => {
@@ -40,5 +42,13 @@ export function UploadZone({ onFile }: Props) {
       </span>
       <span>{t("upload.dropzone")}</span>
     </label>
+
+    <div className="demo-cta">
+      <span className="demo-cta__sep">{t("demo.or")}</span>
+      <button type="button" className="btn-demo" onClick={onDemo}>
+        {t("demo.cta")}
+      </button>
+    </div>
+    </>
   );
 }

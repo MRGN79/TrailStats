@@ -5,7 +5,10 @@ import { TotalsCards } from "./components/TotalsCards";
 import { TrendsChart } from "./components/TrendsChart";
 import { Toolbar } from "./components/Toolbar";
 import { LanguageToggle } from "./components/LanguageToggle";
+import { PrivacyPanel } from "./components/PrivacyPanel";
+import { DemoBanner } from "./components/DemoBanner";
 import { processFile } from "./lib/loadDataset";
+import { generateDemoDataset } from "./lib/demoData";
 import {
   aggregateByPeriod,
   computeTotals,
@@ -17,7 +20,7 @@ type Status =
   | { kind: "idle" }
   | { kind: "processing"; done?: number; total?: number }
   | { kind: "error"; message: string }
-  | { kind: "ready"; dataset: ParsedDataset };
+  | { kind: "ready"; dataset: ParsedDataset; demo?: boolean };
 
 export default function App() {
   const { t, i18n } = useTranslation();
@@ -53,7 +56,14 @@ export default function App() {
     }
   }
 
+  function handleDemo() {
+    setSelectedType(null);
+    setView("monthly");
+    setStatus({ kind: "ready", dataset: generateDemoDataset(), demo: true });
+  }
+
   const dataset = status.kind === "ready" ? status.dataset : null;
+  const isDemo = status.kind === "ready" && status.demo === true;
 
   const filtered = useMemo(
     () => (dataset ? filterByType(dataset.activities, selectedType) : []),
@@ -93,7 +103,7 @@ export default function App() {
               </span>
             </div>
           ) : (
-            <UploadZone onFile={handleFile} />
+            <UploadZone onFile={handleFile} onDemo={handleDemo} />
           )}
 
           {status.kind === "error" && (
@@ -102,12 +112,14 @@ export default function App() {
             </p>
           )}
 
-          <p className="privacy-note">{t("privacy.note")}</p>
+          <PrivacyPanel />
         </div>
       )}
 
       {dataset && (
         <>
+          {isDemo && <DemoBanner onExit={() => setStatus({ kind: "idle" })} />}
+
           <Toolbar
             activityTypes={dataset.activityTypes}
             selectedType={selectedType}
