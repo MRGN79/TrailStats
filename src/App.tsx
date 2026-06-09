@@ -6,6 +6,9 @@ import { ActivityHeatmap } from "./components/ActivityHeatmap";
 import { EddingtonCards } from "./components/EddingtonCards";
 import { StreakRecords } from "./components/StreakRecords";
 import { TrendsChart } from "./components/TrendsChart";
+import { PaceEvolution } from "./components/PaceEvolution";
+import { BestEfforts } from "./components/BestEfforts";
+import { TrainingLoad } from "./components/TrainingLoad";
 import { TypeBreakdown } from "./components/TypeBreakdown";
 import { Toolbar } from "./components/Toolbar";
 import { LanguageToggle } from "./components/LanguageToggle";
@@ -15,11 +18,14 @@ import { processFile } from "./lib/loadDataset";
 import { generateDemoDataset } from "./lib/demoData";
 import {
   aggregateByPeriod,
+  computeBestEfforts,
   computeEddington,
   computeHeatmap,
+  computePaceEvolution,
   computeRecords,
   computeStreak,
   computeTotals,
+  computeTrainingLoad,
   computeTypeBreakdown,
   computeYearOverYear,
   filterByType,
@@ -98,6 +104,9 @@ export default function App() {
   const breakdown = useMemo(() => computeTypeBreakdown(filtered), [filtered]);
   const heatmap = useMemo(() => computeHeatmap(filtered), [filtered]);
   const eddington = useMemo(() => computeEddington(filtered), [filtered]);
+  const paceEvolution = useMemo(() => computePaceEvolution(filtered), [filtered]);
+  const bestEfforts = useMemo(() => computeBestEfforts(filtered), [filtered]);
+  const trainingLoad = useMemo(() => computeTrainingLoad(filtered), [filtered]);
   const yearOverYear = useMemo(
     () => computeYearOverYear(filtered, view, monthLabels(locale)),
     [filtered, view, locale]
@@ -189,6 +198,9 @@ export default function App() {
                 locale={locale}
                 yearOverYear={activeYoY}
               />
+              <PaceEvolution points={paceEvolution} />
+              <BestEfforts efforts={bestEfforts} locale={locale} />
+              <TrainingLoad load={trainingLoad} locale={locale} />
               {breakdown.length > 1 && (
                 <TypeBreakdown slices={breakdown} locale={locale} />
               )}

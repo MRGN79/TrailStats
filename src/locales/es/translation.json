@@ -63,6 +63,30 @@
       "next_other": "Faltan {{remaining}} actividades de ≥ {{target}} km para llegar a {{target}}",
       "noData": "Aún no hay suficientes actividades para calcular un número de Eddington."
     },
+    "pace": {
+      "title": "Evolución del ritmo",
+      "chartAlt": "Gráfica de ritmo medio mensual en carrera. Menos es más rápido. Usa el botón inferior para ver los datos como tabla.",
+      "paceLabel": "Ritmo medio"
+    },
+    "bestEfforts": {
+      "title": "Mejores esfuerzos",
+      "5k": "5K",
+      "10k": "10K",
+      "21k": "Media maratón",
+      "42k": "Maratón"
+    },
+    "load": {
+      "title": "Carga de entrenamiento semanal",
+      "barLabel": "Índice de carga frente a tu media de 6 semanas",
+      "caption": "Esta semana {{current}} vs {{baseline}} unidades de carga de media",
+      "notEnoughHistory": "Se necesitan al menos 3 semanas de actividad para estimar la carga.",
+      "state": {
+        "low": "Baja",
+        "normal": "Normal",
+        "high": "Elevada",
+        "veryHigh": "Muy alta"
+      }
+    },
     "heatmap": {
       "title": "Historial de actividad",
       "noActivity": "Sin actividad",
@@ -102,7 +126,8 @@
   },
   "units": {
     "km": "km",
-    "m": "m"
+    "m": "m",
+    "minPerKm": "min/km"
   },
   "lang": {
     "toggle": "Idioma"

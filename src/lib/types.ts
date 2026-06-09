@@ -90,3 +90,27 @@ export interface HeatmapData {
   end: Date;
   days: HeatmapDay[];
 }
+
+export interface PaceEvolutionPoint {
+  key: string;
+  label: string;
+  paceSecPerKm: number;
+}
+
+export type EffortBucket = "5k" | "10k" | "21k" | "42k";
+
+export interface BestEffort {
+  bucket: EffortBucket;
+  paceSecPerKm: number;
+  date: Date;
+}
+
+export type TrainingLoadState = "low" | "normal" | "high" | "veryHigh";
+
+export interface TrainingLoad {
+  currentLoad: number;
+  baselineLoad: number;
+  index: number;
+  state: TrainingLoadState;
+  weeksOfHistory: number;
+}

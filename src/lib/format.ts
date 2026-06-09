@@ -8,6 +8,14 @@ export function formatNumber(n: number, locale: string): string {
   return new Intl.NumberFormat(locale).format(Math.round(n));
 }
 
+export function formatPace(secPerKm: number): string {
+  if (!Number.isFinite(secPerKm) || secPerKm <= 0) return "—";
+  const total = Math.round(secPerKm);
+  const minutes = Math.floor(total / 60);
+  const seconds = total % 60;
+  return `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
+
 export function formatDuration(seconds: number, locale: string): string {
   const totalMinutes = Math.round(seconds / 60);
   const hours = Math.floor(totalMinutes / 60);

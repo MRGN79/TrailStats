@@ -63,6 +63,30 @@
       "next_other": "{{remaining}} more activities of ≥ {{target}} km to reach {{target}}",
       "noData": "Not enough activities yet to compute an Eddington number."
     },
+    "pace": {
+      "title": "Pace evolution",
+      "chartAlt": "Monthly average running pace chart. Lower is faster. Use the button below to view the data as a table.",
+      "paceLabel": "Avg pace"
+    },
+    "bestEfforts": {
+      "title": "Best efforts",
+      "5k": "5K",
+      "10k": "10K",
+      "21k": "Half marathon",
+      "42k": "Marathon"
+    },
+    "load": {
+      "title": "Weekly training load",
+      "barLabel": "Training load index versus your 6-week baseline",
+      "caption": "This week {{current}} vs {{baseline}} avg load units",
+      "notEnoughHistory": "Need at least 3 weeks of activity to estimate training load.",
+      "state": {
+        "low": "Low",
+        "normal": "Normal",
+        "high": "Elevated",
+        "veryHigh": "Very high"
+      }
+    },
     "heatmap": {
       "title": "Activity history",
       "noActivity": "No activity",
@@ -102,7 +126,8 @@
   },
   "units": {
     "km": "km",
-    "m": "m"
+    "m": "m",
+    "minPerKm": "min/km"
   },
   "lang": {
     "toggle": "Language"

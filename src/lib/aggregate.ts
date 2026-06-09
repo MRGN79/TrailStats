@@ -1,15 +1,20 @@
 import type {
   Activity,
   AggregatedPeriod,
+  BestEffort,
   EddingtonSport,
   EddingtonStat,
+  EffortBucket,
   HeatLevel,
   HeatmapData,
   HeatmapDay,
+  PaceEvolutionPoint,
   PeriodRecord,
   PeriodRecords,
   StreakStats,
   Totals,
+  TrainingLoad,
+  TrainingLoadState,
   TypeBreakdownSlice,
   ViewMode,
   YearOverYearData,
@@ -364,5 +369,144 @@ export function computeHeatmap(
     start: new Date(startKey),
     end: new Date(endKey),
     days,
+  };
+}
+
+// ── Pace, esfuerzos y carga (running) ───────────────────────
+//
+// Zonas de FC: NO implementadas. El modelo Activity solo expone
+// id/date/type/distanceKm/movingTimeSec/elevationGainM, y ni stravaParser
+// (activities.csv) ni garminParser (sesiones FIT) extraen avgHrBpm/maxHrBpm.
+// Sin datos de frecuencia cardiaca en origen, una sección de zonas de FC sería
+// inventada; se omite hasta que los parsers capturen FC.
+
+// Patrones de tipo que se consideran "carrera a pie" para pace y esfuerzos.
+const RUNNING_PATTERNS = ["run", "trail"];
+
+function isRunning(type: string): boolean {
+  const lower = type.toLowerCase();
+  return RUNNING_PATTERNS.some((p) => lower.includes(p));
+}
+
+// Pace medio mensual (segundos por km) sobre actividades de carrera con tiempo
+// y distancia válidos. Solo se incluyen meses que tengan al menos una.
+export function computePaceEvolution(
+  activities: Activity[]
+): PaceEvolutionPoint[] {
+  const buckets = new Map<string, { distanceKm: number; movingTimeSec: number }>();
+  for (const a of activities) {
+    if (!isRunning(a.type)) continue;
+    if (a.distanceKm <= 0 || a.movingTimeSec <= 0) continue;
+    const key = monthKey(a.date);
+    const bucket = buckets.get(key) ?? { distanceKm: 0, movingTimeSec: 0 };
+    bucket.distanceKm += a.distanceKm;
+    bucket.movingTimeSec += a.movingTimeSec;
+    buckets.set(key, bucket);
+  }
+
+  return Array.from(buckets.entries())
+    .map(([key, b]) => ({
+      key,
+      label: key,
+      paceSecPerKm: b.movingTimeSec / b.distanceKm,
+    }))
+    .sort((a, b) => a.key.localeCompare(b.key));
+}
+
+const EFFORT_RANGES: Record<EffortBucket, [number, number]> = {
+  "5k": [4.0, 6.5],
+  "10k": [8.5, 12.0],
+  "21k": [18.0, 24.0],
+  "42k": [38.0, 47.0],
+};
+
+// Mejor pace (más bajo = mejor) en cada rango de distancia, sobre carreras con
+// tiempo y distancia válidos. Devuelve solo los rangos con al menos una marca.
+export function computeBestEfforts(activities: Activity[]): BestEffort[] {
+  const best = new Map<EffortBucket, BestEffort>();
+
+  for (const a of activities) {
+    if (!isRunning(a.type)) continue;
+    if (a.distanceKm <= 0 || a.movingTimeSec <= 0) continue;
+    const pace = a.movingTimeSec / a.distanceKm;
+
+    for (const bucket of Object.keys(EFFORT_RANGES) as EffortBucket[]) {
+      const [min, max] = EFFORT_RANGES[bucket];
+      if (a.distanceKm < min || a.distanceKm > max) continue;
+      const current = best.get(bucket);
+      if (!current || pace < current.paceSecPerKm) {
+        best.set(bucket, { bucket, paceSecPerKm: pace, date: a.date });
+      }
+    }
+  }
+
+  const order: EffortBucket[] = ["5k", "10k", "21k", "42k"];
+  return order.filter((b) => best.has(b)).map((b) => best.get(b)!);
+}
+
+// Factor de carga por tipo de actividad.
+function loadFactor(type: string): number {
+  const lower = type.toLowerCase();
+  if (lower.includes("run") || lower.includes("trail")) return 1.0;
+  if (lower.includes("ride") || lower.includes("cycling") || lower.includes("bike"))
+    return 0.5;
+  if (lower.includes("hike")) return 0.7;
+  return 0.8;
+}
+
+const LOAD_BASELINE_WEEKS = 6;
+
+function trainingLoadState(index: number): TrainingLoadState {
+  if (index < 0.8) return "low";
+  if (index <= 1.3) return "normal";
+  if (index <= 1.5) return "high";
+  return "veryHigh";
+}
+
+// Carga semanal = Σ distanceKm × factor por tipo. Compara la semana en curso
+// (la del día `today`) con la media de las LOAD_BASELINE_WEEKS semanas previas.
+export function computeTrainingLoad(
+  activities: Activity[],
+  today: Date = new Date()
+): TrainingLoad | null {
+  if (activities.length === 0) return null;
+
+  const currentWeekStart = isoWeekStartUtc(today);
+
+  const byWeek = new Map<number, number>();
+  for (const a of activities) {
+    const week = isoWeekStartUtc(a.date);
+    byWeek.set(week, (byWeek.get(week) ?? 0) + a.distanceKm * loadFactor(a.type));
+  }
+
+  const currentLoad = byWeek.get(currentWeekStart) ?? 0;
+
+  const baselineWeeks: number[] = [];
+  for (let i = 1; i <= LOAD_BASELINE_WEEKS; i++) {
+    const weekStart = currentWeekStart - i * WEEK_MS;
+    baselineWeeks.push(byWeek.get(weekStart) ?? 0);
+  }
+
+  const weeksOfHistory = baselineWeeks.filter((w) => w > 0).length;
+  if (weeksOfHistory < 3) {
+    return {
+      currentLoad,
+      baselineLoad: 0,
+      index: 0,
+      state: "normal",
+      weeksOfHistory,
+    };
+  }
+
+  const baselineLoad =
+    baselineWeeks.reduce((sum, w) => sum + w, 0) / baselineWeeks.length;
+  const index = baselineLoad > 0 ? currentLoad / baselineLoad : 0;
+
+  return {
+    currentLoad,
+    baselineLoad,
+    index,
+    state: trainingLoadState(index),
+    weeksOfHistory,
   };
 }
