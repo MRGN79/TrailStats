@@ -1,6 +1,11 @@
 import type {
   Activity,
   AggregatedPeriod,
+  EddingtonSport,
+  EddingtonStat,
+  HeatLevel,
+  HeatmapData,
+  HeatmapDay,
   PeriodRecord,
   PeriodRecords,
   StreakStats,
@@ -253,4 +258,111 @@ export function computeYearOverYear(
   }
 
   return { currentYear, previousYear, points };
+}
+
+// ── Número de Eddington ─────────────────────────────────────
+
+const RUN_PATTERNS = ["run", "trail", "hike"];
+const CYCLING_PATTERNS = ["ride", "cycling", "bike", "virtual"];
+
+function matchesSport(type: string, patterns: string[]): boolean {
+  const lower = type.toLowerCase();
+  return patterns.some((p) => lower.includes(p));
+}
+
+// E = mayor N tal que existen al menos N actividades con distancia >= N km.
+// Ordenando las distancias de mayor a menor, E es el mayor índice i (base 1)
+// con distancia[i-1] >= i.
+function eddingtonNumber(distances: number[]): number {
+  const sorted = [...distances].sort((a, b) => b - a);
+  let e = 0;
+  for (let i = 0; i < sorted.length; i++) {
+    if (sorted[i] >= i + 1) e = i + 1;
+    else break;
+  }
+  return e;
+}
+
+function eddingtonForSport(
+  activities: Activity[],
+  sport: EddingtonSport
+): EddingtonStat | null {
+  const patterns = sport === "run" ? RUN_PATTERNS : CYCLING_PATTERNS;
+  const distances = activities
+    .filter((a) => matchesSport(a.type, patterns))
+    .map((a) => a.distanceKm);
+
+  const number = eddingtonNumber(distances);
+  if (number === 0) return null;
+
+  const target = number + 1;
+  const have = distances.filter((d) => d >= target).length;
+  const remaining = Math.max(0, target - have);
+
+  return { sport, number, next: { target, remaining } };
+}
+
+export function computeEddington(activities: Activity[]): EddingtonStat[] {
+  if (activities.length === 0) return [];
+  const stats: EddingtonStat[] = [];
+  for (const sport of ["run", "cycling"] as const) {
+    const stat = eddingtonForSport(activities, sport);
+    if (stat) stats.push(stat);
+  }
+  return stats;
+}
+
+// ── Heatmap de actividad ────────────────────────────────────
+
+const DAY_MS = 86400000;
+const HEATMAP_DAYS = 365;
+
+// Umbrales de volumen diario (km).
+const LOW_MAX = 10;
+const MEDIUM_MAX = 30;
+const EXCEPTIONAL_MIN = 50;
+
+function dayKeyUtc(date: Date): number {
+  return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function heatLevel(distanceKm: number): HeatLevel {
+  if (distanceKm <= 0) return "none";
+  if (distanceKm >= EXCEPTIONAL_MIN) return "exceptional";
+  if (distanceKm < LOW_MAX) return "low";
+  if (distanceKm <= MEDIUM_MAX) return "medium";
+  return "high";
+}
+
+// Cubre los últimos HEATMAP_DAYS días terminando en `today` (incluido).
+// Solo itera ese rango, nunca todo el historial.
+export function computeHeatmap(
+  activities: Activity[],
+  today: Date = new Date()
+): HeatmapData {
+  const endKey = dayKeyUtc(today);
+  const startKey = endKey - (HEATMAP_DAYS - 1) * DAY_MS;
+
+  const byDay = new Map<number, number>();
+  for (const a of activities) {
+    const key = dayKeyUtc(a.date);
+    if (key < startKey || key > endKey) continue;
+    byDay.set(key, (byDay.get(key) ?? 0) + a.distanceKm);
+  }
+
+  const days: HeatmapDay[] = [];
+  for (let key = startKey; key <= endKey; key += DAY_MS) {
+    const distanceKm = byDay.get(key) ?? 0;
+    days.push({
+      date: new Date(key),
+      distanceKm,
+      level: heatLevel(distanceKm),
+    });
+  }
+
+  return {
+    start: new Date(startKey),
+    end: new Date(endKey),
+    days,
+  };
 }

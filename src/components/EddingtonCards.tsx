@@ -1,0 +1,37 @@
+import { useTranslation } from "react-i18next";
+import type { EddingtonStat } from "../lib/types";
+import { formatNumber } from "../lib/format";
+
+interface Props {
+  stats: EddingtonStat[];
+  locale: string;
+}
+
+export function EddingtonCards({ stats, locale }: Props) {
+  const { t } = useTranslation();
+
+  if (stats.length === 0) return null;
+
+  return (
+    <section aria-label={t("stats.eddington.title")}>
+      <h2 className="section-title">{t("stats.eddington.title")}</h2>
+      <div className="cards">
+        {stats.map((s) => (
+          <div className="card" key={s.sport}>
+            <div className="label">{t(`stats.eddington.${s.sport}`)}</div>
+            <div className="value">{formatNumber(s.number, locale)}</div>
+            {s.next.remaining > 0 && (
+              <div className="card__sub">
+                {t("stats.eddington.next", {
+                  count: s.next.remaining,
+                  remaining: formatNumber(s.next.remaining, locale),
+                  target: formatNumber(s.next.target, locale),
+                })}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}

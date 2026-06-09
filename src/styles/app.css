@@ -577,6 +577,56 @@ table.data-table td:first-child {
   letter-spacing: 0.04em;
 }
 
+/* ── Heatmap de actividad ─────────────────────────────────── */
+
+.heatmap-scroll {
+  overflow-x: auto;
+  padding-bottom: var(--space-xs);
+}
+
+.heatmap {
+  display: block;
+}
+
+.heatmap__month {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  fill: rgba(250, 248, 243, 0.5);
+  letter-spacing: 0.04em;
+}
+
+.heatmap__day {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  fill: rgba(250, 248, 243, 0.4);
+}
+
+.heatmap-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin: var(--space-sm) 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: rgba(250, 248, 243, 0.5);
+  letter-spacing: 0.04em;
+}
+
+.heatmap-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+
+.heatmap-legend__swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
 /* ── Toggle comparar años ─────────────────────────────────── */
 
 .field--switch {

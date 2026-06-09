@@ -54,6 +54,46 @@
       "title": "Distancia por tipo de actividad",
       "chartAlt": "Gráfica de donut que muestra el porcentaje de distancia total por tipo de actividad. Usa el botón inferior para ver los datos como tabla.",
       "share": "Porcentaje"
+    },
+    "eddington": {
+      "title": "Número de Eddington",
+      "run": "Carrera",
+      "cycling": "Ciclismo",
+      "next_one": "Falta {{remaining}} actividad de ≥ {{target}} km para llegar a {{target}}",
+      "next_other": "Faltan {{remaining}} actividades de ≥ {{target}} km para llegar a {{target}}",
+      "noData": "Aún no hay suficientes actividades para calcular un número de Eddington."
+    },
+    "heatmap": {
+      "title": "Historial de actividad",
+      "noActivity": "Sin actividad",
+      "low": "Baja",
+      "medium": "Media",
+      "high": "Alta",
+      "dayLabel": "{{date}}: {{distance}} km",
+      "dayLabelEmpty": "{{date}}: sin actividad",
+      "months": {
+        "jan": "Ene",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Abr",
+        "may": "May",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Ago",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Dic"
+      },
+      "days": {
+        "mon": "L",
+        "tue": "M",
+        "wed": "X",
+        "thu": "J",
+        "fri": "V",
+        "sat": "S",
+        "sun": "D"
+      }
     }
   },
   "filter": {

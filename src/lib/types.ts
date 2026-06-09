@@ -65,3 +65,28 @@ export interface YearOverYearData {
   previousYear: number;
   points: YearOverYearPoint[];
 }
+
+export type EddingtonSport = "run" | "cycling";
+
+export interface EddingtonStat {
+  sport: EddingtonSport;
+  number: number;
+  next: {
+    target: number;
+    remaining: number;
+  };
+}
+
+export type HeatLevel = "none" | "low" | "medium" | "high" | "exceptional";
+
+export interface HeatmapDay {
+  date: Date;
+  distanceKm: number;
+  level: HeatLevel;
+}
+
+export interface HeatmapData {
+  start: Date;
+  end: Date;
+  days: HeatmapDay[];
+}

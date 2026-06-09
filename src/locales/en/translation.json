@@ -54,6 +54,46 @@
       "title": "Distance by activity type",
       "chartAlt": "Donut chart showing the share of total distance per activity type. Use the button below to view the data as a table.",
       "share": "Share"
+    },
+    "eddington": {
+      "title": "Eddington number",
+      "run": "Running",
+      "cycling": "Cycling",
+      "next_one": "{{remaining}} more activity of ≥ {{target}} km to reach {{target}}",
+      "next_other": "{{remaining}} more activities of ≥ {{target}} km to reach {{target}}",
+      "noData": "Not enough activities yet to compute an Eddington number."
+    },
+    "heatmap": {
+      "title": "Activity history",
+      "noActivity": "No activity",
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "dayLabel": "{{date}}: {{distance}} km",
+      "dayLabelEmpty": "{{date}}: no activity",
+      "months": {
+        "jan": "Jan",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Apr",
+        "may": "May",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Aug",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Dec"
+      },
+      "days": {
+        "mon": "M",
+        "tue": "T",
+        "wed": "W",
+        "thu": "T",
+        "fri": "F",
+        "sat": "S",
+        "sun": "S"
+      }
     }
   },
   "filter": {

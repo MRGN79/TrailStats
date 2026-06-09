@@ -7,6 +7,15 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-06-09
+
+### Added
+- **Número de Eddington:** el mayor número N tal que se han realizado al menos N actividades de N km o más, calculado de forma independiente para carrera (incluye trail y senderismo) y ciclismo. Cada deporte muestra su número y cuántas actividades faltan para alcanzar el siguiente. Solo aparece el deporte que tiene datos suficientes. Respeta el filtro de tipo activo.
+- **Historial de actividad (heatmap):** cuadrícula de los últimos 365 días con el volumen diario de distancia codificado por color, etiquetas de mes y día de la semana, leyenda y tooltip por celda con fecha y distancia. Días excepcionales resaltados en color ámbar. Renderizado en SVG sin dependencias externas; en móvil se desplaza horizontalmente.
+
+### Notes
+- Todo el cálculo es local en el navegador; ningún dato sale del dispositivo. No se añaden dependencias nuevas. El heatmap solo procesa los últimos 365 días, no todo el historial.
+
 ## [0.4.0] — 2026-06-09
 
 ### Added

@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { UploadZone } from "./components/UploadZone";
 import { TotalsCards } from "./components/TotalsCards";
+import { ActivityHeatmap } from "./components/ActivityHeatmap";
+import { EddingtonCards } from "./components/EddingtonCards";
 import { StreakRecords } from "./components/StreakRecords";
 import { TrendsChart } from "./components/TrendsChart";
 import { TypeBreakdown } from "./components/TypeBreakdown";
@@ -13,6 +15,8 @@ import { processFile } from "./lib/loadDataset";
 import { generateDemoDataset } from "./lib/demoData";
 import {
   aggregateByPeriod,
+  computeEddington,
+  computeHeatmap,
   computeRecords,
   computeStreak,
   computeTotals,
@@ -92,6 +96,8 @@ export default function App() {
   const streak = useMemo(() => computeStreak(filtered), [filtered]);
   const records = useMemo(() => computeRecords(filtered), [filtered]);
   const breakdown = useMemo(() => computeTypeBreakdown(filtered), [filtered]);
+  const heatmap = useMemo(() => computeHeatmap(filtered), [filtered]);
+  const eddington = useMemo(() => computeEddington(filtered), [filtered]);
   const yearOverYear = useMemo(
     () => computeYearOverYear(filtered, view, monthLabels(locale)),
     [filtered, view, locale]
@@ -175,6 +181,8 @@ export default function App() {
               )}
 
               <TotalsCards totals={totals} locale={locale} />
+              <ActivityHeatmap data={heatmap} locale={locale} />
+              <EddingtonCards stats={eddington} locale={locale} />
               <StreakRecords streak={streak} records={records} locale={locale} />
               <TrendsChart
                 periods={periods}
