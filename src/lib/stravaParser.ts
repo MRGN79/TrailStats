@@ -16,12 +16,32 @@ function normalize(header: string): string {
   return header.trim().toLowerCase();
 }
 
+// Spanish Strava exports use locale month abbreviations that JS Date can't parse.
+// Map the four that differ from English (ene→jan, abr→apr, ago→aug, dic→dec).
+const ES_MONTH: Record<string, string> = {
+  ene: "jan",
+  abr: "apr",
+  ago: "aug",
+  dic: "dec",
+};
+
+function parseActivityDate(raw: string): Date {
+  const normalized = raw.replace(
+    /\b(ene|abr|ago|dic)\b/gi,
+    (m) => ES_MONTH[m.toLowerCase()]
+  );
+  return new Date(normalized);
+}
+
 function buildColumnMap(headers: string[]): Record<string, number> {
   const normalized = headers.map(normalize);
   const map: Record<string, number> = {};
   for (const [field, aliases] of Object.entries(COLUMN_ALIASES)) {
     for (const alias of aliases) {
-      const idx = normalized.indexOf(alias);
+      // Use lastIndexOf so that when a column appears twice (e.g. Spanish exports
+      // have "Distancia" twice — first in km, second in meters), we pick the
+      // second occurrence, which is always in SI units with dot decimal separators.
+      const idx = normalized.lastIndexOf(alias);
       if (idx !== -1) {
         map[field] = idx;
         break;
@@ -50,7 +70,7 @@ function rowToActivity(
 ): Activity | null {
   const dateRaw = cols[map.date];
   if (dateRaw === undefined) return null;
-  const date = new Date(dateRaw);
+  const date = parseActivityDate(dateRaw);
   if (Number.isNaN(date.getTime())) return null;
 
   return {
