@@ -16,6 +16,39 @@
     "discarded": "{{count}} filas no se pudieron leer y se han descartado."
   },
   "stats": {
+    "sections": {
+      "social": "Social",
+      "training": "Entrenamiento"
+    },
+    "racePredictor": {
+      "title": "Predictor de carrera",
+      "subtitle": "Basado en tu mejor esfuerzo en {{base}}",
+      "actual": "Real",
+      "predicted": "Predicción"
+    },
+    "paceZones": {
+      "title": "Distribución por zonas de ritmo",
+      "z1": "Z1 · Recuperación",
+      "z2": "Z2 · Fácil",
+      "z3": "Z3 · Tempo",
+      "z4": "Z4 · Umbral",
+      "z5": "Z5 · VO2max",
+      "threshold": "Umbral estimado: {{pace}} min/km",
+      "noData": "Se necesitan al menos 5 actividades de carrera para calcular zonas de ritmo."
+    },
+    "fitness": {
+      "title": "Fitness y frescura",
+      "ctl": "Fitness (CTL)",
+      "atl": "Fatiga (ATL)",
+      "tsb": "Forma (TSB)",
+      "dateCol": "Fecha",
+      "chartAlt": "Gráfica de fitness (CTL), fatiga (ATL) y forma (TSB) a lo largo del tiempo.",
+      "tooltip": {
+        "ctl": "Fitness",
+        "atl": "Fatiga",
+        "tsb": "Forma"
+      }
+    },
     "totals": {
       "title": "Totales históricos",
       "activities": "Actividades",

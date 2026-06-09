@@ -14,14 +14,20 @@ import { Toolbar } from "./components/Toolbar";
 import { LanguageToggle } from "./components/LanguageToggle";
 import { PrivacyPanel } from "./components/PrivacyPanel";
 import { DemoBanner } from "./components/DemoBanner";
+import { RacePredictor } from "./components/RacePredictor";
+import { PaceZones } from "./components/PaceZones";
+import { FitnessChart } from "./components/FitnessChart";
 import { processFile } from "./lib/loadDataset";
 import { generateDemoDataset } from "./lib/demoData";
 import {
   aggregateByPeriod,
   computeBestEfforts,
   computeEddington,
+  computeFitness,
   computeHeatmap,
   computePaceEvolution,
+  computePaceZones,
+  computeRacePredictor,
   computeRecords,
   computeStreak,
   computeTotals,
@@ -114,6 +120,10 @@ export default function App() {
   const canCompareYears = yearOverYear != null;
   const activeYoY = canCompareYears && compareYears ? yearOverYear : null;
 
+  const racePredictions = useMemo(() => computeRacePredictor(bestEfforts), [bestEfforts]);
+  const paceZones = useMemo(() => computePaceZones(filtered), [filtered]);
+  const fitnessData = useMemo(() => computeFitness(filtered), [filtered]);
+
   return (
     <div className="app">
       {dataset && (
@@ -183,27 +193,40 @@ export default function App() {
             </div>
 
             <div className="dashboard__main">
-              {dataset.discardedRows > 0 && (
-                <p className="notice" role="status">
-                  {t("upload.discarded", { count: dataset.discardedRows })}
-                </p>
-              )}
+              <div className="dash-section">
+                <h2 className="dash-section__title">{t("stats.sections.social")}</h2>
+                <TotalsCards totals={totals} locale={locale} />
+                <BestEfforts efforts={bestEfforts} locale={locale} />
+                <RacePredictor
+                  predictions={racePredictions.items}
+                  baseBucket={racePredictions.base}
+                  locale={locale}
+                />
+                <EddingtonCards stats={eddington} locale={locale} />
+                <StreakRecords streak={streak} records={records} locale={locale} />
+              </div>
 
-              <TotalsCards totals={totals} locale={locale} />
-              <ActivityHeatmap data={heatmap} locale={locale} />
-              <EddingtonCards stats={eddington} locale={locale} />
-              <StreakRecords streak={streak} records={records} locale={locale} />
-              <TrendsChart
-                periods={periods}
-                locale={locale}
-                yearOverYear={activeYoY}
-              />
-              <PaceEvolution points={paceEvolution} />
-              <BestEfforts efforts={bestEfforts} locale={locale} />
-              <TrainingLoad load={trainingLoad} locale={locale} />
-              {breakdown.length > 1 && (
-                <TypeBreakdown slices={breakdown} locale={locale} />
-              )}
+              <div className="dash-section">
+                <h2 className="dash-section__title">{t("stats.sections.training")}</h2>
+                {dataset.discardedRows > 0 && (
+                  <p className="notice" role="status">
+                    {t("upload.discarded", { count: dataset.discardedRows })}
+                  </p>
+                )}
+                <ActivityHeatmap data={heatmap} locale={locale} />
+                <TrendsChart
+                  periods={periods}
+                  locale={locale}
+                  yearOverYear={activeYoY}
+                />
+                <PaceEvolution points={paceEvolution} />
+                <PaceZones zones={paceZones} locale={locale} />
+                <TrainingLoad load={trainingLoad} locale={locale} />
+                <FitnessChart data={fitnessData} locale={locale} />
+                {breakdown.length > 1 && (
+                  <TypeBreakdown slices={breakdown} locale={locale} />
+                )}
+              </div>
             </div>
           </div>
         </>

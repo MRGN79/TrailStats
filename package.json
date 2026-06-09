@@ -1,7 +1,7 @@
 {
   "name": "trailstats",
   "private": true,
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Analyze your Strava or Garmin export history locally in your browser — aggregated stats and trends, no backend, no data leaves your device.",
   "type": "module",
   "scripts": {

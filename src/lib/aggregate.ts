@@ -5,12 +5,18 @@ import type {
   EddingtonSport,
   EddingtonStat,
   EffortBucket,
+  FitnessData,
+  FitnessPoint,
   HeatLevel,
   HeatmapData,
   HeatmapDay,
   PaceEvolutionPoint,
+  PaceZoneData,
+  PaceZonesData,
   PeriodRecord,
   PeriodRecords,
+  RacePredictionItem,
+  RacePredictorResult,
   StreakStats,
   Totals,
   TrainingLoad,
@@ -509,4 +515,175 @@ export function computeTrainingLoad(
     state: trainingLoadState(index),
     weeksOfHistory,
   };
+}
+
+// ── Race Predictor ───────────────────────────────────────────
+
+const BUCKET_DISTANCES: Record<EffortBucket, number> = {
+  "5k": 5,
+  "10k": 10,
+  "21k": 21.0975,
+  "42k": 42.195,
+};
+
+// Riegel formula: T2 = T1 × (D2/D1)^1.06
+function riegelPredict(baseTimeSec: number, baseDistKm: number, targetDistKm: number): number {
+  return baseTimeSec * Math.pow(targetDistKm / baseDistKm, 1.06);
+}
+
+export function computeRacePredictor(efforts: BestEffort[]): RacePredictorResult {
+  if (efforts.length === 0) return { items: [], base: null };
+
+  const order: EffortBucket[] = ["5k", "10k", "21k", "42k"];
+  // Build a map for quick lookup
+  const effortMap = new Map<EffortBucket, BestEffort>();
+  for (const e of efforts) effortMap.set(e.bucket, e);
+
+  // Pick best base: 5K > 10K > 21K
+  let baseEffort: BestEffort | null = null;
+  for (const b of ["5k", "10k", "21k"] as EffortBucket[]) {
+    if (effortMap.has(b)) {
+      baseEffort = effortMap.get(b)!;
+      break;
+    }
+  }
+  if (!baseEffort) return { items: [], base: null };
+
+  const baseBucket = baseEffort.bucket;
+  const baseDistKm = BUCKET_DISTANCES[baseBucket];
+  const baseTimeSec = baseEffort.paceSecPerKm * baseDistKm;
+
+  const baseIdx = order.indexOf(baseBucket);
+  // Predict all buckets from base onwards (and include base as actual)
+  const items: RacePredictionItem[] = [];
+
+  for (const bucket of order) {
+    const idx = order.indexOf(bucket);
+    if (idx < baseIdx) continue; // don't predict shorter than base
+
+    const actual = effortMap.get(bucket);
+    if (actual) {
+      items.push({
+        bucket,
+        distanceKm: BUCKET_DISTANCES[bucket],
+        timeSeconds: actual.paceSecPerKm * BUCKET_DISTANCES[bucket],
+        isActual: true,
+      });
+    } else {
+      items.push({
+        bucket,
+        distanceKm: BUCKET_DISTANCES[bucket],
+        timeSeconds: riegelPredict(baseTimeSec, baseDistKm, BUCKET_DISTANCES[bucket]),
+        isActual: false,
+      });
+    }
+  }
+
+  return { items, base: baseBucket };
+}
+
+// ── Pace Zones ───────────────────────────────────────────────
+
+const MIN_RUNNING_ACTIVITIES = 5;
+
+export function computePaceZones(activities: Activity[]): PaceZonesData | null {
+  const runActivities = activities.filter(
+    (a) =>
+      isRunning(a.type) &&
+      a.distanceKm >= 1 &&
+      a.distanceKm > 0 &&
+      a.movingTimeSec > 0
+  );
+
+  if (runActivities.length < MIN_RUNNING_ACTIVITIES) return null;
+
+  const paces = runActivities
+    .map((a) => a.movingTimeSec / a.distanceKm)
+    .sort((a, b) => a - b);
+
+  const thresholdPace = paces[Math.floor(paces.length * 0.10)] ?? paces[0];
+
+  const zoneSeconds = [0, 0, 0, 0, 0]; // index 0 = Z1, ..., 4 = Z5
+
+  for (const a of runActivities) {
+    const pace = a.movingTimeSec / a.distanceKm;
+    let zoneIdx: number;
+    if (pace > thresholdPace * 1.33) zoneIdx = 0;      // Z1
+    else if (pace > thresholdPace * 1.14) zoneIdx = 1; // Z2
+    else if (pace > thresholdPace * 1.06) zoneIdx = 2; // Z3
+    else if (pace > thresholdPace * 0.99) zoneIdx = 3; // Z4
+    else zoneIdx = 4;                                   // Z5
+    zoneSeconds[zoneIdx] += a.movingTimeSec;
+  }
+
+  const totalSeconds = zoneSeconds.reduce((s, v) => s + v, 0);
+
+  const zones: PaceZoneData[] = zoneSeconds.map((timeSeconds, i) => ({
+    zone: (i + 1) as 1 | 2 | 3 | 4 | 5,
+    timeSeconds,
+    share: totalSeconds > 0 ? timeSeconds / totalSeconds : 0,
+  }));
+
+  return { zones, thresholdPaceSecPerKm: thresholdPace };
+}
+
+// ── Fitness & Freshness (CTL/ATL/TSB) ───────────────────────
+
+function fitnessDayKey(date: Date): number {
+  return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function fitnessLoadFactor(type: string): number {
+  const lower = type.toLowerCase();
+  if (lower.includes("run") || lower.includes("trail")) return 1.0;
+  if (lower.includes("ride") || lower.includes("cycling") || lower.includes("bike"))
+    return 0.5;
+  if (lower.includes("hike")) return 0.7;
+  return 0.8;
+}
+
+const SIX_MONTHS_MS = 183 * DAY_MS;
+
+export function computeFitness(activities: Activity[]): FitnessData {
+  if (activities.length === 0) return { points: [] };
+
+  // Build daily load map
+  const dailyLoad = new Map<number, number>();
+  let minKey = Infinity;
+  for (const a of activities) {
+    const key = fitnessDayKey(a.date);
+    if (key < minKey) minKey = key;
+    dailyLoad.set(key, (dailyLoad.get(key) ?? 0) + a.distanceKm * fitnessLoadFactor(a.type));
+  }
+
+  const todayKey = fitnessDayKey(new Date());
+  const totalDays = (todayKey - minKey) / DAY_MS + 1;
+
+  if (totalDays < 28) return { points: [] };
+
+  const k_ctl = Math.exp(-1 / 42);
+  const k_atl = Math.exp(-1 / 7);
+
+  let ctl = 0;
+  let atl = 0;
+  const cutoffKey = todayKey - SIX_MONTHS_MS;
+  const points: FitnessPoint[] = [];
+
+  for (let dayKey = minKey; dayKey <= todayKey; dayKey += DAY_MS) {
+    const load = dailyLoad.get(dayKey) ?? 0;
+    ctl = ctl * k_ctl + load * (1 - k_ctl);
+    atl = atl * k_atl + load * (1 - k_atl);
+    const tsb = ctl - atl;
+
+    if (dayKey >= cutoffKey) {
+      points.push({
+        date: new Date(dayKey),
+        ctl: Number(ctl.toFixed(1)),
+        atl: Number(atl.toFixed(1)),
+        tsb: Number(tsb.toFixed(1)),
+      });
+    }
+  }
+
+  return { points };
 }

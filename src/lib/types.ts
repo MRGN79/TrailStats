@@ -114,3 +114,43 @@ export interface TrainingLoad {
   state: TrainingLoadState;
   weeksOfHistory: number;
 }
+
+// ── Race Predictor ───────────────────────────────────────────
+
+export interface RacePredictionItem {
+  bucket: EffortBucket;
+  distanceKm: number;
+  timeSeconds: number;
+  isActual: boolean;
+}
+
+export interface RacePredictorResult {
+  items: RacePredictionItem[];
+  base: EffortBucket | null;
+}
+
+// ── Pace Zones ───────────────────────────────────────────────
+
+export interface PaceZoneData {
+  zone: 1 | 2 | 3 | 4 | 5;
+  timeSeconds: number;
+  share: number;
+}
+
+export interface PaceZonesData {
+  zones: PaceZoneData[];
+  thresholdPaceSecPerKm: number;
+}
+
+// ── Fitness & Freshness (CTL/ATL/TSB) ───────────────────────
+
+export interface FitnessPoint {
+  date: Date;
+  ctl: number;
+  atl: number;
+  tsb: number;
+}
+
+export interface FitnessData {
+  points: FitnessPoint[];
+}
