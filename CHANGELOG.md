@@ -7,6 +7,21 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-06-08
+
+### Added
+- **Soporte Garmin Connect:** import del export masivo de Garmin (archivos `.fit`). Detección automática del formato por contenido del ZIP — el usuario no hace nada distinto.
+- **Barra de progreso** al procesar exports de Garmin con cientos de archivos FIT.
+- **Arquitectura multi-plataforma:** `parserRegistry` extensible para añadir nuevas plataformas sin tocar el flujo existente.
+- **SEO baseline:** title descriptivo, meta description, Open Graph y Twitter Card tags, `canonical`, `robots.txt` y `sitemap.xml`.
+
+### Changed
+- Tagline y textos de UI actualizados para reflejar el soporte multi-plataforma ("your training history", "Strava, Garmin and more").
+- Descargo legal ampliado para incluir la marca Garmin.
+
+### Security
+- Librería `fit-file-parser` (MIT) elegida sobre el SDK oficial de Garmin, cuya licencia prohíbe redistribución pública.
+
 ## [0.1.0] — 2026-06-08
 
 Primera versión del MVP de TrailStats: analiza tu export de Strava en el navegador,

@@ -1,16 +1,16 @@
 {
   "app": {
     "title": "TrailStats",
-    "tagline": "Your Strava history, in numbers",
-    "disclaimer": "TrailStats is not affiliated with or endorsed by Strava, Inc. \"Strava\" is a trademark of its respective owner."
+    "tagline": "Your training history, in numbers",
+    "disclaimer": "TrailStats is not affiliated with or endorsed by Strava, Inc. or Garmin Ltd. \"Strava\" and \"Garmin\" are trademarks of their respective owners."
   },
   "upload": {
-    "dropzone": "Drop your Strava or Garmin export ZIP here or click to browse",
+    "dropzone": "Drop your export ZIP here, or click to browse — Strava, Garmin and more",
     "processing": "Reading your activities…",
     "processingProgress": "Reading activities… {{done}} of {{total}} files",
     "loadAnother": "Load another export",
     "error": {
-      "invalidZip": "This doesn't look like a Strava or Garmin export. Make sure it's the full ZIP you downloaded.",
+      "invalidZip": "This doesn't look like a supported export. Make sure it's the full ZIP you downloaded from Strava, Garmin or another supported platform.",
       "noActivities": "Couldn't find activities in this export."
     },
     "discarded": "{{count}} rows could not be read and were skipped."
