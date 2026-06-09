@@ -432,7 +432,7 @@ a:focus-visible,
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 0 var(--space-lg);
   margin-bottom: var(--space-xl);
 }
@@ -441,6 +441,8 @@ a:focus-visible,
   border-top: 2px solid rgba(255, 255, 255, 0.18);
   padding-top: var(--space-md);
   padding-bottom: var(--space-md);
+  min-width: 0;
+  overflow: hidden;
 }
 
 @media (min-width: 560px) {
@@ -464,10 +466,10 @@ a:focus-visible,
   font-family: var(--font-mono);
   font-weight: 700;
   font-size: var(--step-stat);
-  line-height: 1;
+  line-height: 1.1;
   color: var(--paper);
   font-feature-settings: "tnum" 1;
-  white-space: nowrap;
+  overflow-wrap: break-word;
 }
 
 .card:first-child .value {
