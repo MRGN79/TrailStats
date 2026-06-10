@@ -470,14 +470,20 @@ function trainingLoadState(index: number): TrainingLoadState {
 }
 
 // Carga semanal = Σ distanceKm × factor por tipo. Compara la semana en curso
-// (la del día `today`) con la media de las LOAD_BASELINE_WEEKS semanas previas.
+// con la media de las LOAD_BASELINE_WEEKS semanas previas. Se ancla a la semana
+// de la última actividad (no a today) para que exports antiguos muestren datos útiles.
 export function computeTrainingLoad(
   activities: Activity[],
   today: Date = new Date()
 ): TrainingLoad | null {
   if (activities.length === 0) return null;
 
-  const currentWeekStart = isoWeekStartUtc(today);
+  const latestActivity = activities.reduce(
+    (max, a) => (a.date > max ? a.date : max),
+    activities[0].date
+  );
+  const anchor = latestActivity < today ? latestActivity : today;
+  const currentWeekStart = isoWeekStartUtc(anchor);
 
   const byWeek = new Map<number, number>();
   for (const a of activities) {

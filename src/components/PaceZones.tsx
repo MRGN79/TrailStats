@@ -26,11 +26,11 @@ export function PaceZones({ zones, locale: _locale }: Props) {
     <section aria-label={t("stats.paceZones.title")}>
       <h2 className="section-title">{t("stats.paceZones.title")}</h2>
       <div className="pace-zones">
-        {zones.zones.map((zd, i) => {
+        {zones.zones.map((zd) => {
           const pct = Math.round(zd.share * 100);
           return (
             <div className="pace-zone" key={zd.zone}>
-              <span className="pace-zone__label">{t(`stats.paceZones.${ZONE_KEYS[i]}`)}</span>
+              <span className="pace-zone__label">{t(`stats.paceZones.${ZONE_KEYS[zd.zone - 1]}`)}</span>
               <div className="pace-zone__bar-bg">
                 <div
                   className="pace-zone__bar-fill"

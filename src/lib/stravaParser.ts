@@ -16,21 +16,26 @@ function normalize(header: string): string {
   return header.trim().toLowerCase();
 }
 
-// Spanish Strava exports use locale month abbreviations that JS Date can't parse.
-// Map the four that differ from English (ene→jan, abr→apr, ago→aug, dic→dec).
+// Spanish Strava exports use locale month abbreviations and "de" connectors
+// that JS Date can't parse. E.g. "1 de ene. de 2024, 8:00:00".
 const ES_MONTH: Record<string, string> = {
   ene: "jan",
   abr: "apr",
   ago: "aug",
   dic: "dec",
+  sept: "sep",
 };
 
 function parseActivityDate(raw: string): Date {
-  const normalized = raw.replace(
-    /\b(ene|abr|ago|dic)\b/gi,
+  let s = raw.trim();
+  // "1 de ene. de 2024, 8:00" → "1 ene 2024, 8:00"
+  s = s.replace(/\bde\s+/gi, "");
+  s = s.replace(/([a-záéíóúñ])\./gi, "$1");
+  s = s.replace(
+    /\b(ene|abr|ago|dic|sept)\b/gi,
     (m) => ES_MONTH[m.toLowerCase()]
   );
-  return new Date(normalized);
+  return new Date(s);
 }
 
 function buildColumnMap(headers: string[]): Record<string, number> {
@@ -53,8 +58,27 @@ function buildColumnMap(headers: string[]): Record<string, number> {
 
 function toNumber(raw: string | undefined): number {
   if (!raw) return 0;
-  const cleaned = raw.replace(/,/g, ".").replace(/[^0-9.-]/g, "");
-  const n = parseFloat(cleaned);
+  const s = raw.trim();
+  // Determine which separator is the decimal: the last ',' or '.' followed by
+  // 1-2 digits is decimal; followed by 3 digits (or nothing) is a thousands sep.
+  const lastComma = s.lastIndexOf(",");
+  const lastDot = s.lastIndexOf(".");
+  const lastSepIdx = Math.max(lastComma, lastDot);
+  let normalized: string;
+  if (lastSepIdx === -1) {
+    normalized = s.replace(/[^0-9-]/g, "");
+  } else {
+    const tail = s.slice(lastSepIdx + 1);
+    if (/^\d{1,2}$/.test(tail)) {
+      // Last separator is the decimal point
+      normalized =
+        s.slice(0, lastSepIdx).replace(/[^0-9-]/g, "") + "." + tail;
+    } else {
+      // Last separator is a thousands separator — strip all separators
+      normalized = s.replace(/[^0-9-]/g, "");
+    }
+  }
+  const n = parseFloat(normalized);
   return Number.isFinite(n) ? n : 0;
 }
 

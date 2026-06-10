@@ -51,8 +51,15 @@ export function sessionToActivity(
   session: FitSession,
   fallbackId: string
 ): Activity | null {
-  const date = new Date(session.start_time);
-  if (Number.isNaN(date.getTime())) return null;
+  const utc = new Date(session.start_time);
+  if (Number.isNaN(utc.getTime())) return null;
+  // FIT start_time is UTC. Create a local-time Date from the UTC components so
+  // date-bucketing (getFullYear/Month/Date) is consistent with Strava CSV dates,
+  // which parse as local time.
+  const date = new Date(
+    utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate(),
+    utc.getUTCHours(), utc.getUTCMinutes(), utc.getUTCSeconds()
+  );
 
   const movingTimeSec =
     session.total_timer_time ?? session.total_elapsed_time ?? 0;

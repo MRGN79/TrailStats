@@ -12,6 +12,9 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/jetbrains-mono": "^5.2.8",
+    "@fontsource/space-grotesk": "^5.2.10",
     "@zip.js/zip.js": "^2.7.45",
     "fit-file-parser": "^3.0.2",
     "i18next": "^23.11.5",

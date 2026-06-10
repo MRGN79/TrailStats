@@ -34,13 +34,13 @@ export function EddingtonCards({ stats, locale }: Props) {
               getData={() => ({
                 category: t("stats.eddington.title"),
                 subcategory: t(`stats.eddington.${s.sport}`),
-                mainValue: String(s.number),
+                mainValue: formatNumber(s.number, locale),
                 detail:
                   s.next.remaining > 0
                     ? t("stats.eddington.next", {
                         count: s.next.remaining,
-                        remaining: s.next.remaining,
-                        target: s.next.target,
+                        remaining: formatNumber(s.next.remaining, locale),
+                        target: formatNumber(s.next.target, locale),
                       })
                     : undefined,
               })}

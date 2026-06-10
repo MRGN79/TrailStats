@@ -56,6 +56,7 @@ export function FitnessChart({ data, locale }: Props) {
   return (
     <section aria-label={t("stats.fitness.title")}>
       <h2 className="section-title">{t("stats.fitness.title")}</h2>
+      <p className="section-disclaimer">{t("disclaimer.estimatesOnly")}</p>
       <div
         className="chart-wrap"
         role="img"
@@ -94,7 +95,7 @@ export function FitnessChart({ data, locale }: Props) {
               itemStyle={{ color: "var(--paper)" }}
               labelFormatter={(d: Date) => dateFmt.format(d)}
               formatter={(value: number, name: string) => [
-                value.toFixed(1),
+                Number.isFinite(value) ? value.toFixed(1) : "—",
                 name,
               ]}
             />

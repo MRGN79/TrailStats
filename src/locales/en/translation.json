@@ -173,7 +173,8 @@
       "noServer": "Nothing is uploaded — there is no server, no account and no storage of your files.",
       "noTracking": "No tracking, no cookies, no analytics. We never see your activities."
     },
-    "verify": "Don't take our word for it: open your browser's developer tools, go to the Network tab, and load a file — you'll see no data ever leaves your device."
+    "verify": "Don't take our word for it: open your browser's developer tools, go to the Network tab, and load a file — you'll see no data ever leaves your device.",
+    "licenses": "Third-party licenses"
   },
   "share": {
     "button": "Share"
@@ -184,5 +185,8 @@
     "badge": "Demo",
     "bannerText": "You're exploring TrailStats with fictional sample data. Exit to analyze your own export.",
     "exit": "Exit demo"
+  },
+  "disclaimer": {
+    "estimatesOnly": "Estimates for informational purposes only. Not medical or sports advice."
   }
 }

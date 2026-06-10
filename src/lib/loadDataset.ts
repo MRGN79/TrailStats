@@ -61,9 +61,12 @@ export function processFile(
       }
     };
 
-    worker.onerror = () => {
+    worker.onerror = (e: ErrorEvent) => {
       worker.terminate();
-      reject(new Error("INVALID_ZIP"));
+      // Propagate the real error message; fall back to INVALID_ZIP only when
+      // the error gives no useful information.
+      const msg = e.message?.trim() || "";
+      reject(new Error(msg || "INVALID_ZIP"));
     };
 
     worker.postMessage({ file });

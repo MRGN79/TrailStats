@@ -30,7 +30,8 @@ export function ShareButton({ getData }: Props) {
         document.body.appendChild(a);
         a.click();
         a.remove();
-        URL.revokeObjectURL(url);
+        // Defer revoke so the browser has time to initiate the download
+        setTimeout(() => URL.revokeObjectURL(url), 100);
       }
     } catch (err) {
       if (err instanceof Error && err.name !== "AbortError") {

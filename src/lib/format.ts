@@ -53,6 +53,7 @@ export function formatRaceTime(seconds: number): string {
 }
 
 export function formatDuration(seconds: number, locale: string): string {
+  if (!Number.isFinite(seconds) || seconds < 0) return "—";
   const totalMinutes = Math.round(seconds / 60);
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;

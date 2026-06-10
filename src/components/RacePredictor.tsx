@@ -23,6 +23,7 @@ export function RacePredictor({ predictions, baseBucket, locale: _locale }: Prop
       <p className="race-predictor__subtitle">
         {t("stats.racePredictor.subtitle", { base: bucketLabel(baseBucket) })}
       </p>
+      <p className="section-disclaimer">{t("disclaimer.estimatesOnly")}</p>
       <div className="cards">
         {predictions.map((item) => {
           const timeFormatted = formatRaceTime(item.timeSeconds);

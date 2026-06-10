@@ -65,14 +65,16 @@ export function ActivityHeatmap({ data, locale }: Props) {
 
     // Etiquetas de mes: primera columna donde aparece cada mes.
     const labels: { x: number; key: string }[] = [];
-    let lastMonth = -1;
+    let lastMonthKey = -1;
     for (let c = 0; c < cols.length; c++) {
       const firstCell = cols[c].cells[0];
       if (!firstCell) continue;
       const m = firstCell.date.getUTCMonth();
-      if (m !== lastMonth) {
+      const yr = firstCell.date.getUTCFullYear();
+      const monthKey = yr * 12 + m;
+      if (monthKey !== lastMonthKey) {
         labels.push({ x: cols[c].x, key: MONTH_KEYS[m] });
-        lastMonth = m;
+        lastMonthKey = monthKey;
       }
     }
 

@@ -35,7 +35,10 @@ export function UploadZone({ onFile, onDemo }: Props) {
         ref={inputRef}
         type="file"
         accept=".zip,application/zip"
-        onChange={(e) => handleFiles(e.target.files)}
+        onChange={(e) => {
+          handleFiles(e.target.files);
+          e.target.value = "";
+        }}
       />
       <span aria-hidden="true" style={{ fontSize: "2rem" }}>
         ↑
