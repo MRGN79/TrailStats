@@ -138,14 +138,9 @@ export default function App() {
     <div className="app">
       <a href="#main-content" className="skip-link">{t("a11y.skipToMain")}</a>
 
-      {/* Persistent live region — always in DOM so screen readers catch dynamic messages */}
-      <div aria-live="assertive" aria-atomic="true" className="visually-hidden">
-        {status.kind === "error" ? status.message : ""}
-      </div>
-
       {dataset && (
         <header className="topbar">
-          <h1 className="brand" ref={dashHeadingRef} tabIndex={-1}>
+          <h1 className="brand">
             Trail<span>Stats</span>
           </h1>
           <LanguageToggle />
@@ -182,7 +177,7 @@ export default function App() {
             )}
 
             {status.kind === "error" && (
-              <p className="error" aria-hidden="true">
+              <p className="error" role="alert">
                 {status.message}
               </p>
             )}
@@ -212,7 +207,9 @@ export default function App() {
 
               <div className="dashboard__main">
                 <div className="dash-section">
-                  <h2 className="dash-section__title">{t("stats.sections.social")}</h2>
+                  <h2 className="dash-section__title" ref={dashHeadingRef} tabIndex={-1}>
+                    {t("stats.sections.social")}
+                  </h2>
                   <TotalsCards totals={totals} locale={locale} />
                   <BestEfforts efforts={bestEfforts} locale={locale} />
                   <RacePredictor

@@ -14,14 +14,20 @@ export function formatNumber(n: number, locale: string): string {
  * when 1–2 digits follow it (to avoid confusing thousands separators with decimals).
  * Returns { integer: "6379", decimal: ",2" } for "6379,2" in es-ES.
  */
+const decimalSepCache = new Map<string, string>();
+
 export function splitDecimal(
   formatted: string,
   locale: string
 ): { integer: string; decimal: string } {
-  const decimalSep =
-    new Intl.NumberFormat(locale)
-      .formatToParts(1.1)
-      .find((p) => p.type === "decimal")?.value ?? ".";
+  let decimalSep = decimalSepCache.get(locale);
+  if (decimalSep === undefined) {
+    decimalSep =
+      new Intl.NumberFormat(locale)
+        .formatToParts(1.1)
+        .find((p) => p.type === "decimal")?.value ?? ".";
+    decimalSepCache.set(locale, decimalSep);
+  }
 
   const lastIdx = formatted.lastIndexOf(decimalSep);
   const tail = lastIdx !== -1 ? formatted.slice(lastIdx + 1) : "";

@@ -268,6 +268,7 @@ export function computeYearOverYear(
     });
   }
 
+  if (points.length === 0) return null;
   return { currentYear, previousYear, points };
 }
 
@@ -511,7 +512,7 @@ export function computeTrainingLoad(
   }
 
   const baselineLoad =
-    baselineWeeks.reduce((sum, w) => sum + w, 0) / baselineWeeks.length;
+    baselineWeeks.reduce((sum, w) => sum + w, 0) / weeksOfHistory;
   const index = baselineLoad > 0 ? currentLoad / baselineLoad : 0;
 
   return {
@@ -607,7 +608,11 @@ export function computePaceZones(activities: Activity[]): PaceZonesData | null {
     .map((a) => a.movingTimeSec / a.distanceKm)
     .sort((a, b) => a - b);
 
-  const thresholdPace = paces[Math.floor(paces.length * 0.10)] ?? paces[0];
+  // Clamp to index ≥ 1 so we never use the single fastest run as threshold —
+  // at the 5-activity minimum, Math.floor(5×0.10) = 0, which collapses every
+  // other activity into Z1.
+  const thresholdIdx = Math.max(1, Math.floor(paces.length * 0.10));
+  const thresholdPace = paces[thresholdIdx] ?? paces[paces.length - 1];
 
   const zoneSeconds = [0, 0, 0, 0, 0]; // index 0 = Z1, ..., 4 = Z5
 
