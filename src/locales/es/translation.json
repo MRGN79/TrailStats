@@ -188,5 +188,8 @@
   },
   "disclaimer": {
     "estimatesOnly": "Solo orientativo. No constituye asesoramiento médico ni deportivo."
+  },
+  "a11y": {
+    "skipToMain": "Saltar al contenido principal"
   }
 }

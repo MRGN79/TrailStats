@@ -84,6 +84,29 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ── Skip link ────────────────────────────────────────────── */
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--space-md);
+  z-index: 1000;
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: var(--step-0);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  text-decoration: none;
+  transition: top 0.1s;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid var(--ember);
+  outline-offset: 2px;
+}
+
 /* ── Foco accesible ───────────────────────────────────────── */
 
 button:focus-visible,
@@ -92,6 +115,13 @@ a:focus-visible,
 .dropzone:focus-within {
   outline: 3px solid var(--ember);
   outline-offset: 2px;
+}
+
+/* Suppress visible outline on elements that receive programmatic focus only */
+h1:focus,
+h2:focus,
+h3:focus {
+  outline: none;
 }
 
 /* ── Layout principal ─────────────────────────────────────── */
@@ -179,9 +209,9 @@ a:focus-visible,
 }
 
 .lang-toggle button[aria-pressed="true"] {
-  background: var(--moss);
-  border-color: var(--moss);
-  color: var(--forest-deep);
+  background: var(--moss-text);
+  border-color: var(--moss-text);
+  color: var(--paper);
 }
 
 .lang-toggle button:first-child {
@@ -424,8 +454,8 @@ a:focus-visible,
 }
 
 .segmented button[aria-pressed="true"] {
-  background: var(--moss);
-  color: var(--forest-deep);
+  background: var(--moss-text);
+  color: var(--paper);
 }
 
 /* ── Stats — retícula de instrumento ──────────────────────── */
@@ -514,7 +544,7 @@ a:focus-visible,
 .section-disclaimer {
   font-family: var(--font-body);
   font-size: var(--step--2);
-  color: rgba(250, 248, 243, 0.35);
+  color: rgba(250, 248, 243, 0.55);
   margin: calc(-1 * var(--space-xs)) 0 var(--space-md);
   font-style: italic;
 }
@@ -841,14 +871,14 @@ table.data-table td:first-child {
 
 .disclaimer {
   font-size: 0.75rem;
-  color: rgba(250, 248, 243, 0.4);
+  color: rgba(250, 248, 243, 0.55);
   margin: var(--space-2xs) 0 0;
 }
 
 .app-version {
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  color: rgba(250, 248, 243, 0.2);
+  color: rgba(250, 248, 243, 0.3);
   margin: var(--space-sm) 0 0;
   letter-spacing: 0.04em;
 }
@@ -921,9 +951,9 @@ table.data-table td:first-child {
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(63, 125, 90, 0.8);
+  color: rgba(250, 248, 243, 0.75);
   background: transparent;
-  border: 1px solid rgba(63, 125, 90, 0.28);
+  border: 1px solid rgba(63, 125, 90, 0.35);
   border-radius: 20px;
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
@@ -960,7 +990,7 @@ table.data-table td:first-child {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: rgba(250,248,243,0.35);
+  color: rgba(250,248,243,0.5);
   margin-bottom: var(--space-xl);
 }
 

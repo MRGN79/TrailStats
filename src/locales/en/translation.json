@@ -188,5 +188,8 @@
   },
   "disclaimer": {
     "estimatesOnly": "Estimates for informational purposes only. Not medical or sports advice."
+  },
+  "a11y": {
+    "skipToMain": "Skip to main content"
   }
 }

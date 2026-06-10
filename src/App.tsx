@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { version } from "../package.json";
 import { UploadZone } from "./components/UploadZone";
@@ -62,6 +62,15 @@ export default function App() {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [view, setView] = useState<ViewMode>("monthly");
   const [compareYears, setCompareYears] = useState(false);
+
+  const dashHeadingRef = useRef<HTMLHeadingElement>(null);
+
+  // Move focus to the dashboard heading when data finishes loading.
+  useEffect(() => {
+    if (status.kind === "ready") {
+      dashHeadingRef.current?.focus();
+    }
+  }, [status.kind]);
 
   async function handleFile(file: File) {
     setStatus({ kind: "processing" });
@@ -127,111 +136,120 @@ export default function App() {
 
   return (
     <div className="app">
+      <a href="#main-content" className="skip-link">{t("a11y.skipToMain")}</a>
+
+      {/* Persistent live region — always in DOM so screen readers catch dynamic messages */}
+      <div aria-live="assertive" aria-atomic="true" className="visually-hidden">
+        {status.kind === "error" ? status.message : ""}
+      </div>
+
       {dataset && (
-        <div className="topbar">
-          <div className="brand">
+        <header className="topbar">
+          <h1 className="brand" ref={dashHeadingRef} tabIndex={-1}>
             Trail<span>Stats</span>
-          </div>
+          </h1>
           <LanguageToggle />
-        </div>
+        </header>
       )}
 
-      {!dataset && (
-        <div className="hero">
-          <div className="topbar">
-            <div className="brand">
-              Trail<span>Stats</span>
+      <main id="main-content">
+        {!dataset && (
+          <div className="hero">
+            <div className="topbar">
+              <div className="brand">
+                Trail<span>Stats</span>
+              </div>
+              <LanguageToggle />
             </div>
-            <LanguageToggle />
+
+            <h1>{t("app.title")}</h1>
+            <p className="tagline">{t("app.tagline")}</p>
+
+            {status.kind === "processing" ? (
+              <div className="dropzone" aria-live="polite">
+                <div className="spinner" aria-hidden="true" />
+                <span>
+                  {status.total
+                    ? t("upload.processingProgress", {
+                        done: status.done ?? 0,
+                        total: status.total,
+                      })
+                    : t("upload.processing")}
+                </span>
+              </div>
+            ) : (
+              <UploadZone onFile={handleFile} onDemo={handleDemo} />
+            )}
+
+            {status.kind === "error" && (
+              <p className="error" aria-hidden="true">
+                {status.message}
+              </p>
+            )}
+
+            <PrivacyPanel />
           </div>
+        )}
 
-          <h1>{t("app.title")}</h1>
-          <p className="tagline">{t("app.tagline")}</p>
+        {dataset && (
+          <>
+            {isDemo && <DemoBanner onExit={() => setStatus({ kind: "idle" })} />}
 
-          {status.kind === "processing" ? (
-            <div className="dropzone" aria-live="polite">
-              <div className="spinner" aria-hidden="true" />
-              <span>
-                {status.total
-                  ? t("upload.processingProgress", {
-                      done: status.done ?? 0,
-                      total: status.total,
-                    })
-                  : t("upload.processing")}
-              </span>
-            </div>
-          ) : (
-            <UploadZone onFile={handleFile} onDemo={handleDemo} />
-          )}
-
-          {status.kind === "error" && (
-            <p className="error" role="alert">
-              {status.message}
-            </p>
-          )}
-
-          <PrivacyPanel />
-        </div>
-      )}
-
-      {dataset && (
-        <>
-          {isDemo && <DemoBanner onExit={() => setStatus({ kind: "idle" })} />}
-
-          <div className="dashboard">
-            <div className="dashboard__rail">
-              <Toolbar
-                activityTypes={dataset.activityTypes}
-                selectedType={selectedType}
-                onTypeChange={setSelectedType}
-                view={view}
-                onViewChange={setView}
-                onReset={() => setStatus({ kind: "idle" })}
-                canCompareYears={canCompareYears}
-                compareYears={compareYears}
-                onCompareYearsChange={setCompareYears}
-              />
-            </div>
-
-            <div className="dashboard__main">
-              <div className="dash-section">
-                <h2 className="dash-section__title">{t("stats.sections.social")}</h2>
-                <TotalsCards totals={totals} locale={locale} />
-                <BestEfforts efforts={bestEfforts} locale={locale} />
-                <RacePredictor
-                  predictions={racePredictions.items}
-                  baseBucket={racePredictions.base}
-                  locale={locale}
+            <div className="dashboard">
+              <div className="dashboard__rail">
+                <Toolbar
+                  activityTypes={dataset.activityTypes}
+                  selectedType={selectedType}
+                  onTypeChange={setSelectedType}
+                  view={view}
+                  onViewChange={setView}
+                  onReset={() => setStatus({ kind: "idle" })}
+                  canCompareYears={canCompareYears}
+                  compareYears={compareYears}
+                  onCompareYearsChange={setCompareYears}
                 />
-                <EddingtonCards stats={eddington} locale={locale} />
-                <StreakRecords streak={streak} records={records} locale={locale} />
               </div>
 
-              <div className="dash-section">
-                <h2 className="dash-section__title">{t("stats.sections.training")}</h2>
-                {dataset.discardedRows > 0 && (
-                  <p className="notice" role="status">
-                    {t("upload.discarded", { count: dataset.discardedRows })}
-                  </p>
-                )}
-                <ActivityHeatmap data={heatmap} locale={locale} />
-                <TrendsChart
-                  periods={periods}
-                  locale={locale}
-                  yearOverYear={activeYoY}
-                />
-                <PaceEvolution points={paceEvolution} />
-                <PaceZones zones={paceZones} locale={locale} />
-                <TrainingLoad load={trainingLoad} locale={locale} />
-                <FitnessChart data={fitnessData} locale={locale} />
-                {breakdown.length > 1 && (
-                  <TypeBreakdown slices={breakdown} locale={locale} />
-                )}
+              <div className="dashboard__main">
+                <div className="dash-section">
+                  <h2 className="dash-section__title">{t("stats.sections.social")}</h2>
+                  <TotalsCards totals={totals} locale={locale} />
+                  <BestEfforts efforts={bestEfforts} locale={locale} />
+                  <RacePredictor
+                    predictions={racePredictions.items}
+                    baseBucket={racePredictions.base}
+                    locale={locale}
+                  />
+                  <EddingtonCards stats={eddington} locale={locale} />
+                  <StreakRecords streak={streak} records={records} locale={locale} />
+                </div>
+
+                <div className="dash-section">
+                  <h2 className="dash-section__title">{t("stats.sections.training")}</h2>
+                  {dataset.discardedRows > 0 && (
+                    <p className="notice" role="status">
+                      {t("upload.discarded", { count: dataset.discardedRows })}
+                    </p>
+                  )}
+                  <ActivityHeatmap data={heatmap} locale={locale} />
+                  <TrendsChart
+                    periods={periods}
+                    locale={locale}
+                    yearOverYear={activeYoY}
+                  />
+                  <PaceEvolution points={paceEvolution} />
+                  <PaceZones zones={paceZones} locale={locale} />
+                  <TrainingLoad load={trainingLoad} locale={locale} />
+                  <FitnessChart data={fitnessData} locale={locale} />
+                  {breakdown.length > 1 && (
+                    <TypeBreakdown slices={breakdown} locale={locale} />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </main>
 
       <footer className="app-footer">
         <p className="privacy-note">{t("privacy.note")}</p>

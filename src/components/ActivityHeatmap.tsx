@@ -98,6 +98,7 @@ export function ActivityHeatmap({ data, locale }: Props) {
           viewBox={`0 0 ${width} ${height}`}
           role="img"
           aria-label={t("stats.heatmap.title")}
+          focusable="false"
         >
           {monthLabels.map((m, i) => (
             <text
