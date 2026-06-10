@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { BestEffort } from "../lib/types";
 import { formatPace } from "../lib/format";
+import { ShareButton } from "./ShareButton";
 
 interface Props {
   efforts: BestEffort[];
@@ -30,6 +31,15 @@ export function BestEfforts({ efforts, locale }: Props) {
               <span className="unit">{t("units.minPerKm")}</span>
             </div>
             <div className="card__sub">{dateFmt.format(e.date)}</div>
+            <ShareButton
+              getData={() => ({
+                category: t("stats.bestEfforts.title"),
+                subcategory: t(`stats.bestEfforts.${e.bucket}`),
+                mainValue: formatPace(e.paceSecPerKm),
+                unit: t("units.minPerKm"),
+                detail: dateFmt.format(e.date),
+              })}
+            />
           </div>
         ))}
       </div>

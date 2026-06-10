@@ -142,6 +142,9 @@
     },
     "verify": "No te fíes solo de nuestra palabra: abre las herramientas de desarrollo de tu navegador, ve a la pestaña Red y carga un archivo — verás que ningún dato sale de tu dispositivo."
   },
+  "share": {
+    "button": "Compartir"
+  },
   "demo": {
     "or": "o",
     "cta": "Explorar con datos de muestra",

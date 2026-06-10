@@ -871,3 +871,45 @@ table.data-table td:first-child {
   padding: 0.15rem 0.5rem;
   border-radius: var(--radius-sm);
 }
+
+/* ── Botón compartir ──────────────────────────────────────── */
+
+.card {
+  position: relative;
+}
+
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: var(--space-sm);
+  padding: 4px 10px 4px 8px;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(63, 125, 90, 0.8);
+  background: transparent;
+  border: 1px solid rgba(63, 125, 90, 0.28);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  line-height: 1;
+}
+
+.share-btn:hover:not(:disabled) {
+  background: rgba(63, 125, 90, 0.14);
+  border-color: rgba(63, 125, 90, 0.55);
+  color: var(--paper);
+}
+
+.share-btn:disabled {
+  opacity: 0.4;
+  cursor: wait;
+}
+
+/* share btn fuera de .card (ej. training load) */
+.load .share-btn {
+  align-self: flex-start;
+}

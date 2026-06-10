@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { TrainingLoad as TrainingLoadData } from "../lib/types";
 import { formatNumber } from "../lib/format";
+import { ShareButton } from "./ShareButton";
 
 interface Props {
   load: TrainingLoadData | null;
@@ -64,6 +65,17 @@ export function TrainingLoad({ load, locale }: Props) {
             baseline: formatNumber(load.baselineLoad, locale),
           })}
         </p>
+        <ShareButton
+          getData={() => ({
+            category: t("stats.load.title"),
+            subcategory: t(`stats.load.state.${load.state}`),
+            mainValue: `${indexPct}%`,
+            detail: t("stats.load.caption", {
+              current: formatNumber(load.currentLoad, locale),
+              baseline: formatNumber(load.baselineLoad, locale),
+            }),
+          })}
+        />
       </div>
     </section>
   );

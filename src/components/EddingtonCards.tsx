@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { EddingtonStat } from "../lib/types";
 import { formatNumber } from "../lib/format";
+import { ShareButton } from "./ShareButton";
 
 interface Props {
   stats: EddingtonStat[];
@@ -29,6 +30,21 @@ export function EddingtonCards({ stats, locale }: Props) {
                 })}
               </div>
             )}
+            <ShareButton
+              getData={() => ({
+                category: t("stats.eddington.title"),
+                subcategory: t(`stats.eddington.${s.sport}`),
+                mainValue: String(s.number),
+                detail:
+                  s.next.remaining > 0
+                    ? t("stats.eddington.next", {
+                        count: s.next.remaining,
+                        remaining: s.next.remaining,
+                        target: s.next.target,
+                      })
+                    : undefined,
+              })}
+            />
           </div>
         ))}
       </div>
