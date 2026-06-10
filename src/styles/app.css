@@ -845,6 +845,14 @@ table.data-table td:first-child {
   margin: var(--space-2xs) 0 0;
 }
 
+.app-version {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: rgba(250, 248, 243, 0.2);
+  margin: var(--space-sm) 0 0;
+  letter-spacing: 0.04em;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

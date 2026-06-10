@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { version } from "../package.json";
 import { UploadZone } from "./components/UploadZone";
 import { TotalsCards } from "./components/TotalsCards";
 import { ActivityHeatmap } from "./components/ActivityHeatmap";
@@ -235,6 +236,7 @@ export default function App() {
       <footer className="app-footer">
         <p className="privacy-note">{t("privacy.note")}</p>
         <p className="disclaimer">{t("app.disclaimer")}</p>
+        <p className="app-version">v{version}</p>
       </footer>
     </div>
   );
