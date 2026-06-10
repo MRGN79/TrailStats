@@ -643,6 +643,7 @@ function fitnessLoadFactor(type: string): number {
 }
 
 const SIX_MONTHS_MS = 183 * DAY_MS;
+const DECAY_TAIL_MS = 90 * DAY_MS;
 
 export function computeFitness(activities: Activity[]): FitnessData {
   if (activities.length === 0) return { points: [] };
@@ -650,9 +651,11 @@ export function computeFitness(activities: Activity[]): FitnessData {
   // Build daily load map
   const dailyLoad = new Map<number, number>();
   let minKey = Infinity;
+  let maxKey = -Infinity;
   for (const a of activities) {
     const key = fitnessDayKey(a.date);
     if (key < minKey) minKey = key;
+    if (key > maxKey) maxKey = key;
     dailyLoad.set(key, (dailyLoad.get(key) ?? 0) + a.distanceKm * fitnessLoadFactor(a.type));
   }
 
@@ -666,16 +669,20 @@ export function computeFitness(activities: Activity[]): FitnessData {
 
   let ctl = 0;
   let atl = 0;
-  const cutoffKey = todayKey - SIX_MONTHS_MS;
+  // Anchor display window to the last activity: show 6 months before it and up to
+  // 90 days of decay after it (capped at today). This ensures the chart always
+  // shows the period with real data even if the export is months/years old.
+  const displayEnd = Math.min(todayKey, maxKey + DECAY_TAIL_MS);
+  const displayStart = Math.max(minKey, displayEnd - SIX_MONTHS_MS);
   const points: FitnessPoint[] = [];
 
-  for (let dayKey = minKey; dayKey <= todayKey; dayKey += DAY_MS) {
+  for (let dayKey = minKey; dayKey <= displayEnd; dayKey += DAY_MS) {
     const load = dailyLoad.get(dayKey) ?? 0;
     ctl = ctl * k_ctl + load * (1 - k_ctl);
     atl = atl * k_atl + load * (1 - k_atl);
     const tsb = ctl - atl;
 
-    if (dayKey >= cutoffKey) {
+    if (dayKey >= displayStart) {
       points.push({
         date: new Date(dayKey),
         ctl: Number(ctl.toFixed(1)),
