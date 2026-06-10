@@ -59,26 +59,21 @@ function buildColumnMap(headers: string[]): Record<string, number> {
 function toNumber(raw: string | undefined): number {
   if (!raw) return 0;
   const s = raw.trim();
-  // Determine which separator is the decimal: the last ',' or '.' followed by
-  // 1-2 digits is decimal; followed by 3 digits (or nothing) is a thousands sep.
-  const lastComma = s.lastIndexOf(",");
-  const lastDot = s.lastIndexOf(".");
-  const lastSepIdx = Math.max(lastComma, lastDot);
-  let normalized: string;
-  if (lastSepIdx === -1) {
-    normalized = s.replace(/[^0-9-]/g, "");
-  } else {
-    const tail = s.slice(lastSepIdx + 1);
-    if (/^\d{1,2}$/.test(tail)) {
-      // Last separator is the decimal point
-      normalized =
-        s.slice(0, lastSepIdx).replace(/[^0-9-]/g, "") + "." + tail;
-    } else {
-      // Last separator is a thousands separator — strip all separators
-      normalized = s.replace(/[^0-9-]/g, "");
-    }
+  // SI metric columns use dot as decimal separator without thousands grouping.
+  // Handle the exception: locale-comma used as decimal when no dot is present
+  // (e.g. "22,98" from locale-formatted summary columns).
+  if (!s.includes(".") && s.includes(",")) {
+    const lastComma = s.lastIndexOf(",");
+    const clean =
+      s.slice(0, lastComma).replace(/[^0-9-]/g, "") +
+      "." +
+      s.slice(lastComma + 1).replace(/[^0-9]/g, "");
+    const n = parseFloat(clean);
+    return Number.isFinite(n) ? n : 0;
   }
-  const n = parseFloat(normalized);
+  // Default: strip commas (thousands separators in English-locale exports),
+  // then parse the dot-decimal value.
+  const n = parseFloat(s.replace(/,/g, "").replace(/[^0-9.-]/g, ""));
   return Number.isFinite(n) ? n : 0;
 }
 

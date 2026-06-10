@@ -24,7 +24,7 @@ export function PrivacyPanel() {
       </ul>
       <p className="privacy-panel__verify">{t("privacy.verify")}</p>
       <p className="privacy-panel__licenses">
-        <a href="/TrailStats/third-party-licenses.txt" target="_blank" rel="noopener noreferrer">
+        <a href={`${import.meta.env.BASE_URL}third-party-licenses.txt`} target="_blank" rel="noopener noreferrer">
           {t("privacy.licenses")}
         </a>
       </p>
