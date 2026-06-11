@@ -1021,6 +1021,16 @@ table.data-table td:first-child {
   gap: var(--space-sm);
 }
 
+/* btn-secondary on dark banner bg: var(--moss) gives only 2.63:1, use light green (8.07:1) */
+.cache-banner .btn-secondary {
+  color: #a3d9b9;
+  border-color: #a3d9b9;
+}
+
+.cache-banner .btn-secondary:hover {
+  background: rgba(163, 217, 185, 0.15);
+}
+
 .cache-banner__dismiss {
   background: none;
   border: none;
@@ -1028,8 +1038,12 @@ table.data-table td:first-child {
   color: var(--paper);
   font-size: var(--step-1);
   opacity: 0.6;
-  padding: 0 var(--space-xs);
-  line-height: 1;
+  /* 44×44px touch target per WCAG 2.5.5 */
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: opacity 0.12s var(--ease-instrument);
 }
 
