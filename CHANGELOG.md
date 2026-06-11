@@ -10,6 +10,15 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 ### Added
 - **Borrado de datos desde el panel de privacidad:** el panel de privacidad incluye ahora un botón para eliminar las actividades guardadas en este navegador. Solo aparece cuando hay datos almacenados y pide confirmación antes de borrar, para que nunca pierdas tu historial por accidente.
 
+## [0.9.0] — 2026-06-12
+
+### Added
+- **Aviso de datos recuperados:** cuando vuelves a abrir la aplicación y se restauran automáticamente tus actividades guardadas en el navegador, un aviso te lo indica con claridad, mostrando cuántas actividades se han recuperado y la fecha de la actividad más reciente. Puedes cerrar el aviso o cargar otro conjunto de datos directamente desde ahí.
+- Nueva batería de pruebas de componentes e integración con `@testing-library/react` (dependencia de testing; no se incluye en la aplicación).
+
+### Fixed
+- La fecha de la actividad más reciente que se muestra en el aviso ahora corresponde realmente a la actividad más nueva del conjunto, y no a la primera de la lista.
+
 ## [0.8.0] — 2026-06-12
 
 ### Added
