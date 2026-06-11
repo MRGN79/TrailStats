@@ -994,6 +994,52 @@ table.data-table td:first-child {
   flex-direction: column;
 }
 
+/* ── Cache restore banner ─────────────────────────────────── */
+
+.cache-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  background: rgba(63, 125, 90, 0.12);
+  border: 1px solid rgba(63, 125, 90, 0.4);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.cache-banner__text {
+  font-size: var(--step--1);
+  color: var(--paper);
+  opacity: 0.85;
+}
+
+.cache-banner__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.cache-banner__dismiss {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--paper);
+  font-size: var(--step-1);
+  opacity: 0.6;
+  padding: 0 var(--space-xs);
+  line-height: 1;
+  transition: opacity 0.12s var(--ease-instrument);
+}
+
+.cache-banner__dismiss:hover,
+.cache-banner__dismiss:focus-visible {
+  opacity: 1;
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
 .share-btn {
   display: inline-flex;
   align-items: center;

@@ -181,6 +181,10 @@
     "verify": "Don't take our word for it: open your browser's developer tools, go to the Network tab, and load a file — you'll see no data ever leaves your device.",
     "licenses": "Third-party licenses"
   },
+  "cache": {
+    "bannerText": "Showing {{count}} saved activities (last: {{date}}).",
+    "dismiss": "Dismiss"
+  },
   "share": {
     "button": "Share"
   },

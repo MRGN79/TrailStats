@@ -181,6 +181,10 @@
     "verify": "No te fíes solo de nuestra palabra: abre las herramientas de desarrollo de tu navegador, ve a la pestaña Red y carga un archivo — verás que ningún dato sale de tu dispositivo.",
     "licenses": "Licencias de terceros"
   },
+  "cache": {
+    "bannerText": "Mostrando {{count}} actividades guardadas (última: {{date}}).",
+    "dismiss": "Cerrar"
+  },
   "share": {
     "button": "Compartir"
   },
