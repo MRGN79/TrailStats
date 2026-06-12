@@ -1,22 +1,28 @@
 import { useTranslation } from "react-i18next";
+import { saveLang } from "../lib/storage";
 
 export function LanguageToggle() {
   const { i18n, t } = useTranslation();
   const current = i18n.language.startsWith("es") ? "es" : "en";
+
+  function handleChange(lang: string) {
+    i18n.changeLanguage(lang);
+    saveLang(lang);
+  }
 
   return (
     <div className="lang-toggle" role="group" aria-label={t("lang.toggle")}>
       <button
         type="button"
         aria-pressed={current === "en"}
-        onClick={() => i18n.changeLanguage("en")}
+        onClick={() => handleChange("en")}
       >
         EN
       </button>
       <button
         type="button"
         aria-pressed={current === "es"}
-        onClick={() => i18n.changeLanguage("es")}
+        onClick={() => handleChange("es")}
       >
         ES
       </button>

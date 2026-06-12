@@ -847,6 +847,25 @@ table.data-table td:first-child {
   background: rgba(63, 125, 90, 0.2);
 }
 
+.btn-ghost {
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-xs) 0;
+  transition: opacity 0.12s var(--ease-instrument);
+}
+
+.btn-ghost--danger {
+  color: var(--ember);
+  opacity: 0.75;
+}
+
+.btn-ghost--danger:hover {
+  opacity: 1;
+}
+
 /* ── Spinner ──────────────────────────────────────────────── */
 
 .spinner {

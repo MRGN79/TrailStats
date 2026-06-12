@@ -8,6 +8,7 @@ interface Props {
   view: ViewMode;
   onViewChange: (view: ViewMode) => void;
   onReset: () => void;
+  onClearData?: () => void;
   canCompareYears: boolean;
   compareYears: boolean;
   onCompareYearsChange: (value: boolean) => void;
@@ -20,6 +21,7 @@ export function Toolbar({
   view,
   onViewChange,
   onReset,
+  onClearData,
   canCompareYears,
   compareYears,
   onCompareYearsChange,
@@ -81,6 +83,12 @@ export function Toolbar({
       <button type="button" className="btn-secondary" onClick={onReset}>
         {t("upload.loadAnother")}
       </button>
+
+      {onClearData && (
+        <button type="button" className="btn-ghost btn-ghost--danger" onClick={onClearData}>
+          {t("upload.purge")}
+        </button>
+      )}
     </div>
   );
 }

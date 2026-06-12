@@ -20,6 +20,7 @@ import { PaceZones } from "./components/PaceZones";
 import { FitnessChart } from "./components/FitnessChart";
 import { processFile } from "./lib/loadDataset";
 import { generateDemoDataset } from "./lib/demoData";
+import { saveDataset, loadDataset, clearStorage } from "./lib/storage";
 import {
   aggregateByPeriod,
   computeBestEfforts,
@@ -46,6 +47,7 @@ function monthLabels(locale: string): string[] {
 
 type Status =
   | { kind: "idle" }
+  | { kind: "restoring" }
   | { kind: "processing"; done?: number; total?: number }
   | { kind: "error"; message: string }
   | { kind: "ready"; dataset: ParsedDataset; demo?: boolean };
@@ -58,7 +60,20 @@ export default function App() {
     document.documentElement.lang = locale;
   }, [locale]);
 
-  const [status, setStatus] = useState<Status>({ kind: "idle" });
+  // Restore persisted dataset from IndexedDB on first mount.
+  useEffect(() => {
+    loadDataset()
+      .then((stored) => {
+        if (stored) {
+          setStatus({ kind: "ready", dataset: stored });
+        } else {
+          setStatus({ kind: "idle" });
+        }
+      })
+      .catch(() => setStatus({ kind: "idle" }));
+  }, []);
+
+  const [status, setStatus] = useState<Status>({ kind: "restoring" });
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [view, setView] = useState<ViewMode>("monthly");
   const [compareYears, setCompareYears] = useState(false);
@@ -104,6 +119,7 @@ export default function App() {
         return;
       }
       setStatus({ kind: "ready", dataset });
+      saveDataset(dataset).catch(() => {});
     } catch (err) {
       const code = err instanceof Error ? err.message : "INVALID_ZIP";
       const message =
@@ -119,6 +135,15 @@ export default function App() {
     setView("monthly");
     setCompareYears(false);
     setStatus({ kind: "ready", dataset: generateDemoDataset(), demo: true });
+  }
+
+  async function handleClearData() {
+    if (!window.confirm(t("upload.purgeConfirm"))) return;
+    try { await clearStorage(); } catch {}
+    setStatus({ kind: "idle" });
+    setSelectedType(null);
+    setView("monthly");
+    setCompareYears(false);
   }
 
   const dataset = status.kind === "ready" ? status.dataset : null;
@@ -185,17 +210,19 @@ export default function App() {
             <h1>{t("app.title")}</h1>
             <p className="tagline">{t("app.tagline")}</p>
 
-            {status.kind === "processing" ? (
+            {(status.kind === "processing" || status.kind === "restoring") ? (
               <div className="dropzone">
                 <div className="spinner" aria-hidden="true" />
-                <span>
-                  {status.total
-                    ? t("upload.processingProgress", {
-                        done: status.done ?? 0,
-                        total: status.total,
-                      })
-                    : t("upload.processing")}
-                </span>
+                {status.kind === "processing" && (
+                  <span>
+                    {status.total
+                      ? t("upload.processingProgress", {
+                          done: status.done ?? 0,
+                          total: status.total,
+                        })
+                      : t("upload.processing")}
+                  </span>
+                )}
               </div>
             ) : (
               <UploadZone onFile={handleFile} onDemo={handleDemo} />
@@ -224,6 +251,7 @@ export default function App() {
                   view={view}
                   onViewChange={setView}
                   onReset={() => setStatus({ kind: "idle" })}
+                  onClearData={isDemo ? undefined : handleClearData}
                   canCompareYears={canCompareYears}
                   compareYears={compareYears}
                   onCompareYearsChange={setCompareYears}

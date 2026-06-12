@@ -10,6 +10,8 @@
     "processingProgress": "Reading activities… {{done}} of {{total}} files",
     "dashboardReady": "Dashboard ready.",
     "loadAnother": "Load another export",
+    "purge": "Clear stored data",
+    "purgeConfirm": "Remove your stored activities from this browser? This cannot be undone.",
     "error": {
       "invalidZip": "This doesn't look like a supported export. Make sure it's the full ZIP you downloaded from Strava, Garmin or another supported platform.",
       "noActivities": "Couldn't find activities in this export."
@@ -171,7 +173,7 @@
     "heading": "Your data stays with you",
     "points": {
       "local": "Your export is read and analyzed entirely inside this browser tab.",
-      "noServer": "Nothing is uploaded — there is no server, no account and no storage of your files.",
+      "noServer": "Nothing is uploaded — there is no server and no account. Your activities are cached in your browser's local storage for convenience, and you can delete them at any time.",
       "noTracking": "No tracking, no cookies, no analytics. We never see your activities."
     },
     "verify": "Don't take our word for it: open your browser's developer tools, go to the Network tab, and load a file — you'll see no data ever leaves your device.",
