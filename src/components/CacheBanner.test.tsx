@@ -84,8 +84,11 @@ describe("CacheBanner", () => {
     expect(screen.getByRole("status")).toBeTruthy();
   });
 
-  it("renders a count of 1 (singular boundary) without crashing", () => {
+  it("renders singular form ('saved activity') for a count of 1", () => {
     renderBanner({ activityCount: 1 });
-    expect(screen.getByRole("status").textContent).toContain("1");
+    const text = screen.getByRole("status").textContent ?? "";
+    expect(text).toContain("1");
+    expect(text).toContain("saved activity");
+    expect(text).not.toContain("saved activities");
   });
 });

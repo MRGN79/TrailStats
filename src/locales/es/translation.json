@@ -15,7 +15,8 @@
     "purgeConfirm": "¿Eliminar las actividades guardadas en este navegador? Esta acción no se puede deshacer.",
     "error": {
       "invalidZip": "Esto no parece un export compatible. Asegúrate de que es el ZIP completo que descargaste de Strava, Garmin u otra plataforma compatible.",
-      "noActivities": "No se han encontrado actividades en este export."
+      "noActivities": "No se han encontrado actividades en este export.",
+      "clearFailed": "No se pudieron eliminar las actividades guardadas. Inténtalo de nuevo o borra los datos del sitio en los ajustes de tu navegador."
     },
     "discarded": "{{count}} filas no se pudieron leer y se han descartado."
   },
@@ -182,7 +183,8 @@
     "licenses": "Licencias de terceros"
   },
   "cache": {
-    "bannerText": "Mostrando {{count}} actividades guardadas (última: {{date}}).",
+    "bannerText_one": "Mostrando {{count}} actividad guardada (última: {{date}}).",
+    "bannerText_other": "Mostrando {{count}} actividades guardadas (última: {{date}}).",
     "dismiss": "Cerrar"
   },
   "share": {

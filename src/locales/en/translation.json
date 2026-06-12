@@ -15,7 +15,8 @@
     "purgeConfirm": "Remove your stored activities from this browser? This cannot be undone.",
     "error": {
       "invalidZip": "This doesn't look like a supported export. Make sure it's the full ZIP you downloaded from Strava, Garmin or another supported platform.",
-      "noActivities": "Couldn't find activities in this export."
+      "noActivities": "Couldn't find activities in this export.",
+      "clearFailed": "Couldn't delete your stored activities. Try again or clear this site's data from your browser settings."
     },
     "discarded": "{{count}} rows could not be read and were skipped."
   },
@@ -182,7 +183,8 @@
     "licenses": "Third-party licenses"
   },
   "cache": {
-    "bannerText": "Showing {{count}} saved activities (last: {{date}}).",
+    "bannerText_one": "Showing {{count}} saved activity (last: {{date}}).",
+    "bannerText_other": "Showing {{count}} saved activities (last: {{date}}).",
     "dismiss": "Dismiss"
   },
   "share": {
