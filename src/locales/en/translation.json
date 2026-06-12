@@ -177,6 +177,7 @@
       "noServer": "Nothing is uploaded — there is no server and no account. Your activities are cached in your browser's local storage for convenience, and you can delete them at any time.",
       "noTracking": "No tracking, no cookies, no analytics. We never see your activities."
     },
+    "clearData": "Delete my stored activities from this browser",
     "verify": "Don't take our word for it: open your browser's developer tools, go to the Network tab, and load a file — you'll see no data ever leaves your device.",
     "licenses": "Third-party licenses"
   },

@@ -65,6 +65,7 @@ export default function App() {
     loadDataset()
       .then((stored) => {
         if (stored) {
+          setHasStoredData(true);
           setStatus({ kind: "ready", dataset: stored });
         } else {
           setStatus({ kind: "idle" });
@@ -78,6 +79,7 @@ export default function App() {
   const [view, setView] = useState<ViewMode>("monthly");
   const [compareYears, setCompareYears] = useState(false);
   const [srMsg, setSrMsg] = useState("");
+  const [hasStoredData, setHasStoredData] = useState(false);
 
   const dashHeadingRef = useRef<HTMLHeadingElement>(null);
 
@@ -121,6 +123,7 @@ export default function App() {
         return;
       }
       setStatus({ kind: "ready", dataset });
+      setHasStoredData(true);
       saveDataset(dataset).catch(() => {});
     } catch (err) {
       const code = err instanceof Error ? err.message : "INVALID_ZIP";
@@ -142,6 +145,7 @@ export default function App() {
   async function handleClearData() {
     if (!window.confirm(t("upload.purgeConfirm"))) return;
     try { await clearStorage(); } catch { /* non-fatal: IDB unavailable */ }
+    setHasStoredData(false);
     setStatus({ kind: "idle" });
     setSelectedType(null);
     setView("monthly");
@@ -236,7 +240,7 @@ export default function App() {
               </p>
             )}
 
-            <PrivacyPanel />
+            <PrivacyPanel onClearData={hasStoredData ? handleClearData : undefined} />
           </div>
         )}
 

@@ -1,6 +1,10 @@
 import { useTranslation } from "react-i18next";
 
-export function PrivacyPanel() {
+interface Props {
+  onClearData?: () => void;
+}
+
+export function PrivacyPanel({ onClearData }: Props) {
   const { t } = useTranslation();
 
   const points = [
@@ -22,6 +26,13 @@ export function PrivacyPanel() {
           </li>
         ))}
       </ul>
+      {onClearData && (
+        <p className="privacy-panel__clear">
+          <button type="button" className="btn-link" onClick={onClearData}>
+            {t("privacy.clearData")}
+          </button>
+        </p>
+      )}
       <p className="privacy-panel__verify">{t("privacy.verify")}</p>
       <p className="privacy-panel__licenses">
         <a href={`${import.meta.env.BASE_URL}third-party-licenses.txt`} target="_blank" rel="noopener noreferrer">

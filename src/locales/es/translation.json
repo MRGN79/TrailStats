@@ -177,6 +177,7 @@
       "noServer": "No se sube nada — no hay servidor ni cuenta. Tus actividades se almacenan en el almacenamiento local de tu navegador para mayor comodidad, y puedes eliminarlas en cualquier momento.",
       "noTracking": "Sin rastreo, sin cookies, sin analíticas. Nunca vemos tus actividades."
     },
+    "clearData": "Eliminar mis actividades guardadas de este navegador",
     "verify": "No te fíes solo de nuestra palabra: abre las herramientas de desarrollo de tu navegador, ve a la pestaña Red y carga un archivo — verás que ningún dato sale de tu dispositivo.",
     "licenses": "Licencias de terceros"
   },

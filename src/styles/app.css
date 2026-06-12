@@ -857,6 +857,23 @@ table.data-table td:first-child {
   transition: opacity 0.12s var(--ease-instrument);
 }
 
+.btn-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: inherit;
+  color: inherit;
+  padding: 0;
+  text-decoration: underline;
+  opacity: 0.75;
+  transition: opacity 0.12s var(--ease-instrument);
+}
+
+.btn-link:hover {
+  opacity: 1;
+}
+
 .btn-ghost--danger {
   color: var(--ember);
 }
