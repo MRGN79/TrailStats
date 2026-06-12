@@ -7,6 +7,31 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.8.0] — 2026-06-12
+
+### Added
+- **Tus datos se recuerdan entre sesiones:** el idioma elegido y el conjunto de actividades cargado se conservan al cerrar y volver a abrir la aplicación. La próxima vez que entres, tu historial se carga automáticamente sin tener que subir el export de nuevo.
+- **Botón "Borrar datos guardados":** nueva opción en la barra lateral para eliminar en cualquier momento los datos almacenados localmente en tu navegador.
+
+### Changed
+- El mensaje de privacidad se ha actualizado para reflejar que ahora los datos se guardan localmente en tu dispositivo (en tu navegador), de forma que sigues controlándolos por completo y puedes borrarlos cuando quieras.
+
+### Fixed
+- La comparativa "Comparar años" se desactiva automáticamente cuando el filtro deja de incluir dos años completos, evitando una vista vacía o confusa.
+- Corregidos varios cálculos sobre los datos de demostración que en algunos casos sobreestimaban el volumen de actividad o mostraban fechas incorrectas.
+- Las estadísticas ya no fallan cuando el conjunto filtrado está vacío o tiene muy pocas actividades; en su lugar muestran un resultado vacío de forma controlada.
+- La base de cálculo de la carga de entrenamiento ahora usa las semanas realmente activas, dando una referencia más fiel.
+
+### Accessibility
+- Nuevo enlace "Saltar al contenido principal" al inicio de la página para usuarios de teclado y lectores de pantalla.
+- Estructura semántica de la página mejorada (`<header>` y `<main>` identificados correctamente).
+- Mejoras de contraste en los botones de idioma y de vista activos, en los títulos de sección y en el texto secundario para una lectura más cómoda.
+- Los anuncios para lectores de pantalla son más fiables y el foco del teclado ya no se desvía de forma inesperada al cargar el panel.
+
+### Notes
+- Todo sigue siendo 100% local en el navegador: ningún dato sale de tu dispositivo. El almacenamiento utiliza las capacidades del propio navegador (localStorage e IndexedDB) y puedes borrarlo en un clic.
+- Calidad: 84 pruebas automáticas cubren el guardado y recuperación de datos, la paridad de traducciones EN/ES y las regresiones de esta versión. Se añade `fake-indexeddb` como dependencia de testing (no se incluye en la aplicación).
+
 ## [0.5.0] — 2026-06-09
 
 ### Added
