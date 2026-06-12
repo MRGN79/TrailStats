@@ -21,7 +21,7 @@ import { PaceZones } from "./components/PaceZones";
 import { FitnessChart } from "./components/FitnessChart";
 import { processFile } from "./lib/loadDataset";
 import { generateDemoDataset } from "./lib/demoData";
-import { saveDataset, loadDataset, clearStorage } from "./lib/storage";
+import { saveDataset, loadDataset, clearStorage, saveBannerDismissed, loadBannerDismissed, clearBannerDismissed } from "./lib/storage";
 import {
   aggregateByPeriod,
   computeBestEfforts,
@@ -83,7 +83,7 @@ export default function App() {
   const [srMsg, setSrMsg] = useState("");
   const [hasStoredData, setHasStoredData] = useState(false);
   const [restoredFromCache, setRestoredFromCache] = useState(false);
-  const [cacheBannerDismissed, setCacheBannerDismissed] = useState(false);
+  const [cacheBannerDismissed, setCacheBannerDismissed] = useState(() => loadBannerDismissed());
 
   const dashHeadingRef = useRef<HTMLHeadingElement>(null);
 
@@ -119,6 +119,7 @@ export default function App() {
     setSelectedType(null);
     setCompareYears(false);
     setRestoredFromCache(false);
+    clearBannerDismissed();
     setCacheBannerDismissed(false);
     try {
       const dataset = await processFile(file, ({ done, total }) =>
@@ -129,8 +130,9 @@ export default function App() {
         return;
       }
       setStatus({ kind: "ready", dataset });
-      setHasStoredData(true);
-      saveDataset(dataset).catch(() => {});
+      saveDataset(dataset)
+        .then(() => setHasStoredData(true))
+        .catch(() => {});
     } catch (err) {
       const code = err instanceof Error ? err.message : "INVALID_ZIP";
       const message =
@@ -146,15 +148,22 @@ export default function App() {
     setView("monthly");
     setCompareYears(false);
     setRestoredFromCache(false);
+    clearBannerDismissed();
     setCacheBannerDismissed(false);
     setStatus({ kind: "ready", dataset: generateDemoDataset(), demo: true });
   }
 
   async function handleClearData() {
     if (!window.confirm(t("upload.purgeConfirm"))) return;
-    try { await clearStorage(); } catch { /* non-fatal: IDB unavailable */ }
+    try {
+      await clearStorage();
+    } catch {
+      window.alert(t("upload.error.clearFailed"));
+      return;
+    }
     setHasStoredData(false);
     setRestoredFromCache(false);
+    clearBannerDismissed();
     setCacheBannerDismissed(false);
     setStatus({ kind: "idle" });
     setSelectedType(null);
@@ -269,10 +278,11 @@ export default function App() {
                 locale={locale}
                 onLoadAnother={() => {
                   setRestoredFromCache(false);
+                  clearBannerDismissed();
                   setCacheBannerDismissed(false);
                   setStatus({ kind: "idle" });
                 }}
-                onDismiss={() => setCacheBannerDismissed(true)}
+                onDismiss={() => { saveBannerDismissed(); setCacheBannerDismissed(true); }}
               />
             )}
 

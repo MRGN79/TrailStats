@@ -6,12 +6,16 @@ import type { ParsedDataset } from "./lib/types";
 // Mock the storage layer so we control whether a dataset is "restored" from
 // IndexedDB on mount, and so saveDataset/clearStorage are no-ops in jsdom.
 const loadDatasetMock = vi.fn<[], Promise<ParsedDataset | null>>();
+const loadBannerDismissedMock = vi.fn<[], boolean>();
 vi.mock("./lib/storage", () => ({
   loadDataset: () => loadDatasetMock(),
   saveDataset: vi.fn().mockResolvedValue(undefined),
   clearStorage: vi.fn().mockResolvedValue(undefined),
   saveLang: vi.fn(),
   loadLang: () => null,
+  saveBannerDismissed: vi.fn(),
+  loadBannerDismissed: () => loadBannerDismissedMock(),
+  clearBannerDismissed: vi.fn(),
 }));
 
 // Mock file processing so handleFile produces a deterministic dataset without
@@ -60,6 +64,8 @@ beforeAll(async () => {
 beforeEach(() => {
   loadDatasetMock.mockReset();
   processFileMock.mockReset();
+  loadBannerDismissedMock.mockReset();
+  loadBannerDismissedMock.mockReturnValue(false);
 });
 
 afterEach(() => cleanup());
@@ -143,6 +149,28 @@ describe("App — CacheBanner integration", () => {
     // Wait for the dashboard to actually render after processing completes.
     await screen.findByText(i18n.t("stats.sections.training"));
     expect(queryCacheBanner()).toBeNull();
+  });
+});
+
+describe("App — banner dismissed persistence", () => {
+  it("does NOT show the cache banner when loadBannerDismissed returns true (pre-dismissed)", async () => {
+    loadDatasetMock.mockResolvedValue(dataset(10));
+    loadBannerDismissedMock.mockReturnValue(true);
+    render(<App />);
+
+    // Dashboard renders (IDB restore), but the banner must not appear.
+    await screen.findByText(i18n.t("stats.sections.training"));
+    expect(queryCacheBanner()).toBeNull();
+  });
+
+  it("renders singular 'saved activity' for a dataset of exactly 1 activity", async () => {
+    loadDatasetMock.mockResolvedValue(dataset(1, "2026-04-10T08:00:00Z"));
+    render(<App />);
+
+    const banner = await findCacheBanner();
+    expect(banner.textContent).toContain("1");
+    // Plural form must NOT appear.
+    expect(banner.textContent).not.toContain("activities");
   });
 });
 

@@ -10,6 +10,14 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 ### Added
 - **Borrado de datos desde el panel de privacidad:** el panel de privacidad incluye ahora un botón para eliminar las actividades guardadas en este navegador. Solo aparece cuando hay datos almacenados y pide confirmación antes de borrar, para que nunca pierdas tu historial por accidente.
 
+## [0.9.1] — 2026-06-12
+
+### Fixed
+- **Aviso real cuando el navegador se queda sin espacio:** al guardar tus actividades, la aplicación ya no da por hecho que se han almacenado correctamente antes de terminar. Si el navegador rechaza el guardado por falta de espacio, ya no verás un mensaje engañoso diciendo que tus datos están a salvo cuando no lo están.
+- **Borrado de datos más seguro:** si al pulsar "Borrar datos guardados" la operación falla, ahora se muestra un aviso y se cancela la acción, en lugar de dar la impresión de que los datos se han eliminado cuando en realidad siguen en tu navegador.
+- **El aviso de datos recuperados se queda cerrado:** cuando cierras el aviso de actividades recuperadas, ahora permanece cerrado aunque recargues o vuelvas a abrir la aplicación, en lugar de reaparecer cada vez.
+- **Textos en singular y plural correctos:** el aviso de datos guardados muestra ahora "1 actividad guardada" en singular y "N actividades guardadas" en plural, según corresponda.
+
 ## [0.9.0] — 2026-06-12
 
 ### Added
