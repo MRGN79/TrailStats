@@ -859,11 +859,10 @@ table.data-table td:first-child {
 
 .btn-ghost--danger {
   color: var(--ember);
-  opacity: 0.75;
 }
 
 .btn-ghost--danger:hover {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 /* ── Spinner ──────────────────────────────────────────────── */

@@ -95,7 +95,9 @@ export default function App() {
   // Mirror processing/ready states into a persistent live region to avoid
   // announce-on-unmount ARIA race condition.
   useEffect(() => {
-    if (status.kind === "processing") {
+    if (status.kind === "restoring") {
+      setSrMsg(t("upload.restoring"));
+    } else if (status.kind === "processing") {
       setSrMsg(
         status.total
           ? t("upload.processingProgress", { done: status.done ?? 0, total: status.total })
