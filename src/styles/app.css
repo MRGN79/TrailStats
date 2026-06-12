@@ -874,6 +874,13 @@ table.data-table td:first-child {
   opacity: 1;
 }
 
+.btn-link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  opacity: 1;
+  border-radius: 2px;
+}
+
 .btn-ghost--danger {
   color: var(--ember);
 }
