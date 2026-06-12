@@ -50,7 +50,7 @@ export async function clearStorage(): Promise<void> {
 }
 
 export function saveLang(lang: string): void {
-  try { localStorage.setItem(LANG_KEY, lang); } catch {}
+  try { localStorage.setItem(LANG_KEY, lang); } catch { /* quota or private-browsing — non-fatal */ }
 }
 
 export function loadLang(): string | null {

@@ -139,7 +139,7 @@ export default function App() {
 
   async function handleClearData() {
     if (!window.confirm(t("upload.purgeConfirm"))) return;
-    try { await clearStorage(); } catch {}
+    try { await clearStorage(); } catch { /* non-fatal: IDB unavailable */ }
     setStatus({ kind: "idle" });
     setSelectedType(null);
     setView("monthly");
