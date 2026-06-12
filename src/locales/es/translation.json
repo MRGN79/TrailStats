@@ -6,6 +6,7 @@
   },
   "upload": {
     "dropzone": "Arrastra aquí tu ZIP de export, o haz clic para buscarlo — Strava, Garmin y otras",
+    "restoring": "Cargando tus actividades guardadas…",
     "processing": "Leyendo tus actividades…",
     "processingProgress": "Leyendo actividades… {{done}} de {{total}} archivos",
     "dashboardReady": "Panel listo.",
