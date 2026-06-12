@@ -15,6 +15,7 @@ import { Toolbar } from "./components/Toolbar";
 import { LanguageToggle } from "./components/LanguageToggle";
 import { PrivacyPanel } from "./components/PrivacyPanel";
 import { DemoBanner } from "./components/DemoBanner";
+import { CacheBanner } from "./components/CacheBanner";
 import { RacePredictor } from "./components/RacePredictor";
 import { PaceZones } from "./components/PaceZones";
 import { FitnessChart } from "./components/FitnessChart";
@@ -66,6 +67,7 @@ export default function App() {
       .then((stored) => {
         if (stored) {
           setHasStoredData(true);
+          setRestoredFromCache(true);
           setStatus({ kind: "ready", dataset: stored });
         } else {
           setStatus({ kind: "idle" });
@@ -80,6 +82,8 @@ export default function App() {
   const [compareYears, setCompareYears] = useState(false);
   const [srMsg, setSrMsg] = useState("");
   const [hasStoredData, setHasStoredData] = useState(false);
+  const [restoredFromCache, setRestoredFromCache] = useState(false);
+  const [cacheBannerDismissed, setCacheBannerDismissed] = useState(false);
 
   const dashHeadingRef = useRef<HTMLHeadingElement>(null);
 
@@ -114,6 +118,8 @@ export default function App() {
     setStatus({ kind: "processing" });
     setSelectedType(null);
     setCompareYears(false);
+    setRestoredFromCache(false);
+    setCacheBannerDismissed(false);
     try {
       const dataset = await processFile(file, ({ done, total }) =>
         setStatus({ kind: "processing", done, total })
@@ -139,6 +145,8 @@ export default function App() {
     setSelectedType(null);
     setView("monthly");
     setCompareYears(false);
+    setRestoredFromCache(false);
+    setCacheBannerDismissed(false);
     setStatus({ kind: "ready", dataset: generateDemoDataset(), demo: true });
   }
 
@@ -146,6 +154,8 @@ export default function App() {
     if (!window.confirm(t("upload.purgeConfirm"))) return;
     try { await clearStorage(); } catch { /* non-fatal: IDB unavailable */ }
     setHasStoredData(false);
+    setRestoredFromCache(false);
+    setCacheBannerDismissed(false);
     setStatus({ kind: "idle" });
     setSelectedType(null);
     setView("monthly");
@@ -188,6 +198,10 @@ export default function App() {
   const racePredictions = useMemo(() => computeRacePredictor(bestEfforts), [bestEfforts]);
   const paceZones = useMemo(() => computePaceZones(filtered), [filtered]);
   const fitnessData = useMemo(() => computeFitness(filtered), [filtered]);
+  const latestDate = useMemo(() => {
+    if (!dataset || dataset.activities.length === 0) return new Date(0);
+    return dataset.activities.reduce((max, a) => (a.date > max ? a.date : max), dataset.activities[0].date);
+  }, [dataset]);
 
   return (
     <div className="app">
@@ -247,6 +261,20 @@ export default function App() {
         {dataset && (
           <>
             {isDemo && <DemoBanner onExit={() => setStatus({ kind: "idle" })} />}
+
+            {restoredFromCache && !cacheBannerDismissed && !isDemo && (
+              <CacheBanner
+                activityCount={dataset.activities.length}
+                latestDate={latestDate}
+                locale={locale}
+                onLoadAnother={() => {
+                  setRestoredFromCache(false);
+                  setCacheBannerDismissed(false);
+                  setStatus({ kind: "idle" });
+                }}
+                onDismiss={() => setCacheBannerDismissed(true)}
+              />
+            )}
 
             <div className="dashboard">
               <div className="dashboard__rail">
