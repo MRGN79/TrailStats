@@ -40,7 +40,7 @@ function lerp(rng: () => number, [min, max]: [number, number]): number {
 function seasonalFactor(month: number): number {
   // Peak around June (5), trough around December/January.
   const phase = Math.cos(((month - 5) / 12) * 2 * Math.PI);
-  return 0.6 + 0.4 * ((phase + 1) / 2) + 0.4 * (month >= 3 && month <= 8 ? 1 : 0);
+  return Math.min(1.0, 0.6 + 0.4 * ((phase + 1) / 2) + 0.2 * (month >= 3 && month <= 8 ? 1 : 0));
 }
 
 function pickType(rng: () => number): TypeProfile {
@@ -59,6 +59,7 @@ export function generateDemoDataset(now: Date = new Date()): ParsedDataset {
 
   const end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const start = new Date(end);
+  start.setDate(1);
   start.setMonth(start.getMonth() - 18);
 
   // Walk week by week from start to end.

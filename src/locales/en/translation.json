@@ -8,6 +8,7 @@
     "dropzone": "Drop your export ZIP here, or click to browse — Strava, Garmin and more",
     "processing": "Reading your activities…",
     "processingProgress": "Reading activities… {{done}} of {{total}} files",
+    "dashboardReady": "Dashboard ready.",
     "loadAnother": "Load another export",
     "error": {
       "invalidZip": "This doesn't look like a supported export. Make sure it's the full ZIP you downloaded from Strava, Garmin or another supported platform.",

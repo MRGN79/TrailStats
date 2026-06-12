@@ -511,6 +511,10 @@ export function computeTrainingLoad(
     };
   }
 
+  // Dividing by active weeks rather than a fixed window keeps sporadic
+  // athletes from being unfairly flagged as "low". Trade-off: an athlete
+  // returning from a hard block followed by rest will see a temporarily
+  // deflated baseline, making the current week appear elevated sooner.
   const baselineLoad =
     baselineWeeks.reduce((sum, w) => sum + w, 0) / weeksOfHistory;
   const index = baselineLoad > 0 ? currentLoad / baselineLoad : 0;

@@ -62,15 +62,34 @@ export default function App() {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [view, setView] = useState<ViewMode>("monthly");
   const [compareYears, setCompareYears] = useState(false);
+  const [srMsg, setSrMsg] = useState("");
 
   const dashHeadingRef = useRef<HTMLHeadingElement>(null);
 
-  // Move focus to the dashboard heading when data finishes loading.
+  // Move focus to the dashboard heading when data finishes loading,
+  // but only when no interactive element currently has focus.
   useEffect(() => {
     if (status.kind === "ready") {
-      dashHeadingRef.current?.focus();
+      const active = document.activeElement;
+      if (!active || active === document.body || active === document.documentElement) {
+        dashHeadingRef.current?.focus();
+      }
     }
   }, [status.kind]);
+
+  // Mirror processing/ready states into a persistent live region to avoid
+  // announce-on-unmount ARIA race condition.
+  useEffect(() => {
+    if (status.kind === "processing") {
+      setSrMsg(
+        status.total
+          ? t("upload.processingProgress", { done: status.done ?? 0, total: status.total })
+          : t("upload.processing")
+      );
+    } else if (status.kind === "ready") {
+      setSrMsg(t("upload.dashboardReady"));
+    }
+  }, [status, t]);
 
   async function handleFile(file: File) {
     setStatus({ kind: "processing" });
@@ -130,12 +149,18 @@ export default function App() {
   const canCompareYears = yearOverYear != null;
   const activeYoY = canCompareYears && compareYears ? yearOverYear : null;
 
+  // Reset compare-years toggle when the filtered data no longer has two full years.
+  useEffect(() => {
+    if (!canCompareYears) setCompareYears(false);
+  }, [canCompareYears]);
+
   const racePredictions = useMemo(() => computeRacePredictor(bestEfforts), [bestEfforts]);
   const paceZones = useMemo(() => computePaceZones(filtered), [filtered]);
   const fitnessData = useMemo(() => computeFitness(filtered), [filtered]);
 
   return (
     <div className="app">
+      <div className="sr-only" aria-live="polite" aria-atomic="true">{srMsg}</div>
       <a href="#main-content" className="skip-link">{t("a11y.skipToMain")}</a>
 
       {dataset && (
@@ -161,7 +186,7 @@ export default function App() {
             <p className="tagline">{t("app.tagline")}</p>
 
             {status.kind === "processing" ? (
-              <div className="dropzone" aria-live="polite">
+              <div className="dropzone">
                 <div className="spinner" aria-hidden="true" />
                 <span>
                   {status.total
