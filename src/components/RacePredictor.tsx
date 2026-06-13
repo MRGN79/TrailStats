@@ -6,13 +6,22 @@ import { ShareButton } from "./ShareButton";
 interface Props {
   predictions: RacePredictionItem[];
   baseBucket: EffortBucket | null;
+  hasEfforts: boolean;
   locale: string;
 }
 
-export function RacePredictor({ predictions, baseBucket, locale: _locale }: Props) {
+export function RacePredictor({ predictions, baseBucket, hasEfforts, locale: _locale }: Props) {
   const { t } = useTranslation();
 
-  if (predictions.length === 0 || baseBucket === null) return null;
+  if (predictions.length === 0 || baseBucket === null) {
+    if (!hasEfforts) return null;
+    return (
+      <section aria-label={t("stats.racePredictor.title")}>
+        <h2 className="section-title">{t("stats.racePredictor.title")}</h2>
+        <p className="section-disclaimer" role="status">{t("stats.racePredictor.noData")}</p>
+      </section>
+    );
+  }
 
   const bucketLabel = (bucket: EffortBucket): string =>
     t(`stats.bestEfforts.${bucket}`);

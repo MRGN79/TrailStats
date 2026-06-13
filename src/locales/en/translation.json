@@ -30,7 +30,8 @@
       "title": "Race predictor",
       "subtitle": "Based on your best effort at {{base}}",
       "actual": "Actual",
-      "predicted": "Predicted"
+      "predicted": "Predicted",
+      "noData": "A best effort at 5K, 10K, or half marathon is needed for race predictions."
     },
     "paceZones": {
       "title": "Pace zone distribution",
