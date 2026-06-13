@@ -116,6 +116,7 @@
     },
     "load": {
       "title": "Weekly training load",
+      "noData": "Training load needs recent activity (within the last 6 weeks) to be meaningful.",
       "barLabel": "Training load index versus your 6-week baseline",
       "caption": "This week {{current}} vs {{baseline}} avg load units",
       "state": {
@@ -128,6 +129,7 @@
     "heatmap": {
       "title": "Activity history",
       "noActivity": "No activity",
+      "noRecentActivity": "No activity in the past year.",
       "low": "Low",
       "medium": "Medium",
       "high": "High",

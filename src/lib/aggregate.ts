@@ -490,6 +490,11 @@ export function computeTrainingLoad(
     (max, a) => (a.date > max ? a.date : max),
     activities[0].date
   );
+  // If the most-recent activity is older than the full baseline window the
+  // "current week" comparison is against stale data — not meaningful.
+  if (today.getTime() - latestActivity.getTime() > LOAD_BASELINE_WEEKS * WEEK_MS) {
+    return null;
+  }
   const anchor = latestActivity < today ? latestActivity : today;
   const currentWeekStart = isoWeekStartUtc(anchor);
 

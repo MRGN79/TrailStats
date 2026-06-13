@@ -144,4 +144,41 @@ describe("computeTrainingLoad", () => {
     expect(result?.baselineLoad).toBeCloseTo(50, 5);
     expect(result?.state).toBe("normal");
   });
+
+  // Staleness gate: data is only meaningful while the most-recent activity is
+  // within LOAD_BASELINE_WEEKS (6) weeks of `today`. These two tests pin the
+  // exact boundary at 6 weeks ± 1 ms. Both share the same activity history with
+  // enough baseline weeks to clear the `weeksOfHistory < 3` guard, so the only
+  // thing flipping the result is which side of the threshold `today` falls on.
+  const WEEK_MS = 7 * 86400000;
+  const LOAD_BASELINE_WEEKS = 6;
+  const THRESHOLD_MS = LOAD_BASELINE_WEEKS * WEEK_MS;
+
+  function loadHistoryEndingAt(latest: Date): Activity[] {
+    // The latest activity plus 5 weekly runs before it → 6 distinct active
+    // weeks total, well above the 3-week minimum baseline.
+    const acts: Activity[] = [
+      act(latest.toISOString(), "Run", 10, 3000),
+    ];
+    for (let i = 1; i <= 5; i++) {
+      const d = new Date(latest.getTime() - i * WEEK_MS);
+      acts.push(act(d.toISOString(), "Run", 10, 3000));
+    }
+    return acts;
+  }
+
+  it("returns null when the latest activity is just over the 6-week staleness threshold (+1 ms)", () => {
+    const latest = new Date("2026-04-06T00:00:00.000Z"); // Monday
+    const activities = loadHistoryEndingAt(latest);
+    const today = new Date(latest.getTime() + THRESHOLD_MS + 1);
+    expect(computeTrainingLoad(activities, today)).toBeNull();
+  });
+
+  it("does NOT return null when the latest activity is just under the threshold (-1 ms)", () => {
+    const latest = new Date("2026-04-06T00:00:00.000Z"); // Monday
+    const activities = loadHistoryEndingAt(latest);
+    const today = new Date(latest.getTime() + THRESHOLD_MS - 1);
+    const result = computeTrainingLoad(activities, today);
+    expect(result).not.toBeNull();
+  });
 });

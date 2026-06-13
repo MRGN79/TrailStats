@@ -11,6 +11,18 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 - **Borrado de datos desde el panel de privacidad:** el panel de privacidad incluye ahora un botón para eliminar las actividades guardadas en este navegador. Solo aparece cuando hay datos almacenados y pide confirmación antes de borrar, para que nunca pierdas tu historial por accidente.
 - CI en GitHub Actions: cada PR hacia `main` ejecuta automáticamente la verificación de tipos TypeScript y la batería de tests antes de permitir el merge.
 
+## [0.9.4] — 2026-06-13
+
+### Fixed
+- **La carga de entrenamiento no muestra datos obsoletos:** si tu última actividad es de hace más de seis semanas, la carga de entrenamiento deja de mostrarse como si fuera tu carga actual. En su lugar, aparece un mensaje que explica que no hay datos recientes suficientes, en vez de desaparecer sin avisar.
+- **Aviso en el historial de actividad cuando no hay datos del último año:** si el mapa de calor no tiene ninguna actividad en los últimos doce meses, ahora se muestra el mensaje "Sin actividades en el último año" en lugar de una cuadrícula vacía.
+- **Las zonas de ritmo explican por qué no aparecen:** cuando no hay suficientes carreras para calcularlas (hacen falta al menos cinco), la sección muestra ahora un mensaje claro en lugar de quedar oculta sin explicación.
+- **El número de Eddington explica por qué no aparece:** igual que las zonas de ritmo, cuando no hay actividades suficientes para calcularlo, ahora se muestra un mensaje en lugar de ocultar la sección en silencio.
+
+### Accessibility
+- Los cuatro nuevos mensajes de estado vacío (carga de entrenamiento, historial de actividad, zonas de ritmo y número de Eddington) se anuncian correctamente a los lectores de pantalla (`role="status"`, WCAG 4.1.3).
+- El mapa de calor se oculta a los lectores de pantalla (`aria-hidden`) cuando no contiene actividad, para que no lean una cuadrícula vacía.
+
 ## [0.9.3] — 2026-06-13
 
 ### Added

@@ -18,7 +18,14 @@ const STATE_TO_FILL: Record<string, string> = {
 export function TrainingLoad({ load, locale }: Props) {
   const { t } = useTranslation();
 
-  if (!load) return null;
+  if (!load) {
+    return (
+      <section aria-label={t("stats.load.title")}>
+        <h2 className="section-title">{t("stats.load.title")}</h2>
+        <p className="section-disclaimer" role="status">{t("stats.load.noData")}</p>
+      </section>
+    );
+  }
 
   const indexPct = Math.round(load.index * 100);
   // La barra refleja el índice; 200% se mapea al ancho completo.

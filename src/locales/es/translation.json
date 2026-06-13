@@ -116,6 +116,7 @@
     },
     "load": {
       "title": "Carga de entrenamiento semanal",
+      "noData": "La carga de entrenamiento necesita actividad reciente (en las últimas 6 semanas) para ser significativa.",
       "barLabel": "Índice de carga frente a tu media de 6 semanas",
       "caption": "Esta semana {{current}} vs {{baseline}} unidades de carga de media",
       "state": {
@@ -128,6 +129,7 @@
     "heatmap": {
       "title": "Historial de actividad",
       "noActivity": "Sin actividad",
+      "noRecentActivity": "Sin actividades en el último año.",
       "low": "Baja",
       "medium": "Media",
       "exceptional": "Excepcional (≥50 km)",

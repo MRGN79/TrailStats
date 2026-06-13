@@ -11,7 +11,14 @@ interface Props {
 export function EddingtonCards({ stats, locale }: Props) {
   const { t } = useTranslation();
 
-  if (stats.length === 0) return null;
+  if (stats.length === 0) {
+    return (
+      <section aria-label={t("stats.eddington.title")}>
+        <h2 className="section-title">{t("stats.eddington.title")}</h2>
+        <p className="section-disclaimer" role="status">{t("stats.eddington.noData")}</p>
+      </section>
+    );
+  }
 
   return (
     <section aria-label={t("stats.eddington.title")}>
