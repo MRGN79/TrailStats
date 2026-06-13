@@ -145,9 +145,16 @@ const WEEK_MS = 7 * 86400000;
 export function computeStreak(activities: Activity[]): StreakStats {
   if (activities.length === 0) return { current: 0, longest: 0 };
 
+  const today = new Date();
   const weeks = Array.from(
-    new Set(activities.map((a) => isoWeekStartUtc(a.date)))
+    new Set(
+      activities
+        .filter((a) => a.date <= today)
+        .map((a) => isoWeekStartUtc(a.date))
+    )
   ).sort((a, b) => a - b);
+
+  if (weeks.length === 0) return { current: 0, longest: 0 };
 
   let longest = 1;
   let run = 1;
@@ -168,7 +175,7 @@ export function computeStreak(activities: Activity[]): StreakStats {
   }
 
   // A streak is only "current" if the last active week is this week or last week.
-  const todayWeekStart = isoWeekStartUtc(new Date());
+  const todayWeekStart = isoWeekStartUtc(today);
   if (weeks[weeks.length - 1] < todayWeekStart - WEEK_MS) {
     current = 0;
   }
@@ -232,7 +239,9 @@ export function computeYearOverYear(
   mode: ViewMode,
   monthLabels: string[]
 ): YearOverYearData | null {
-  const years = availableYears(activities);
+  const today = new Date();
+  const pastActivities = activities.filter((a) => a.date <= today);
+  const years = availableYears(pastActivities);
   if (years.length < 2) return null;
 
   const currentYear = years[years.length - 1];
@@ -249,7 +258,7 @@ export function computeYearOverYear(
   let currentMaxIdx = -1;
   let previousMaxIdx = -1;
 
-  for (const a of activities) {
+  for (const a of pastActivities) {
     const year = a.date.getFullYear();
     if (year !== currentYear && year !== previousYear) continue;
     const idx =

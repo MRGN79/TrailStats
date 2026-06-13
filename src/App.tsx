@@ -323,6 +323,7 @@ export default function App() {
                   <RacePredictor
                     predictions={racePredictions.items}
                     baseBucket={racePredictions.base}
+                    hasEfforts={bestEfforts.length > 0}
                     locale={locale}
                   />
                   <EddingtonCards stats={eddington} locale={locale} />

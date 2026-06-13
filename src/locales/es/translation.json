@@ -30,7 +30,8 @@
       "title": "Predictor de carrera",
       "subtitle": "Basado en tu mejor esfuerzo en {{base}}",
       "actual": "Real",
-      "predicted": "Predicción"
+      "predicted": "Predicción",
+      "noData": "Se necesita un mejor esfuerzo en 5K, 10K o media maratón para las predicciones de carrera."
     },
     "paceZones": {
       "title": "Distribución por zonas de ritmo",
