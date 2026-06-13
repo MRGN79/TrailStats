@@ -181,6 +181,13 @@ export function ActivityHeatmap({ data, locale }: Props) {
           />
           {t("stats.heatmap.high")}
         </li>
+        <li>
+          <span
+            className="heatmap-legend__swatch"
+            style={{ background: LEVEL_FILL.exceptional }}
+          />
+          {t("stats.heatmap.exceptional")}
+        </li>
       </ul>
     </section>
   );

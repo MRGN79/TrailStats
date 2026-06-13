@@ -49,6 +49,7 @@ export function RacePredictor({ predictions, baseBucket, locale: _locale }: Prop
                     ? t("stats.racePredictor.actual")
                     : t("stats.racePredictor.predicted"),
                 })}
+                label={t("share.buttonFor", { item: bucketLabel(item.bucket) })}
               />
             </div>
           );

@@ -7,6 +7,7 @@ import {
   computeTotals,
   computeTypeBreakdown,
   computeYearOverYear,
+  computeLatestDate,
   filterByType,
 } from "./aggregate";
 import type { Activity } from "./types";
@@ -188,5 +189,61 @@ describe("computeYearOverYear", () => {
     const mar = yoy?.points[2];
     expect(mar?.current).toBeNull();
     expect(mar?.previous).toBe(20);
+  });
+
+  it("maps a rest month within the active range to 0, not null", () => {
+    // Current year (2026) has activity in Jan and Mar but not Feb. Feb is inside
+    // the active range (i=1 <= currentMaxIdx=2), so it must read 0 (a genuine
+    // rest month), distinguishable from months absent beyond the data range.
+    const acts = [
+      act("2025-01-15", "Run", 5, 100, 0),
+      act("2026-01-10", "Run", 10, 100, 0),
+      act("2026-03-10", "Run", 20, 100, 0),
+    ];
+    const yoy = computeYearOverYear(acts, "monthly", MONTHS);
+    expect(yoy).not.toBeNull();
+    const feb = yoy?.points[1];
+    expect(feb?.label).toBe("Feb");
+    expect(feb?.current).toBe(0);
+    // The previous year ends in Jan, so Feb is beyond its range => null.
+    expect(feb?.previous).toBeNull();
+  });
+
+  it("maps a zero-distance activity month to 0, not null", () => {
+    // A logged activity with 0 km (e.g. a gym session) within the active range
+    // must keep its month at 0 rather than collapsing to absent/null.
+    const acts = [
+      act("2025-01-15", "Run", 5, 100, 0),
+      act("2026-01-10", "Run", 10, 100, 0),
+      act("2026-02-05", "WeightTraining", 0, 1800, 0),
+    ];
+    const yoy = computeYearOverYear(acts, "monthly", MONTHS);
+    const feb = yoy?.points[1];
+    expect(feb?.current).toBe(0);
+  });
+});
+
+describe("computeLatestDate", () => {
+  it("returns the epoch for an empty activity list", () => {
+    expect(computeLatestDate([]).getTime()).toBe(0);
+  });
+
+  it("returns the single activity's date when there is only one", () => {
+    const only = act("2026-03-15", "Run", 5, 100, 0);
+    expect(computeLatestDate([only]).getTime()).toBe(only.date.getTime());
+  });
+
+  it("returns the most recent date regardless of input order", () => {
+    const acts = [
+      act("2025-01-01", "Run", 5, 100, 0),
+      act("2026-06-13", "Run", 8, 100, 0),
+      act("2024-12-31", "Run", 3, 100, 0),
+    ];
+    const latest = computeLatestDate(acts);
+    expect(latest.getTime()).toBe(new Date("2026-06-13").getTime());
+    // Order must not matter: reversing yields the same result.
+    expect(computeLatestDate([...acts].reverse()).getTime()).toBe(
+      latest.getTime()
+    );
   });
 });

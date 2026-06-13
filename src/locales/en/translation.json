@@ -16,7 +16,8 @@
     "error": {
       "invalidZip": "This doesn't look like a supported export. Make sure it's the full ZIP you downloaded from Strava, Garmin or another supported platform.",
       "noActivities": "Couldn't find activities in this export.",
-      "clearFailed": "Couldn't delete your stored activities. Try again or clear this site's data from your browser settings."
+      "clearFailed": "Couldn't delete your stored activities. Try again or clear this site's data from your browser settings.",
+      "saveFailed": "Your data couldn't be saved locally and will be lost when you close the tab."
     },
     "discarded": "{{count}} rows could not be read and were skipped."
   },
@@ -130,6 +131,7 @@
       "low": "Low",
       "medium": "Medium",
       "high": "High",
+      "exceptional": "Exceptional (≥50 km)",
       "dayLabel": "{{date}}: {{distance}} km",
       "dayLabelEmpty": "{{date}}: no activity",
       "months": {
@@ -187,7 +189,8 @@
     "dismiss": "Dismiss"
   },
   "share": {
-    "button": "Share"
+    "button": "Share",
+    "buttonFor": "Share {{item}}"
   },
   "demo": {
     "or": "or",

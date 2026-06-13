@@ -39,6 +39,7 @@ export function BestEfforts({ efforts, locale }: Props) {
                 unit: t("units.minPerKm"),
                 detail: dateFmt.format(e.date),
               })}
+              label={t("share.buttonFor", { item: t(`stats.bestEfforts.${e.bucket}`) })}
             />
           </div>
         ))}

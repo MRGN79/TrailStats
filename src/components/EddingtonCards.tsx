@@ -44,6 +44,7 @@ export function EddingtonCards({ stats, locale }: Props) {
                       })
                     : undefined,
               })}
+              label={t("share.buttonFor", { item: t(`stats.eddington.${s.sport}`) })}
             />
           </div>
         ))}

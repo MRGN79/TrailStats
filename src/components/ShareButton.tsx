@@ -4,9 +4,10 @@ import { generateShareCard, type ShareCardData } from "../lib/shareCard";
 
 interface Props {
   getData: () => ShareCardData;
+  label?: string;
 }
 
-export function ShareButton({ getData }: Props) {
+export function ShareButton({ getData, label }: Props) {
   const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
 
@@ -48,8 +49,8 @@ export function ShareButton({ getData }: Props) {
       className="share-btn"
       onClick={handleClick}
       disabled={busy}
-      aria-label={t("share.button")}
-      title={t("share.button")}
+      aria-label={label ?? t("share.button")}
+      title={label ?? t("share.button")}
     >
       <svg
         aria-hidden="true"

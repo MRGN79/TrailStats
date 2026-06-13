@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   CartesianGrid,
@@ -12,6 +12,7 @@ import {
   YAxis,
 } from "recharts";
 import type { FitnessData } from "../lib/types";
+import { axisTickStyle, tooltipStyle } from "./chartStyles";
 
 interface Props {
   data: FitnessData;
@@ -22,36 +23,14 @@ export function FitnessChart({ data, locale }: Props) {
   const { t } = useTranslation();
   const [showTable, setShowTable] = useState(false);
 
-  if (data.points.length === 0) return null;
-
-  const monthFmt = new Intl.DateTimeFormat(locale, { month: "short" });
-  const dateFmt = new Intl.DateTimeFormat(locale, {
+  const monthFmt = useMemo(() => new Intl.DateTimeFormat(locale, { month: "short" }), [locale]);
+  const dateFmt = useMemo(() => new Intl.DateTimeFormat(locale, {
     year: "numeric",
     month: "short",
     day: "numeric",
-  });
+  }), [locale]);
 
-  const axisTickStyle = {
-    fontFamily: "var(--font-mono)",
-    fontSize: 11,
-    fill: "rgba(250,248,243,0.5)",
-    style: { fontFeatureSettings: '"tnum" 1' },
-  };
-  const tooltipStyle = {
-    background: "var(--forest-deep)",
-    border: "none",
-    borderRadius: "6px",
-    color: "var(--paper)",
-    fontFamily: "var(--font-mono)",
-    fontSize: "0.85rem",
-  };
-
-  const chartData = data.points.map((p) => ({
-    date: p.date,
-    ctl: p.ctl,
-    atl: p.atl,
-    tsb: p.tsb,
-  }));
+  if (data.points.length === 0) return null;
 
   return (
     <section aria-label={t("stats.fitness.title")}>
@@ -63,7 +42,7 @@ export function FitnessChart({ data, locale }: Props) {
         aria-label={t("stats.fitness.chartAlt")}
       >
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData}>
+          <LineChart data={data.points}>
             <CartesianGrid
               vertical={false}
               stroke="rgba(255,255,255,0.1)"

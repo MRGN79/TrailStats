@@ -30,6 +30,7 @@ import {
   computeHeatmap,
   computePaceEvolution,
   computePaceZones,
+  computeLatestDate,
   computeRacePredictor,
   computeRecords,
   computeStreak,
@@ -84,6 +85,7 @@ export default function App() {
   const [hasStoredData, setHasStoredData] = useState(false);
   const [restoredFromCache, setRestoredFromCache] = useState(false);
   const [cacheBannerDismissed, setCacheBannerDismissed] = useState(() => loadBannerDismissed());
+  const [saveError, setSaveError] = useState(false);
 
   const dashHeadingRef = useRef<HTMLHeadingElement>(null);
   const saveGenRef = useRef(0);
@@ -121,6 +123,7 @@ export default function App() {
     setSelectedType(null);
     setCompareYears(false);
     setRestoredFromCache(false);
+    setSaveError(false);
     clearBannerDismissed();
     setCacheBannerDismissed(false);
     try {
@@ -134,7 +137,7 @@ export default function App() {
       setStatus({ kind: "ready", dataset });
       saveDataset(dataset)
         .then(() => { if (saveGenRef.current === saveGen) setHasStoredData(true); })
-        .catch(() => {});
+        .catch(() => { if (saveGenRef.current === saveGen) setSaveError(true); });
     } catch (err) {
       const code = err instanceof Error ? err.message : "INVALID_ZIP";
       const message =
@@ -210,10 +213,10 @@ export default function App() {
   const racePredictions = useMemo(() => computeRacePredictor(bestEfforts), [bestEfforts]);
   const paceZones = useMemo(() => computePaceZones(filtered), [filtered]);
   const fitnessData = useMemo(() => computeFitness(dataset?.activities ?? []), [dataset]);
-  const latestDate = useMemo(() => {
-    if (!dataset || dataset.activities.length === 0) return new Date(0);
-    return dataset.activities.reduce((max, a) => (a.date > max ? a.date : max), dataset.activities[0].date);
-  }, [dataset]);
+  const latestDate = useMemo(
+    () => computeLatestDate(dataset?.activities ?? []),
+    [dataset]
+  );
 
   return (
     <div className="app">
@@ -306,6 +309,11 @@ export default function App() {
               </div>
 
               <div className="dashboard__main">
+                {saveError && (
+                  <p className="notice" role="alert">
+                    {t("upload.error.saveFailed")}
+                  </p>
+                )}
                 <div className="dash-section">
                   <h2 className="dash-section__title" ref={dashHeadingRef} tabIndex={-1}>
                     {t("stats.sections.social")}

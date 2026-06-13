@@ -59,21 +59,30 @@ function buildColumnMap(headers: string[]): Record<string, number> {
 function toNumber(raw: string | undefined): number {
   if (!raw) return 0;
   const s = raw.trim();
-  // SI metric columns use dot as decimal separator without thousands grouping.
-  // Handle the exception: locale-comma used as decimal when no dot is present
-  // (e.g. "22,98" from locale-formatted summary columns).
-  if (!s.includes(".") && s.includes(",")) {
-    const lastComma = s.lastIndexOf(",");
-    const clean =
-      s.slice(0, lastComma).replace(/[^0-9-]/g, "") +
-      "." +
-      s.slice(lastComma + 1).replace(/[^0-9]/g, "");
-    const n = parseFloat(clean);
+  const dotIdx = s.lastIndexOf(".");
+  const commaIdx = s.lastIndexOf(",");
+  if (dotIdx === -1 && commaIdx === -1) {
+    const n = parseFloat(s);
     return Number.isFinite(n) ? n : 0;
   }
-  // Default: strip commas (thousands separators in English-locale exports),
-  // then parse the dot-decimal value.
-  const n = parseFloat(s.replace(/,/g, "").replace(/[^0-9.-]/g, ""));
+  if (dotIdx === -1) {
+    // No dot: comma is the decimal separator ("22,98")
+    const n = parseFloat(s.replace(",", "."));
+    return Number.isFinite(n) ? n : 0;
+  }
+  if (commaIdx === -1) {
+    // No comma: dot is the decimal separator ("1234.56")
+    const n = parseFloat(s);
+    return Number.isFinite(n) ? n : 0;
+  }
+  let n: number;
+  if (commaIdx > dotIdx) {
+    // European format: "1.234,56" — dot=thousands, comma=decimal
+    n = parseFloat(s.replace(/\./g, "").replace(",", "."));
+  } else {
+    // English format: "1,234.56" — comma=thousands, dot=decimal
+    n = parseFloat(s.replace(/,/g, ""));
+  }
   return Number.isFinite(n) ? n : 0;
 }
 

@@ -64,6 +64,7 @@ export function TrainingLoad({ load, locale }: Props) {
               baseline: formatNumber(load.baselineLoad, locale),
             }),
           })}
+          label={t("share.buttonFor", { item: t("stats.load.title") })}
         />
       </div>
     </section>
