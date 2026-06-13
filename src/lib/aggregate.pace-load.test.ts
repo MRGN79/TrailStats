@@ -105,15 +105,13 @@ describe("computeTrainingLoad", () => {
     expect(computeTrainingLoad([])).toBeNull();
   });
 
-  it("reports insufficient history below 3 baseline weeks", () => {
+  it("returns null when fewer than 3 baseline weeks of history", () => {
     const today = new Date("2024-03-25"); // Monday
     const activities = [
       act("2024-03-25", "Run", 10, 3000),
       act("2024-03-18", "Run", 10, 3000),
     ];
-    const result = computeTrainingLoad(activities, today);
-    expect(result?.weeksOfHistory).toBe(1);
-    expect(result?.index).toBe(0);
+    expect(computeTrainingLoad(activities, today)).toBeNull();
   });
 
   it("computes index versus the 6-week baseline", () => {

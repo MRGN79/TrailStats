@@ -11,6 +11,18 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 - **Borrado de datos desde el panel de privacidad:** el panel de privacidad incluye ahora un botón para eliminar las actividades guardadas en este navegador. Solo aparece cuando hay datos almacenados y pide confirmación antes de borrar, para que nunca pierdas tu historial por accidente.
 - CI en GitHub Actions: cada PR hacia `main` ejecuta automáticamente la verificación de tipos TypeScript y la batería de tests antes de permitir el merge.
 
+## [0.9.2] — 2026-06-13
+
+### Fixed
+- **Racha actual más fiel a la realidad:** si tu última semana con actividad es antigua (anterior a la semana pasada), la racha actual se muestra ahora correctamente como cero, en lugar de mantener una racha que en realidad ya se ha interrumpido.
+- **Comparativa año a año más rigurosa:** la comparación entre años solo se muestra cuando los dos años con actividad más recientes son consecutivos. Si hay un hueco entre ellos, ya no se presenta una comparativa engañosa.
+- **Las salidas cortas ya cuentan:** las actividades de menos de 1 km se incluyen ahora en el cálculo de las zonas de ritmo, que antes las dejaba fuera.
+- **Cálculo de forma física coherente:** el indicador de forma física y el de carga de entrenamiento usan ahora exactamente la misma base de cálculo, eliminando una discrepancia entre ambos.
+- **Sin cifras de carga engañosas:** cuando no hay suficiente historial para calcular la carga de entrenamiento de forma fiable, la aplicación lo indica claramente en lugar de mostrar un resultado "normal" que podría inducir a error.
+- **Guardado de datos más robusto:** al subir varios exports seguidos, los avisos de guardados ya superados no interfieren con el estado de la aplicación, evitando que se marque como "datos guardados" lo que no corresponde.
+- **Mensaje correcto cuando no hay actividades:** si un export de Garmin no contiene ninguna actividad utilizable, se muestra ahora el mensaje adecuado de "sin actividades" en lugar de un error genérico.
+- **Carga y forma física sobre todo tu historial:** los indicadores de carga de entrenamiento y forma física se calculan ahora sobre el historial completo de actividades, sin verse afectados por el filtro de tipo de actividad activo.
+
 ## [0.9.1] — 2026-06-12
 
 ### Fixed

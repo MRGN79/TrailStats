@@ -117,7 +117,6 @@
       "title": "Weekly training load",
       "barLabel": "Training load index versus your 6-week baseline",
       "caption": "This week {{current}} vs {{baseline}} avg load units",
-      "notEnoughHistory": "Need at least 3 weeks of activity to estimate training load.",
       "state": {
         "low": "Low",
         "normal": "Normal",

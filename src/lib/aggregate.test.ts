@@ -84,13 +84,15 @@ describe("computeStreak", () => {
   });
 
   it("counts consecutive ISO weeks for current and longest", () => {
-    // Three consecutive Mondays, then a gap, then two consecutive weeks.
+    // Three consecutive weeks in Jan (longest=3), then a gap, then two consecutive
+    // recent weeks ending this/last week (current=2). Dates chosen so the final
+    // two weeks are within the stale-streak window relative to today (2026-06-13).
     const acts = [
       act("2026-01-05", "Run", 5, 100, 0),
       act("2026-01-12", "Run", 5, 100, 0),
       act("2026-01-19", "Run", 5, 100, 0),
-      act("2026-02-09", "Run", 5, 100, 0),
-      act("2026-02-16", "Run", 5, 100, 0),
+      act("2026-06-02", "Run", 5, 100, 0), // last week
+      act("2026-06-09", "Run", 5, 100, 0), // this week
     ];
     const streak = computeStreak(acts);
     expect(streak.longest).toBe(3);
@@ -98,10 +100,11 @@ describe("computeStreak", () => {
   });
 
   it("collapses multiple activities in the same week", () => {
+    // Two recent consecutive weeks; two activities fall in the first week.
     const acts = [
-      act("2026-01-05", "Run", 5, 100, 0),
-      act("2026-01-07", "Ride", 5, 100, 0),
-      act("2026-01-12", "Run", 5, 100, 0),
+      act("2026-06-02", "Run", 5, 100, 0),  // last week, Monday
+      act("2026-06-04", "Ride", 5, 100, 0), // last week, Wednesday (same ISO week)
+      act("2026-06-09", "Run", 5, 100, 0),  // this week
     ];
     expect(computeStreak(acts)).toEqual({ current: 2, longest: 2 });
   });
@@ -157,6 +160,14 @@ describe("availableYears", () => {
 describe("computeYearOverYear", () => {
   it("returns null with fewer than two years", () => {
     const acts = [act("2026-01-05", "Run", 5, 100, 0)];
+    expect(computeYearOverYear(acts, "monthly", MONTHS)).toBeNull();
+  });
+
+  it("returns null when the two most recent active years are not consecutive", () => {
+    const acts = [
+      act("2020-06-01", "Run", 10, 100, 0),
+      act("2023-06-01", "Run", 10, 100, 0),
+    ];
     expect(computeYearOverYear(acts, "monthly", MONTHS)).toBeNull();
   });
 

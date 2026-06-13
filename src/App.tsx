@@ -65,7 +65,7 @@ export default function App() {
   useEffect(() => {
     loadDataset()
       .then((stored) => {
-        if (stored) {
+        if (stored && stored.activities.length > 0) {
           setHasStoredData(true);
           setRestoredFromCache(true);
           setStatus({ kind: "ready", dataset: stored });
@@ -86,6 +86,7 @@ export default function App() {
   const [cacheBannerDismissed, setCacheBannerDismissed] = useState(() => loadBannerDismissed());
 
   const dashHeadingRef = useRef<HTMLHeadingElement>(null);
+  const saveGenRef = useRef(0);
 
   // Move focus to the dashboard heading when data finishes loading,
   // but only when no interactive element currently has focus.
@@ -115,6 +116,7 @@ export default function App() {
   }, [status, t]);
 
   async function handleFile(file: File) {
+    const saveGen = ++saveGenRef.current;
     setStatus({ kind: "processing" });
     setSelectedType(null);
     setCompareYears(false);
@@ -131,12 +133,12 @@ export default function App() {
       }
       setStatus({ kind: "ready", dataset });
       saveDataset(dataset)
-        .then(() => setHasStoredData(true))
+        .then(() => { if (saveGenRef.current === saveGen) setHasStoredData(true); })
         .catch(() => {});
     } catch (err) {
       const code = err instanceof Error ? err.message : "INVALID_ZIP";
       const message =
-        code === "NO_ACTIVITIES"
+        code === "NO_ACTIVITIES" || code === "EMPTY_FIT"
           ? t("upload.error.noActivities")
           : t("upload.error.invalidZip");
       setStatus({ kind: "error", message });
@@ -155,6 +157,7 @@ export default function App() {
 
   async function handleClearData() {
     if (!window.confirm(t("upload.purgeConfirm"))) return;
+    saveGenRef.current++;
     try {
       await clearStorage();
     } catch {
@@ -191,7 +194,7 @@ export default function App() {
   const eddington = useMemo(() => computeEddington(filtered), [filtered]);
   const paceEvolution = useMemo(() => computePaceEvolution(filtered), [filtered]);
   const bestEfforts = useMemo(() => computeBestEfforts(filtered), [filtered]);
-  const trainingLoad = useMemo(() => computeTrainingLoad(filtered), [filtered]);
+  const trainingLoad = useMemo(() => computeTrainingLoad(dataset?.activities ?? []), [dataset]);
   const yearOverYear = useMemo(
     () => computeYearOverYear(filtered, view, monthLabels(locale)),
     [filtered, view, locale]
@@ -206,7 +209,7 @@ export default function App() {
 
   const racePredictions = useMemo(() => computeRacePredictor(bestEfforts), [bestEfforts]);
   const paceZones = useMemo(() => computePaceZones(filtered), [filtered]);
-  const fitnessData = useMemo(() => computeFitness(filtered), [filtered]);
+  const fitnessData = useMemo(() => computeFitness(dataset?.activities ?? []), [dataset]);
   const latestDate = useMemo(() => {
     if (!dataset || dataset.activities.length === 0) return new Date(0);
     return dataset.activities.reduce((max, a) => (a.date > max ? a.date : max), dataset.activities[0].date);

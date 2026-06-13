@@ -117,7 +117,6 @@
       "title": "Carga de entrenamiento semanal",
       "barLabel": "Índice de carga frente a tu media de 6 semanas",
       "caption": "Esta semana {{current}} vs {{baseline}} unidades de carga de media",
-      "notEnoughHistory": "Se necesitan al menos 3 semanas de actividad para estimar la carga.",
       "state": {
         "low": "Baja",
         "normal": "Normal",
