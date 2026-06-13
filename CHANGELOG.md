@@ -11,6 +11,13 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 - **Borrado de datos desde el panel de privacidad:** el panel de privacidad incluye ahora un botón para eliminar las actividades guardadas en este navegador. Solo aparece cuando hay datos almacenados y pide confirmación antes de borrar, para que nunca pierdas tu historial por accidente.
 - CI en GitHub Actions: cada PR hacia `main` ejecuta automáticamente la verificación de tipos TypeScript y la batería de tests antes de permitir el merge.
 
+## [0.9.5] — 2026-06-13
+
+### Fixed
+- **La racha ignora actividades con fecha futura:** si pre-registras una carrera con fecha posterior a hoy, la racha ya no aparece como activa por ese motivo. Antes, una actividad fechada en el futuro mantenía la racha "viva" aunque llevaras semanas sin entrenar.
+- **La comparativa año a año ignora actividades con fecha futura:** las actividades fechadas en el futuro dejan de contar en la comparación entre años. Antes, una salida pre-registrada para julio de 2026 aparecía en la gráfica como si ya hubiera ocurrido.
+- **El predictor de carreras explica por qué no aparece:** cuando tienes mejores marcas pero ninguna en 5K, 10K o media maratón (solo en maratón), la sección ya no desaparece sin avisar. En su lugar muestra el mensaje "A best effort at 5K, 10K, or half marathon is needed for race predictions."
+
 ## [0.9.4] — 2026-06-13
 
 ### Fixed
