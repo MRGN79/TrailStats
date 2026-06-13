@@ -7,6 +7,7 @@ import {
   computeTotals,
   computeTypeBreakdown,
   computeYearOverYear,
+  computeLatestDate,
   filterByType,
 } from "./aggregate";
 import type { Activity } from "./types";
@@ -219,5 +220,30 @@ describe("computeYearOverYear", () => {
     const yoy = computeYearOverYear(acts, "monthly", MONTHS);
     const feb = yoy?.points[1];
     expect(feb?.current).toBe(0);
+  });
+});
+
+describe("computeLatestDate", () => {
+  it("returns the epoch for an empty activity list", () => {
+    expect(computeLatestDate([]).getTime()).toBe(0);
+  });
+
+  it("returns the single activity's date when there is only one", () => {
+    const only = act("2026-03-15", "Run", 5, 100, 0);
+    expect(computeLatestDate([only]).getTime()).toBe(only.date.getTime());
+  });
+
+  it("returns the most recent date regardless of input order", () => {
+    const acts = [
+      act("2025-01-01", "Run", 5, 100, 0),
+      act("2026-06-13", "Run", 8, 100, 0),
+      act("2024-12-31", "Run", 3, 100, 0),
+    ];
+    const latest = computeLatestDate(acts);
+    expect(latest.getTime()).toBe(new Date("2026-06-13").getTime());
+    // Order must not matter: reversing yields the same result.
+    expect(computeLatestDate([...acts].reverse()).getTime()).toBe(
+      latest.getTime()
+    );
   });
 });
