@@ -16,7 +16,8 @@
     "error": {
       "invalidZip": "Esto no parece un export compatible. Asegúrate de que es el ZIP completo que descargaste de Strava, Garmin u otra plataforma compatible.",
       "noActivities": "No se han encontrado actividades en este export.",
-      "clearFailed": "No se pudieron eliminar las actividades guardadas. Inténtalo de nuevo o borra los datos del sitio en los ajustes de tu navegador."
+      "clearFailed": "No se pudieron eliminar las actividades guardadas. Inténtalo de nuevo o borra los datos del sitio en los ajustes de tu navegador.",
+      "saveFailed": "No se pudieron guardar los datos localmente. Se perderán al cerrar la pestaña."
     },
     "discarded": "{{count}} filas no se pudieron leer y se han descartado."
   },
@@ -129,6 +130,7 @@
       "noActivity": "Sin actividad",
       "low": "Baja",
       "medium": "Media",
+      "exceptional": "Excepcional (≥50 km)",
       "high": "Alta",
       "dayLabel": "{{date}}: {{distance}} km",
       "dayLabelEmpty": "{{date}}: sin actividad",
@@ -187,7 +189,8 @@
     "dismiss": "Cerrar"
   },
   "share": {
-    "button": "Compartir"
+    "button": "Compartir",
+    "buttonFor": "Compartir {{item}}"
   },
   "demo": {
     "or": "o",

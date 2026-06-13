@@ -270,8 +270,8 @@ export function computeYearOverYear(
     points.push({
       index: i,
       label: buckets.labelFor(i),
-      current: current[i] > 0 ? Number(current[i].toFixed(1)) : null,
-      previous: previous[i] > 0 ? Number(previous[i].toFixed(1)) : null,
+      current: i <= currentMaxIdx ? Number(current[i].toFixed(1)) : null,
+      previous: i <= previousMaxIdx ? Number(previous[i].toFixed(1)) : null,
     });
   }
 
@@ -642,10 +642,6 @@ export function computePaceZones(activities: Activity[]): PaceZonesData | null {
 
 // ── Fitness & Freshness (CTL/ATL/TSB) ───────────────────────
 
-function fitnessDayKey(date: Date): number {
-  return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
-}
-
 const SIX_MONTHS_MS = 183 * DAY_MS;
 const DECAY_TAIL_MS = 90 * DAY_MS;
 
@@ -657,13 +653,13 @@ export function computeFitness(activities: Activity[]): FitnessData {
   let minKey = Infinity;
   let maxKey = -Infinity;
   for (const a of activities) {
-    const key = fitnessDayKey(a.date);
+    const key = dayKeyUtc(a.date);
     if (key < minKey) minKey = key;
     if (key > maxKey) maxKey = key;
     dailyLoad.set(key, (dailyLoad.get(key) ?? 0) + a.distanceKm * loadFactor(a.type));
   }
 
-  const todayKey = fitnessDayKey(new Date());
+  const todayKey = dayKeyUtc(new Date());
   const totalDays = (todayKey - minKey) / DAY_MS + 1;
 
   if (totalDays < 28) return { points: [] };
@@ -697,4 +693,9 @@ export function computeFitness(activities: Activity[]): FitnessData {
   }
 
   return { points };
+}
+
+export function computeLatestDate(activities: Activity[]): Date {
+  if (activities.length === 0) return new Date(0);
+  return activities.reduce((max, a) => (a.date > max ? a.date : max), activities[0].date);
 }

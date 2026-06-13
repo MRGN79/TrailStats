@@ -60,6 +60,18 @@ export function StreakRecords({ streak, records, locale }: Props) {
                   mainValue: formatNumber(streak.current, locale),
                   unit: t("stats.streak.weeks", { count: streak.current }),
                 })}
+                label={t("share.buttonFor", { item: t("stats.streak.current") })}
+              />
+            )}
+            {idx === 1 && (
+              <ShareButton
+                getData={() => ({
+                  category: t("stats.streak.title"),
+                  subcategory: t("stats.streak.longest"),
+                  mainValue: formatNumber(streak.longest, locale),
+                  unit: t("stats.streak.weeks", { count: streak.longest }),
+                })}
+                label={t("share.buttonFor", { item: t("stats.streak.longest") })}
               />
             )}
             {idx >= 2 && item.shareValue !== undefined && (
@@ -70,6 +82,7 @@ export function StreakRecords({ streak, records, locale }: Props) {
                   mainValue: item.shareValue!,
                   detail: item.sub,
                 })}
+                label={t("share.buttonFor", { item: item.label })}
               />
             )}
           </div>

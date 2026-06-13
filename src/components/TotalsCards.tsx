@@ -65,6 +65,7 @@ export function TotalsCards({ totals, locale }: Props) {
                 mainValue: c.shareValue,
                 unit: c.shareUnit,
               })}
+              label={t("share.buttonFor", { item: c.label })}
             />
           </div>
           );

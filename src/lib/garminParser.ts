@@ -121,7 +121,7 @@ export async function parseFitFiles(entries: FitEntry[]): Promise<ParsedDataset>
     });
   }
 
-  if (activities.length === 0 && discarded === 0) {
+  if (activities.length === 0) {
     throw new Error("EMPTY_FIT");
   }
 

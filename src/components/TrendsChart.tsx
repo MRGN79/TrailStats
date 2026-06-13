@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import type { AggregatedPeriod, YearOverYearData } from "../lib/types";
 import { formatDistance } from "../lib/format";
+import { axisTickStyle, tooltipStyle } from "./chartStyles";
 
 interface Props {
   periods: AggregatedPeriod[];
@@ -25,24 +26,10 @@ export function TrendsChart({ periods, locale, yearOverYear }: Props) {
 
   const compare = yearOverYear != null;
 
-  const axisTickStyle = {
-    fontFamily: "var(--font-mono)",
-    fontSize: 11,
-    fill: "rgba(250,248,243,0.5)",
-    style: { fontFeatureSettings: '"tnum" 1' },
-  };
   const labelTickStyle = {
     fontFamily: "var(--font-body)",
     fontSize: 11,
     fill: "rgba(250,248,243,0.5)",
-  };
-  const tooltipStyle = {
-    background: "var(--forest-deep)",
-    border: "none",
-    borderRadius: "6px",
-    color: "var(--paper)",
-    fontFamily: "var(--font-mono)",
-    fontSize: "0.85rem",
   };
 
   const singleData = periods.map((p) => ({
