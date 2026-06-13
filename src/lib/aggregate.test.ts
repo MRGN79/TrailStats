@@ -189,4 +189,35 @@ describe("computeYearOverYear", () => {
     expect(mar?.current).toBeNull();
     expect(mar?.previous).toBe(20);
   });
+
+  it("maps a rest month within the active range to 0, not null", () => {
+    // Current year (2026) has activity in Jan and Mar but not Feb. Feb is inside
+    // the active range (i=1 <= currentMaxIdx=2), so it must read 0 (a genuine
+    // rest month), distinguishable from months absent beyond the data range.
+    const acts = [
+      act("2025-01-15", "Run", 5, 100, 0),
+      act("2026-01-10", "Run", 10, 100, 0),
+      act("2026-03-10", "Run", 20, 100, 0),
+    ];
+    const yoy = computeYearOverYear(acts, "monthly", MONTHS);
+    expect(yoy).not.toBeNull();
+    const feb = yoy?.points[1];
+    expect(feb?.label).toBe("Feb");
+    expect(feb?.current).toBe(0);
+    // The previous year ends in Jan, so Feb is beyond its range => null.
+    expect(feb?.previous).toBeNull();
+  });
+
+  it("maps a zero-distance activity month to 0, not null", () => {
+    // A logged activity with 0 km (e.g. a gym session) within the active range
+    // must keep its month at 0 rather than collapsing to absent/null.
+    const acts = [
+      act("2025-01-15", "Run", 5, 100, 0),
+      act("2026-01-10", "Run", 10, 100, 0),
+      act("2026-02-05", "WeightTraining", 0, 1800, 0),
+    ];
+    const yoy = computeYearOverYear(acts, "monthly", MONTHS);
+    const feb = yoy?.points[1];
+    expect(feb?.current).toBe(0);
+  });
 });
