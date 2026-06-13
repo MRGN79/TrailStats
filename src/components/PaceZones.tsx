@@ -20,7 +20,14 @@ const ZONE_KEYS = ["z1", "z2", "z3", "z4", "z5"] as const;
 export function PaceZones({ zones, locale: _locale }: Props) {
   const { t } = useTranslation();
 
-  if (!zones) return null;
+  if (!zones) {
+    return (
+      <section aria-label={t("stats.paceZones.title")}>
+        <h2 className="section-title">{t("stats.paceZones.title")}</h2>
+        <p className="section-disclaimer">{t("stats.paceZones.noData")}</p>
+      </section>
+    );
+  }
 
   return (
     <section aria-label={t("stats.paceZones.title")}>

@@ -128,6 +128,7 @@
     "heatmap": {
       "title": "Historial de actividad",
       "noActivity": "Sin actividad",
+      "noRecentActivity": "Sin actividades en el último año.",
       "low": "Baja",
       "medium": "Media",
       "exceptional": "Excepcional (≥50 km)",

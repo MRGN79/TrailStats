@@ -90,6 +90,10 @@ export function ActivityHeatmap({ data, locale }: Props) {
     <section aria-label={t("stats.heatmap.title")}>
       <h2 className="section-title">{t("stats.heatmap.title")}</h2>
 
+      {data.days.every((d) => d.distanceKm === 0) && (
+        <p className="section-disclaimer">{t("stats.heatmap.noRecentActivity")}</p>
+      )}
+
       <div className="heatmap-scroll">
         <svg
           className="heatmap"
