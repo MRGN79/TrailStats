@@ -15,7 +15,7 @@ export function EddingtonCards({ stats, locale }: Props) {
     return (
       <section aria-label={t("stats.eddington.title")}>
         <h2 className="section-title">{t("stats.eddington.title")}</h2>
-        <p className="section-disclaimer">{t("stats.eddington.noData")}</p>
+        <p className="section-disclaimer" role="status">{t("stats.eddington.noData")}</p>
       </section>
     );
   }

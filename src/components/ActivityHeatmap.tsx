@@ -38,6 +38,11 @@ function weekdayMon0(date: Date): number {
 export function ActivityHeatmap({ data, locale }: Props) {
   const { t } = useTranslation();
 
+  const allEmpty = useMemo(
+    () => data.days.every((d) => d.distanceKm === 0),
+    [data]
+  );
+
   const dateFmt = useMemo(
     () =>
       new Intl.DateTimeFormat(locale, {
@@ -90,8 +95,10 @@ export function ActivityHeatmap({ data, locale }: Props) {
     <section aria-label={t("stats.heatmap.title")}>
       <h2 className="section-title">{t("stats.heatmap.title")}</h2>
 
-      {data.days.every((d) => d.distanceKm === 0) && (
-        <p className="section-disclaimer">{t("stats.heatmap.noRecentActivity")}</p>
+      {allEmpty && (
+        <p className="section-disclaimer" role="status">
+          {t("stats.heatmap.noRecentActivity")}
+        </p>
       )}
 
       <div className="heatmap-scroll">
@@ -100,8 +107,9 @@ export function ActivityHeatmap({ data, locale }: Props) {
           width={width}
           height={height}
           viewBox={`0 0 ${width} ${height}`}
-          role="img"
-          aria-label={t("stats.heatmap.title")}
+          role={allEmpty ? undefined : "img"}
+          aria-label={allEmpty ? undefined : t("stats.heatmap.title")}
+          aria-hidden={allEmpty ? true : undefined}
           focusable="false"
         >
           {monthLabels.map((m, i) => (

@@ -24,7 +24,7 @@ export function PaceZones({ zones, locale: _locale }: Props) {
     return (
       <section aria-label={t("stats.paceZones.title")}>
         <h2 className="section-title">{t("stats.paceZones.title")}</h2>
-        <p className="section-disclaimer">{t("stats.paceZones.noData")}</p>
+        <p className="section-disclaimer" role="status">{t("stats.paceZones.noData")}</p>
       </section>
     );
   }
