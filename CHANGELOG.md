@@ -11,6 +11,21 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 - **Borrado de datos desde el panel de privacidad:** el panel de privacidad incluye ahora un botón para eliminar las actividades guardadas en este navegador. Solo aparece cuando hay datos almacenados y pide confirmación antes de borrar, para que nunca pierdas tu historial por accidente.
 - CI en GitHub Actions: cada PR hacia `main` ejecuta automáticamente la verificación de tipos TypeScript y la batería de tests antes de permitir el merge.
 
+## [0.9.3] — 2026-06-13
+
+### Added
+- **Compartir tu racha más larga:** la tarjeta de la racha más larga incluye ahora un botón para compartirla, igual que el resto de tarjetas de récords.
+
+### Fixed
+- **Distancias correctas en exports de Strava no ingleses:** las cifras con formato europeo (punto para los miles, coma para los decimales) se interpretan ahora correctamente. Antes, los exports de Strava en idiomas como el castellano podían mostrar distancias erróneas.
+- **Meses sin actividad distinguibles del periodo sin datos:** en la comparativa año a año, los meses sin ninguna salida dentro de tu rango de datos aparecen ahora como 0, en lugar de quedar vacíos. Así se diferencian los periodos de descanso de los tramos para los que simplemente no hay historial.
+- **Mensaje claro cuando ningún archivo de Garmin se puede leer:** si todos los archivos `.fit` de un export de Garmin fallan al procesarse, se muestra ahora el aviso adecuado de "sin actividades" en lugar de un error genérico.
+- **Aviso cuando los datos no se pueden guardar:** si la aplicación no consigue guardar tus actividades en el navegador, ahora te lo indica claramente ("los datos no se han podido guardar localmente") en lugar de descartar el fallo en silencio.
+- **Nivel de calor excepcional con leyenda:** en el historial de actividad (heatmap), los días con un volumen excepcional (50 km o más) cuentan ahora con su propia entrada en la leyenda, en inglés y en castellano.
+
+### Changed
+- Mejoras internas de mantenimiento y rendimiento: simplificación del cálculo de la fecha más reciente, unificación de la lógica de cálculo de forma física, y optimización del formateo de fechas y los estilos compartidos de las gráficas. Sin cambios visibles en el uso de la aplicación.
+
 ## [0.9.2] — 2026-06-13
 
 ### Fixed
