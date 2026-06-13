@@ -9,6 +9,7 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ### Added
 - **Borrado de datos desde el panel de privacidad:** el panel de privacidad incluye ahora un botón para eliminar las actividades guardadas en este navegador. Solo aparece cuando hay datos almacenados y pide confirmación antes de borrar, para que nunca pierdas tu historial por accidente.
+- CI en GitHub Actions: cada PR hacia `main` ejecuta automáticamente la verificación de tipos TypeScript y la batería de tests antes de permitir el merge.
 
 ## [0.9.1] — 2026-06-12
 
