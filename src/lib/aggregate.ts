@@ -167,6 +167,12 @@ export function computeStreak(activities: Activity[]): StreakStats {
     else break;
   }
 
+  // A streak is only "current" if the last active week is this week or last week.
+  const todayWeekStart = isoWeekStartUtc(new Date());
+  if (weeks[weeks.length - 1] < todayWeekStart - WEEK_MS) {
+    current = 0;
+  }
+
   return { current, longest };
 }
 
@@ -231,6 +237,7 @@ export function computeYearOverYear(
 
   const currentYear = years[years.length - 1];
   const previousYear = years[years.length - 2];
+  if (currentYear - previousYear !== 1) return null;
 
   const buckets =
     mode === "monthly"
@@ -501,15 +508,7 @@ export function computeTrainingLoad(
   }
 
   const weeksOfHistory = baselineWeeks.filter((w) => w > 0).length;
-  if (weeksOfHistory < 3) {
-    return {
-      currentLoad,
-      baselineLoad: 0,
-      index: 0,
-      state: "normal",
-      weeksOfHistory,
-    };
-  }
+  if (weeksOfHistory < 3) return null;
 
   // Dividing by active weeks rather than a fixed window keeps sporadic
   // athletes from being unfairly flagged as "low". Trade-off: an athlete
@@ -601,7 +600,6 @@ export function computePaceZones(activities: Activity[]): PaceZonesData | null {
   const runActivities = activities.filter(
     (a) =>
       isRunning(a.type) &&
-      a.distanceKm >= 1 &&
       a.distanceKm > 0 &&
       a.movingTimeSec > 0
   );
@@ -648,15 +646,6 @@ function fitnessDayKey(date: Date): number {
   return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
-function fitnessLoadFactor(type: string): number {
-  const lower = type.toLowerCase();
-  if (lower.includes("run") || lower.includes("trail")) return 1.0;
-  if (lower.includes("ride") || lower.includes("cycling") || lower.includes("bike"))
-    return 0.5;
-  if (lower.includes("hike")) return 0.7;
-  return 0.8;
-}
-
 const SIX_MONTHS_MS = 183 * DAY_MS;
 const DECAY_TAIL_MS = 90 * DAY_MS;
 
@@ -671,7 +660,7 @@ export function computeFitness(activities: Activity[]): FitnessData {
     const key = fitnessDayKey(a.date);
     if (key < minKey) minKey = key;
     if (key > maxKey) maxKey = key;
-    dailyLoad.set(key, (dailyLoad.get(key) ?? 0) + a.distanceKm * fitnessLoadFactor(a.type));
+    dailyLoad.set(key, (dailyLoad.get(key) ?? 0) + a.distanceKm * loadFactor(a.type));
   }
 
   const todayKey = fitnessDayKey(new Date());
