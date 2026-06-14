@@ -168,13 +168,6 @@ export function ActivityHeatmap({ data, locale }: Props) {
         <li>
           <span
             className="heatmap-legend__swatch"
-            style={{ background: LEVEL_FILL.none }}
-          />
-          {t("stats.heatmap.noActivity")}
-        </li>
-        <li>
-          <span
-            className="heatmap-legend__swatch"
             style={{ background: LEVEL_FILL.low }}
           />
           {t("stats.heatmap.low")}

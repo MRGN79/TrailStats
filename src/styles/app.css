@@ -803,7 +803,7 @@ table.data-table td:first-child {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-sm);
-  margin: var(--space-sm) 0 0;
+  margin: var(--space-sm) 0 var(--space-xl);
   padding: 0;
   list-style: none;
   font-family: var(--font-mono);
