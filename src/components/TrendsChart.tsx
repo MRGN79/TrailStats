@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Bar,
@@ -24,6 +24,7 @@ export function TrendsChart({ periods, locale, yearOverYear }: Props) {
   const { t } = useTranslation();
   const [showTable, setShowTable] = useState(false);
   const [compareYears, setCompareYears] = useState(false);
+  const hintId = useId();
 
   useEffect(() => {
     if (yearOverYear == null) setCompareYears(false);
@@ -48,16 +49,34 @@ export function TrendsChart({ periods, locale, yearOverYear }: Props) {
       <div className="trends-header">
         <h2 className="section-title">{t("stats.trends.title")}</h2>
         {yearOverYear && (
-          <label className="switch">
-            <input
-              type="checkbox"
-              checked={compareYears}
-              onChange={(e) => setCompareYears(e.target.checked)}
-            />
-            <span>{t("stats.trends.compareYears")}</span>
-          </label>
+          <>
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={compareYears}
+                onChange={(e) => setCompareYears(e.target.checked)}
+                aria-describedby={hintId}
+              />
+              <span>{t("stats.trends.compareYears")}</span>
+            </label>
+            <span id={hintId} className="visually-hidden">
+              {t("stats.trends.compareYearsHint", {
+                current: yearOverYear.currentYear,
+                previous: yearOverYear.previousYear,
+              })}
+            </span>
+          </>
         )}
       </div>
+
+      <span aria-live="polite" className="visually-hidden">
+        {compare
+          ? t("stats.trends.yearOverYearAlt", {
+              current: activeYoY!.currentYear,
+              previous: activeYoY!.previousYear,
+            })
+          : t("stats.trends.chartAlt")}
+      </span>
 
       {compare ? (
         <div

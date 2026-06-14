@@ -865,6 +865,7 @@ table.data-table td:first-child {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2xs);
+  min-height: 44px;
   font-family: var(--font-body);
   font-size: var(--step--1);
   color: var(--paper);
