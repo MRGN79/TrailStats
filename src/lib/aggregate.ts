@@ -214,6 +214,7 @@ export function computeTypeBreakdown(activities: Activity[]): TypeBreakdownSlice
   }
   if (total === 0) return [];
   return Array.from(byType.entries())
+    .filter(([, distanceKm]) => distanceKm > 0)
     .map(([type, distanceKm]) => ({
       type,
       distanceKm,
@@ -293,7 +294,7 @@ export function computeYearOverYear(
 
 // ── Número de Eddington ─────────────────────────────────────
 
-const RUN_PATTERNS = ["run", "trail", "hike"];
+const RUN_PATTERNS = ["run", "trail"];
 const CYCLING_PATTERNS = ["ride", "cycling", "bike", "virtual"];
 
 function matchesSport(type: string, patterns: string[]): boolean {

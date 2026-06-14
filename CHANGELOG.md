@@ -21,6 +21,8 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 - **Comparativa año a año más precisa:** la comparación entre años localiza ahora de forma explícita el año anterior al actual, en lugar de deducirlo. El resultado que ves es el mismo, pero el cálculo es más robusto.
 - **Procesado más fiable de los exports de Garmin:** cada archivo `.fit` se interpreta ahora de forma totalmente independiente, evitando que los datos de una actividad pudieran contaminar la lectura de otra dentro del mismo export.
 - **El globo de ayuda (ⓘ) ya no se sale de la pantalla:** la explicación que aparece al pulsar el botón de información se ajusta ahora a los bordes de la pantalla, para que se vea entera también en móviles y pantallas pequeñas.
+- **El número de Eddington de carrera ya no se infla con el senderismo:** las actividades de tipo "Hike" dejan de contar para el número de Eddington de carrera; ahora solo se tienen en cuenta las carreras y las actividades de trail.
+- **El gráfico "Distancia por tipo de actividad" oculta los tipos sin distancia:** los tipos de actividad que no registran distancia (por ejemplo, entrenamiento de fuerza o yoga) dejan de aparecer en el gráfico y en su leyenda, para que la vista se centre en lo que sí tiene kilómetros.
 
 ### Accessibility
 - **Mejoras de contraste (WCAG AA):** se ha aumentado el contraste de varios textos secundarios (la nota de las zonas de ritmo y la versión de la app en el pie) para que se lean con más comodidad.
