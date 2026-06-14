@@ -26,7 +26,6 @@ import { processFile } from "./lib/loadDataset";
 import { generateDemoDataset } from "./lib/demoData";
 import { saveDataset, loadDataset, clearStorage, saveBannerDismissed, loadBannerDismissed, clearBannerDismissed } from "./lib/storage";
 import {
-  aggregateByPeriod,
   computeBestEfforts,
   computeDayOfWeekStats,
   computeDistanceHistogram,
@@ -43,15 +42,9 @@ import {
   computeTotals,
   computeTrainingLoad,
   computeTypeBreakdown,
-  computeYearOverYear,
   filterByType,
 } from "./lib/aggregate";
-import type { ParsedDataset, ViewMode } from "./lib/types";
-
-function monthLabels(locale: string): string[] {
-  const fmt = new Intl.DateTimeFormat(locale, { month: "short" });
-  return Array.from({ length: 12 }, (_, i) => fmt.format(new Date(2020, i, 1)));
-}
+import type { ParsedDataset } from "./lib/types";
 
 type Status =
   | { kind: "idle" }
@@ -85,7 +78,6 @@ export default function App() {
 
   const [status, setStatus] = useState<Status>({ kind: "restoring" });
   const [selectedType, setSelectedType] = useState<string | null>(null);
-  const [view, setView] = useState<ViewMode>("monthly");
 
   const [srMsg, setSrMsg] = useState("");
   const [hasStoredData, setHasStoredData] = useState(false);
@@ -156,7 +148,7 @@ export default function App() {
 
   function handleDemo() {
     setSelectedType(null);
-    setView("monthly");
+
 
     setRestoredFromCache(false);
     clearBannerDismissed();
@@ -179,7 +171,7 @@ export default function App() {
     setCacheBannerDismissed(false);
     setStatus({ kind: "idle" });
     setSelectedType(null);
-    setView("monthly");
+
 
   }
 
@@ -192,10 +184,7 @@ export default function App() {
   );
 
   const totals = useMemo(() => computeTotals(filtered), [filtered]);
-  const periods = useMemo(
-    () => aggregateByPeriod(filtered, view),
-    [filtered, view]
-  );
+
   const streak = useMemo(() => computeStreak(filtered), [filtered]);
   const records = useMemo(() => computeRecords(filtered), [filtered]);
   const breakdown = useMemo(() => computeTypeBreakdown(filtered), [filtered]);
@@ -204,10 +193,7 @@ export default function App() {
   const paceEvolution = useMemo(() => computePaceEvolution(filtered), [filtered]);
   const bestEfforts = useMemo(() => computeBestEfforts(filtered), [filtered]);
   const trainingLoad = useMemo(() => computeTrainingLoad(dataset?.activities ?? []), [dataset]);
-  const yearOverYear = useMemo(
-    () => computeYearOverYear(filtered, view, monthLabels(locale)),
-    [filtered, view, locale]
-  );
+
 
   const racePredictions = useMemo(() => computeRacePredictor(bestEfforts), [bestEfforts]);
   const paceZones = useMemo(() => computePaceZones(filtered), [filtered]);
@@ -308,8 +294,7 @@ export default function App() {
                   activityTypes={dataset.activityTypes}
                   selectedType={selectedType}
                   onTypeChange={setSelectedType}
-                  view={view}
-                  onViewChange={setView}
+
                   onReset={() => setStatus({ kind: "idle" })}
                   onClearData={isDemo ? undefined : handleClearData}
                 />
@@ -347,11 +332,7 @@ export default function App() {
                   <ActivityHeatmap data={heatmap} locale={locale} />
                   <TrainingLoad load={trainingLoad} locale={locale} />
                   <FitnessChart data={fitnessData} locale={locale} />
-                  <TrendsChart
-                    periods={periods}
-                    locale={locale}
-                    yearOverYear={yearOverYear}
-                  />
+                  <TrendsChart activities={filtered} locale={locale} />
                   <LongRunTrend points={longRunTrend} locale={locale} />
                   <PaceEvolution points={paceEvolution} />
                   <PaceZones zones={paceZones} locale={locale} />
