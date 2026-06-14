@@ -175,7 +175,7 @@
       "low": "Low",
       "medium": "Medium",
       "high": "High",
-      "exceptional": "Exceptional (≥50 km)",
+      "exceptional": "Epic (≥50 km)",
       "dayLabel": "{{date}}: {{distance}} km",
       "dayLabelEmpty": "{{date}}: no activity",
       "months": {

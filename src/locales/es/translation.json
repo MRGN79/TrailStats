@@ -174,7 +174,7 @@
       "noRecentActivity": "Sin actividades en el último año.",
       "low": "Baja",
       "medium": "Media",
-      "exceptional": "Excepcional (≥50 km)",
+      "exceptional": "Épico (≥50 km)",
       "high": "Alta",
       "dayLabel": "{{date}}: {{distance}} km",
       "dayLabelEmpty": "{{date}}: sin actividad",
