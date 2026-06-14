@@ -390,6 +390,24 @@ h3:focus {
   line-height: 1.5;
 }
 
+.privacy-panel__licenses {
+  margin: var(--space-sm) 0 0;
+  font-size: var(--step--1);
+}
+
+.privacy-panel__licenses a {
+  color: var(--moss);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  opacity: 0.85;
+}
+
+.privacy-panel__licenses a:hover,
+.privacy-panel__licenses a:focus-visible {
+  opacity: 1;
+  outline-offset: 2px;
+}
+
 /* ── Mensajes ─────────────────────────────────────────────── */
 
 .privacy-note {
