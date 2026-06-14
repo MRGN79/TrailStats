@@ -11,6 +11,13 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 - **Borrado de datos desde el panel de privacidad:** el panel de privacidad incluye ahora un botón para eliminar las actividades guardadas en este navegador. Solo aparece cuando hay datos almacenados y pide confirmación antes de borrar, para que nunca pierdas tu historial por accidente.
 - CI en GitHub Actions: cada PR hacia `main` ejecuta automáticamente la verificación de tipos TypeScript y la batería de tests antes de permitir el merge.
 
+### Changed
+- **Ritmo visual del panel más uniforme:** se ha homogeneizado la separación vertical entre las secciones del dashboard, eliminando huecos desiguales para que la lectura de arriba a abajo sea más regular. También se ha unificado el tamaño de las etiquetas pequeñas (subtítulos de sección, descargos, distintivos) para una apariencia más consistente.
+
+### Accessibility
+- **Mejoras de contraste (WCAG AA):** se ha aumentado el contraste de varios textos secundarios (la nota de las zonas de ritmo y la versión de la app en el pie) para que se lean con más comodidad.
+- **Indicador de foco en los campos de entrada:** los campos de texto muestran ahora el mismo anillo de foco visible que el resto de controles al navegar con teclado.
+
 ## [0.11.0] — 2026-06-14
 
 ### Added
