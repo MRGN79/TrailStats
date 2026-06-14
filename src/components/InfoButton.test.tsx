@@ -73,4 +73,39 @@ describe("InfoButton", () => {
     fireEvent.mouseDown(document.body);
     expect(btn.getAttribute("aria-expanded")).toBe("false");
   });
+
+  it("popover has role=tooltip and button has aria-describedby pointing to it", () => {
+    renderInfoButton("My explanation");
+    const btn = screen.getByRole("button");
+    fireEvent.click(btn);
+    const tooltip = screen.getByRole("tooltip");
+    expect(tooltip).toBeTruthy();
+    expect(btn.getAttribute("aria-describedby")).toBe(tooltip.id);
+  });
+
+  it("clamps popover left to viewport on a narrow screen", () => {
+    Object.defineProperty(window, "innerWidth", { value: 360, writable: true, configurable: true });
+
+    renderInfoButton("My explanation");
+    const renderedBtn = screen.getByRole("button");
+    // Simulate button near right edge (left=330, width=20 → center at 340)
+    renderedBtn.getBoundingClientRect = () => ({
+      bottom: 100,
+      left: 330,
+      width: 20,
+      right: 350,
+      top: 80,
+      height: 20,
+      x: 330,
+      y: 80,
+      toJSON: () => ({}),
+    });
+    fireEvent.click(renderedBtn);
+
+    // halfPopover=130, margin=8 → max left = 360-130-8 = 222; ideal = 330+10 = 340 → clamped to 222
+    const popover = screen.getByRole("tooltip");
+    const left = parseFloat(popover.style.left);
+    expect(left).toBeLessThanOrEqual(360 - 130 - 8); // clamped from right edge
+    expect(left).toBeGreaterThanOrEqual(130 + 8); // clamped from left edge
+  });
 });

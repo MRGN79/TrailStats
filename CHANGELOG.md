@@ -16,6 +16,12 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 - **Toggle "Comparar años" junto a la sección Tendencias:** el conmutador "Comparar años" aparece ahora junto al título de la sección Tendencias, en lugar de en la barra de controles global. Así queda más cerca de la gráfica a la que afecta y la barra de controles superior queda más despejada.
 - **Ritmo visual del panel más uniforme:** se ha homogeneizado la separación vertical entre las secciones del dashboard, eliminando huecos desiguales para que la lectura de arriba a abajo sea más regular. También se ha unificado el tamaño de las etiquetas pequeñas (subtítulos de sección, descargos, distintivos) para una apariencia más consistente.
 
+### Fixed
+- **Día de la semana correcto fuera de la zona horaria UTC:** la gráfica de patrón de entrenamiento asignaba el día de la semana equivocado a las actividades de usuarios en husos horarios distintos de UTC. Ahora cada actividad cuenta en su día real según tu hora local.
+- **Comparativa año a año más precisa:** la comparación entre años localiza ahora de forma explícita el año anterior al actual, en lugar de deducirlo. El resultado que ves es el mismo, pero el cálculo es más robusto.
+- **Procesado más fiable de los exports de Garmin:** cada archivo `.fit` se interpreta ahora de forma totalmente independiente, evitando que los datos de una actividad pudieran contaminar la lectura de otra dentro del mismo export.
+- **El globo de ayuda (ⓘ) ya no se sale de la pantalla:** la explicación que aparece al pulsar el botón de información se ajusta ahora a los bordes de la pantalla, para que se vea entera también en móviles y pantallas pequeñas.
+
 ### Accessibility
 - **Mejoras de contraste (WCAG AA):** se ha aumentado el contraste de varios textos secundarios (la nota de las zonas de ritmo y la versión de la app en el pie) para que se lean con más comodidad.
 - **Indicador de foco en los campos de entrada:** los campos de texto muestran ahora el mismo anillo de foco visible que el resto de controles al navegar con teclado.

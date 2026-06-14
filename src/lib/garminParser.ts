@@ -85,17 +85,16 @@ function sessionsFrom(parsed: ParsedFit): FitSession[] {
 }
 
 export async function parseFitFiles(entries: FitEntry[]): Promise<ParsedDataset> {
-  const parser = new FitParser({
-    mode: "list",
-    lengthUnit: "km",
-    speedUnit: "km/h",
-    force: true,
-  });
-
   const activities: Activity[] = [];
   let discarded = 0;
 
   for (let f = 0; f < entries.length; f++) {
+    const parser = new FitParser({
+      mode: "list",
+      lengthUnit: "km",
+      speedUnit: "km/h",
+      force: true,
+    });
     const entry = entries[f];
     let parsed: ParsedFit;
     try {

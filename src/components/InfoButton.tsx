@@ -16,7 +16,11 @@ export function InfoButton({ text }: Props) {
   function openPopover() {
     if (btnRef.current) {
       const r = btnRef.current.getBoundingClientRect();
-      setPos({ top: r.bottom + 8, left: r.left + r.width / 2 });
+      const halfPopover = 130; // half of max popover width (260px)
+      const margin = 8;
+      const idealLeft = r.left + r.width / 2;
+      const left = Math.max(halfPopover + margin, Math.min(idealLeft, window.innerWidth - halfPopover - margin));
+      setPos({ top: r.bottom + 8, left });
     }
     setOpen(true);
   }
@@ -52,6 +56,7 @@ export function InfoButton({ text }: Props) {
         aria-label={t("stats.info.button")}
         aria-expanded={open}
         aria-controls={open ? popoverId : undefined}
+        aria-describedby={open ? popoverId : undefined}
         onClick={() => (open ? setOpen(false) : openPopover())}
       >
         i
@@ -60,6 +65,7 @@ export function InfoButton({ text }: Props) {
         createPortal(
           <div
             id={popoverId}
+            role="tooltip"
             className="info-btn__popover"
             style={{ top: pos.top, left: pos.left }}
           >

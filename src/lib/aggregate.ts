@@ -248,8 +248,8 @@ export function computeYearOverYear(
   if (years.length < 2) return null;
 
   const currentYear = years[years.length - 1];
-  const previousYear = years[years.length - 2];
-  if (currentYear - previousYear !== 1) return null;
+  const previousYear = currentYear - 1;
+  if (!years.includes(previousYear)) return null;
 
   const buckets =
     mode === "monthly"
@@ -725,7 +725,7 @@ export function computeDayOfWeekStats(activities: Activity[]): DayOfWeekStat[] {
   }));
   for (const a of activities) {
     if (a.distanceKm <= 0) continue;
-    const d = (a.date.getUTCDay() + 6) % 7; // ISO: Mon=0, Sun=6
+    const d = (a.date.getDay() + 6) % 7; // ISO: Mon=0, Sun=6
     stats[d].distanceKm += a.distanceKm;
     stats[d].count += 1;
   }

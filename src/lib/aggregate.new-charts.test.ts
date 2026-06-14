@@ -9,7 +9,7 @@ import type { Activity } from "./types";
 function act(overrides: Partial<Activity> = {}): Activity {
   return {
     id: Math.random().toString(),
-    date: new Date("2024-01-01T10:00:00Z"), // Monday
+    date: new Date(2024, 0, 1, 10, 0, 0), // Monday 2024-01-01, local time
     type: "Run",
     distanceKm: 10,
     movingTimeSec: 3600,
@@ -28,21 +28,21 @@ describe("computeDayOfWeekStats", () => {
     expect(result.map((s) => s.dayIndex)).toEqual([0, 1, 2, 3, 4, 5, 6]);
   });
 
-  it("maps Monday (2024-01-01 UTC) to index 0", () => {
-    const result = computeDayOfWeekStats([act({ date: new Date("2024-01-01T10:00:00Z") })]);
+  it("maps Monday (2024-01-01) to index 0", () => {
+    const result = computeDayOfWeekStats([act({ date: new Date(2024, 0, 1, 10, 0, 0) })]);
     expect(result[0].count).toBe(1);
     expect(result[0].distanceKm).toBe(10);
   });
 
   it("maps Sunday to index 6", () => {
-    const result = computeDayOfWeekStats([act({ date: new Date("2024-01-07T10:00:00Z") })]);
+    const result = computeDayOfWeekStats([act({ date: new Date(2024, 0, 7, 10, 0, 0) })]);
     expect(result[6].count).toBe(1);
   });
 
   it("accumulates multiple activities on the same day", () => {
     const result = computeDayOfWeekStats([
-      act({ date: new Date("2024-01-01T08:00:00Z"), distanceKm: 5 }),
-      act({ date: new Date("2024-01-08T09:00:00Z"), distanceKm: 8 }),
+      act({ date: new Date(2024, 0, 1, 8, 0, 0), distanceKm: 5 }),
+      act({ date: new Date(2024, 0, 8, 9, 0, 0), distanceKm: 8 }),
     ]);
     expect(result[0].count).toBe(2);
     expect(result[0].distanceKm).toBeCloseTo(13);
