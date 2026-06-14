@@ -4,6 +4,7 @@
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'SFMono-Regular', ui-monospace, monospace;
 
+  --step--2: 0.7rem;
   --step--1: 0.82rem;
   --step-0: 1rem;
   --step-1: 1.18rem;
@@ -126,6 +127,7 @@ body {
 button:focus-visible,
 select:focus-visible,
 a:focus-visible,
+input:focus-visible,
 .dropzone:focus-within {
   outline: 3px solid var(--ember);
   outline-offset: 2px;
@@ -474,10 +476,15 @@ h3:focus {
 
 /* ── Stats — retícula de instrumento ──────────────────────── */
 
+/* Retícula de instrumento: las columnas se separan con una regla fina
+   (border-left + padding-left en .card + .card), por eso el column-gap es
+   pequeño — solo el aire necesario para que la regla respire. El row-gap sí
+   es generoso para que las tarjetas que envuelven a una segunda fila no se
+   peguen verticalmente. */
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 0 var(--space-lg);
+  gap: var(--space-lg) var(--space-md);
   margin-bottom: var(--space-xl);
 }
 
@@ -622,7 +629,7 @@ h3:focus {
 
 .section-sub {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: var(--step--2);
   color: rgba(250, 248, 243, 0.6);
   margin: calc(-1 * var(--space-xs)) 0 var(--space-md);
   letter-spacing: 0.04em;
@@ -704,8 +711,20 @@ table.data-table td:first-child {
 
 /* ── Separación entre secciones del dashboard ─────────────── */
 
-.dashboard__main > section + section {
+/* Cada componente del dashboard renderiza su propio <section>; vivan donde
+   vivan (directamente bajo .dashboard__main o dentro de un .dash-section),
+   el ritmo vertical entre ellas debe ser uniforme. Antes el spacing dependía
+   del margen inferior del último hijo de cada sección, lo que producía huecos
+   desiguales (de casi 0 a 2.5rem). Aplicamos una separación constante entre
+   secciones consecutivas y neutralizamos el margen "fugado". */
+.dashboard__main section + section {
   margin-top: var(--space-2xl);
+}
+
+/* El margen inferior del último elemento de cada sección no debe sumarse al
+   margin-top de la siguiente: lo anulamos para que el ritmo sea predecible. */
+.dashboard__main section > *:last-child {
+  margin-bottom: 0;
 }
 
 /* ── Sublínea de tarjeta (récords) ────────────────────────── */
@@ -1005,15 +1024,15 @@ table.data-table td:first-child {
 }
 
 .disclaimer {
-  font-size: 0.75rem;
+  font-size: var(--step--2);
   color: rgba(250, 248, 243, 0.55);
   margin: var(--space-2xs) 0 0;
 }
 
 .app-version {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: rgba(250, 248, 243, 0.3);
+  font-size: var(--step--2);
+  color: rgba(250, 248, 243, 0.45);
   margin: var(--space-sm) 0 0;
   letter-spacing: 0.04em;
 }
@@ -1057,7 +1076,7 @@ table.data-table td:first-child {
   font-family: var(--font-display);
   background: var(--ember-text);
   color: var(--paper);
-  font-size: 0.75rem;
+  font-size: var(--step--2);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -1136,13 +1155,12 @@ table.data-table td:first-child {
 .share-btn {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: var(--space-2xs);
   margin-top: auto;
-  padding-top: var(--space-sm);
   align-self: flex-end;
-  padding: 4px 10px 4px 8px;
+  padding: var(--space-2xs) 0.625rem var(--space-2xs) var(--space-xs);
   font-family: var(--font-display);
-  font-size: 0.7rem;
+  font-size: var(--step--2);
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1151,7 +1169,9 @@ table.data-table td:first-child {
   border: 1px solid rgba(63, 125, 90, 0.35);
   border-radius: 20px;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition: background 0.15s var(--ease-instrument),
+    border-color 0.15s var(--ease-instrument),
+    color 0.15s var(--ease-instrument);
   line-height: 1;
 }
 
@@ -1200,7 +1220,7 @@ table.data-table td:first-child {
 .race-predictor__badge {
   display: inline-block;
   font-family: var(--font-display);
-  font-size: 0.7rem;
+  font-size: var(--step--2);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -1228,4 +1248,4 @@ table.data-table td:first-child {
 .pace-zone__bar-bg { height: 8px; border-radius: 4px; background: rgba(255,255,255,0.07); overflow: hidden; }
 .pace-zone__bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
 .pace-zone__pct { font-family: var(--font-mono); font-size: var(--step--1); color: rgba(250,248,243,0.5); text-align: right; font-feature-settings: "tnum" 1; }
-.pace-zones__note { font-family: var(--font-body); font-size: var(--step--1); color: rgba(250,248,243,0.35); margin-top: var(--space-xs); }
+.pace-zones__note { font-family: var(--font-body); font-size: var(--step--1); color: rgba(250,248,243,0.55); margin-top: var(--space-xs); }
