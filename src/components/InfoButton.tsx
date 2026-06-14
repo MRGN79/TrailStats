@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 
@@ -8,9 +8,9 @@ interface Props {
 
 export function InfoButton({ text }: Props) {
   const { t } = useTranslation();
+  const popoverId = useId();
   const [open, setOpen] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
-  const popRef = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState({ top: 0, left: 0 });
 
   function openPopover() {
@@ -27,15 +27,19 @@ export function InfoButton({ text }: Props) {
       if (e.key === "Escape") setOpen(false);
     }
     function onMouseDown(e: MouseEvent) {
-      const t = e.target as Node;
-      if (btnRef.current?.contains(t) || popRef.current?.contains(t)) return;
+      if (btnRef.current?.contains(e.target as Node)) return;
+      setOpen(false);
+    }
+    function onScroll() {
       setOpen(false);
     }
     document.addEventListener("keydown", onKey);
     document.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("scroll", onScroll, { capture: true });
     return () => {
       document.removeEventListener("keydown", onKey);
       document.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("scroll", onScroll, { capture: true });
     };
   }, [open]);
 
@@ -47,6 +51,7 @@ export function InfoButton({ text }: Props) {
         className="info-btn"
         aria-label={t("stats.info.button")}
         aria-expanded={open}
+        aria-controls={open ? popoverId : undefined}
         onClick={() => (open ? setOpen(false) : openPopover())}
       >
         i
@@ -54,9 +59,8 @@ export function InfoButton({ text }: Props) {
       {open &&
         createPortal(
           <div
-            ref={popRef}
+            id={popoverId}
             className="info-btn__popover"
-            role="tooltip"
             style={{ top: pos.top, left: pos.left }}
           >
             {text}

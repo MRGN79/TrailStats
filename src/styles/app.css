@@ -511,6 +511,7 @@ h3:focus {
 /* ── Botón de información (i) ──────────────────────────────── */
 
 .info-btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -518,9 +519,9 @@ h3:focus {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 1.5px solid rgba(250, 248, 243, 0.28);
+  border: 1.5px solid rgba(250, 248, 243, 0.5);
   background: transparent;
-  color: rgba(250, 248, 243, 0.45);
+  color: rgba(250, 248, 243, 0.6);
   font-family: var(--font-body);
   font-size: 0.62rem;
   font-style: italic;
@@ -531,10 +532,26 @@ h3:focus {
   transition: border-color 0.15s, color 0.15s;
 }
 
+/* Transparent hit-area extended to 24×24 px (WCAG 2.5.8) */
+.info-btn::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+}
+
 .info-btn:hover,
 .info-btn[aria-expanded="true"] {
   border-color: var(--moss);
   color: var(--paper);
+}
+
+.info-btn:focus-visible {
+  outline: 2px solid var(--moss);
+  outline-offset: 2px;
 }
 
 .info-btn__popover {
@@ -606,7 +623,7 @@ h3:focus {
 .section-sub {
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  color: rgba(250, 248, 243, 0.38);
+  color: rgba(250, 248, 243, 0.6);
   margin: calc(-1 * var(--space-xs)) 0 var(--space-md);
   letter-spacing: 0.04em;
   font-feature-settings: "tnum" 1;
