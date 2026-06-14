@@ -86,7 +86,7 @@ export default function App() {
   const [status, setStatus] = useState<Status>({ kind: "restoring" });
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [view, setView] = useState<ViewMode>("monthly");
-  const [compareYears, setCompareYears] = useState(false);
+
   const [srMsg, setSrMsg] = useState("");
   const [hasStoredData, setHasStoredData] = useState(false);
   const [restoredFromCache, setRestoredFromCache] = useState(false);
@@ -127,7 +127,7 @@ export default function App() {
     const saveGen = ++saveGenRef.current;
     setStatus({ kind: "processing" });
     setSelectedType(null);
-    setCompareYears(false);
+
     setRestoredFromCache(false);
     setSaveError(false);
     clearBannerDismissed();
@@ -157,7 +157,7 @@ export default function App() {
   function handleDemo() {
     setSelectedType(null);
     setView("monthly");
-    setCompareYears(false);
+
     setRestoredFromCache(false);
     clearBannerDismissed();
     setCacheBannerDismissed(false);
@@ -180,7 +180,7 @@ export default function App() {
     setStatus({ kind: "idle" });
     setSelectedType(null);
     setView("monthly");
-    setCompareYears(false);
+
   }
 
   const dataset = status.kind === "ready" ? status.dataset : null;
@@ -208,13 +208,6 @@ export default function App() {
     () => computeYearOverYear(filtered, view, monthLabels(locale)),
     [filtered, view, locale]
   );
-  const canCompareYears = yearOverYear != null;
-  const activeYoY = canCompareYears && compareYears ? yearOverYear : null;
-
-  // Reset compare-years toggle when the filtered data no longer has two full years.
-  useEffect(() => {
-    if (!canCompareYears) setCompareYears(false);
-  }, [canCompareYears]);
 
   const racePredictions = useMemo(() => computeRacePredictor(bestEfforts), [bestEfforts]);
   const paceZones = useMemo(() => computePaceZones(filtered), [filtered]);
@@ -319,9 +312,6 @@ export default function App() {
                   onViewChange={setView}
                   onReset={() => setStatus({ kind: "idle" })}
                   onClearData={isDemo ? undefined : handleClearData}
-                  canCompareYears={canCompareYears}
-                  compareYears={compareYears}
-                  onCompareYearsChange={setCompareYears}
                 />
               </div>
 
@@ -360,7 +350,7 @@ export default function App() {
                   <TrendsChart
                     periods={periods}
                     locale={locale}
-                    yearOverYear={activeYoY}
+                    yearOverYear={yearOverYear}
                   />
                   <LongRunTrend points={longRunTrend} locale={locale} />
                   <PaceEvolution points={paceEvolution} />

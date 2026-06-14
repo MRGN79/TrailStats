@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Bar,
@@ -23,8 +23,14 @@ interface Props {
 export function TrendsChart({ periods, locale, yearOverYear }: Props) {
   const { t } = useTranslation();
   const [showTable, setShowTable] = useState(false);
+  const [compareYears, setCompareYears] = useState(false);
 
-  const compare = yearOverYear != null;
+  useEffect(() => {
+    if (yearOverYear == null) setCompareYears(false);
+  }, [yearOverYear]);
+
+  const activeYoY = compareYears ? yearOverYear : null;
+  const compare = activeYoY != null;
 
   const labelTickStyle = {
     fontFamily: "var(--font-body)",
@@ -39,19 +45,31 @@ export function TrendsChart({ periods, locale, yearOverYear }: Props) {
 
   return (
     <section aria-label={t("stats.trends.title")}>
-      <h2 className="section-title">{t("stats.trends.title")}</h2>
+      <div className="trends-header">
+        <h2 className="section-title">{t("stats.trends.title")}</h2>
+        {yearOverYear && (
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={compareYears}
+              onChange={(e) => setCompareYears(e.target.checked)}
+            />
+            <span>{t("stats.trends.compareYears")}</span>
+          </label>
+        )}
+      </div>
 
       {compare ? (
         <div
           className="chart-wrap"
           role="img"
           aria-label={t("stats.trends.yearOverYearAlt", {
-            current: yearOverYear.currentYear,
-            previous: yearOverYear.previousYear,
+            current: activeYoY!.currentYear,
+            previous: activeYoY!.previousYear,
           })}
         >
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={yearOverYear.points}>
+            <BarChart data={activeYoY!.points}>
               <CartesianGrid
                 vertical={false}
                 stroke="rgba(255,255,255,0.1)"
@@ -92,7 +110,7 @@ export function TrendsChart({ periods, locale, yearOverYear }: Props) {
               />
               <Bar
                 dataKey="previous"
-                name={String(yearOverYear.previousYear)}
+                name={String(activeYoY!.previousYear)}
                 fill="var(--moss)"
                 fillOpacity={0.45}
                 radius={[3, 3, 0, 0]}
@@ -101,7 +119,7 @@ export function TrendsChart({ periods, locale, yearOverYear }: Props) {
               />
               <Bar
                 dataKey="current"
-                name={String(yearOverYear.currentYear)}
+                name={String(activeYoY!.currentYear)}
                 fill="var(--ember)"
                 radius={[3, 3, 0, 0]}
                 maxBarSize={28}
@@ -172,19 +190,19 @@ export function TrendsChart({ periods, locale, yearOverYear }: Props) {
           <table className="data-table">
             <caption className="visually-hidden">
               {t("stats.trends.yearOverYearAlt", {
-                current: yearOverYear.currentYear,
-                previous: yearOverYear.previousYear,
+                current: activeYoY!.currentYear,
+                previous: activeYoY!.previousYear,
               })}
             </caption>
             <thead>
               <tr>
                 <th scope="col">{t("stats.trends.period")}</th>
-                <th scope="col">{yearOverYear.previousYear}</th>
-                <th scope="col">{yearOverYear.currentYear}</th>
+                <th scope="col">{activeYoY!.previousYear}</th>
+                <th scope="col">{activeYoY!.currentYear}</th>
               </tr>
             </thead>
             <tbody>
-              {yearOverYear.points.map((p) => (
+              {activeYoY!.points.map((p) => (
                 <tr key={p.index}>
                   <th scope="row">{p.label}</th>
                   <td>
