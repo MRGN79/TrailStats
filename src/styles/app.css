@@ -1032,7 +1032,7 @@ table.data-table td:first-child {
 .app-version {
   font-family: var(--font-mono);
   font-size: var(--step--2);
-  color: rgba(250, 248, 243, 0.45);
+  color: rgba(250, 248, 243, 0.50);
   margin: var(--space-sm) 0 0;
   letter-spacing: 0.04em;
 }
@@ -1235,9 +1235,9 @@ table.data-table td:first-child {
 }
 
 .race-predictor__badge--predicted {
-  background: rgba(252,82,0,0.12);
-  color: var(--ember);
-  border: 1px solid rgba(252,82,0,0.35);
+  background: rgba(252,82,0,0.18);
+  color: var(--paper);
+  border: 1px solid rgba(252,82,0,0.45);
 }
 
 /* ── Pace Zones ───────────────────────────────────────────── */
