@@ -154,3 +154,21 @@ export interface FitnessPoint {
 export interface FitnessData {
   points: FitnessPoint[];
 }
+
+export interface DayOfWeekStat {
+  dayIndex: number; // 0 = Mon … 6 = Sun (ISO)
+  distanceKm: number;
+  count: number;
+}
+
+export interface DistanceHistogramBucket {
+  key: string;
+  min: number;
+  max: number;
+  count: number;
+}
+
+export interface LongRunPoint {
+  date: Date;
+  distanceKm: number;
+}

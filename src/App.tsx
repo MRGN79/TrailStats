@@ -19,15 +19,21 @@ import { CacheBanner } from "./components/CacheBanner";
 import { RacePredictor } from "./components/RacePredictor";
 import { PaceZones } from "./components/PaceZones";
 import { FitnessChart } from "./components/FitnessChart";
+import { DayOfWeekChart } from "./components/DayOfWeekChart";
+import { DistanceHistogram } from "./components/DistanceHistogram";
+import { LongRunTrend } from "./components/LongRunTrend";
 import { processFile } from "./lib/loadDataset";
 import { generateDemoDataset } from "./lib/demoData";
 import { saveDataset, loadDataset, clearStorage, saveBannerDismissed, loadBannerDismissed, clearBannerDismissed } from "./lib/storage";
 import {
   aggregateByPeriod,
   computeBestEfforts,
+  computeDayOfWeekStats,
+  computeDistanceHistogram,
   computeEddington,
   computeFitness,
   computeHeatmap,
+  computeLongRunTrend,
   computePaceEvolution,
   computePaceZones,
   computeLatestDate,
@@ -217,6 +223,9 @@ export default function App() {
     () => computeLatestDate(dataset?.activities ?? []),
     [dataset]
   );
+  const dayOfWeekStats = useMemo(() => computeDayOfWeekStats(filtered), [filtered]);
+  const distanceHistogram = useMemo(() => computeDistanceHistogram(filtered), [filtered]);
+  const longRunTrend = useMemo(() => computeLongRunTrend(filtered), [filtered]);
 
   return (
     <div className="app">
@@ -319,6 +328,7 @@ export default function App() {
                     {t("stats.sections.social")}
                   </h2>
                   <TotalsCards totals={totals} locale={locale} />
+                  <StreakRecords streak={streak} records={records} locale={locale} />
                   <BestEfforts efforts={bestEfforts} locale={locale} />
                   <RacePredictor
                     predictions={racePredictions.items}
@@ -327,7 +337,6 @@ export default function App() {
                     locale={locale}
                   />
                   <EddingtonCards stats={eddington} locale={locale} />
-                  <StreakRecords streak={streak} records={records} locale={locale} />
                 </div>
 
                 <div className="dash-section">
@@ -338,15 +347,18 @@ export default function App() {
                     </p>
                   )}
                   <ActivityHeatmap data={heatmap} locale={locale} />
+                  <TrainingLoad load={trainingLoad} locale={locale} />
+                  <FitnessChart data={fitnessData} locale={locale} />
                   <TrendsChart
                     periods={periods}
                     locale={locale}
                     yearOverYear={activeYoY}
                   />
+                  <LongRunTrend points={longRunTrend} locale={locale} />
                   <PaceEvolution points={paceEvolution} />
                   <PaceZones zones={paceZones} locale={locale} />
-                  <TrainingLoad load={trainingLoad} locale={locale} />
-                  <FitnessChart data={fitnessData} locale={locale} />
+                  <DayOfWeekChart stats={dayOfWeekStats} locale={locale} />
+                  <DistanceHistogram buckets={distanceHistogram} />
                   {breakdown.length > 1 && (
                     <TypeBreakdown slices={breakdown} locale={locale} />
                   )}

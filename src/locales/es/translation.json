@@ -127,6 +127,30 @@
         "veryHigh": "Muy alta"
       }
     },
+    "dayOfWeek": {
+      "title": "Patrón de entrenamiento",
+      "chartAlt": "Gráfica de distancia de entrenamiento acumulada por día de la semana.",
+      "distanceLabel": "Distancia (km)",
+      "dayCol": "Día",
+      "activitiesCol": "Actividades"
+    },
+    "histogram": {
+      "title": "Perfil de distancias",
+      "chartAlt": "Gráfica del número de actividades por rango de distancia.",
+      "countLabel": "Actividades",
+      "lt5": "< 5 km",
+      "5to10": "5–10 km",
+      "10to20": "10–20 km",
+      "20to42": "20–42 km",
+      "gt42": "42+ km"
+    },
+    "longRun": {
+      "title": "Evolución de la tirada larga",
+      "chartAlt": "Gráfica de la salida más larga por mes. Usa el botón inferior para ver los datos como tabla.",
+      "noData": "Se necesitan al menos 2 meses de datos de carrera.",
+      "distanceLabel": "Tirada más larga (km)",
+      "dateCol": "Mes"
+    },
     "heatmap": {
       "title": "Historial de actividad",
       "noActivity": "Sin actividad",
