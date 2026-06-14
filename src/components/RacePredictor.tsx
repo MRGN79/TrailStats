@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import type { EffortBucket, RacePredictionItem } from "../lib/types";
 import { formatRaceTime } from "../lib/format";
 import { ShareButton } from "./ShareButton";
+import { InfoButton } from "./InfoButton";
 
 interface Props {
   predictions: RacePredictionItem[];
@@ -38,7 +39,10 @@ export function RacePredictor({ predictions, baseBucket, hasEfforts, locale: _lo
           const timeFormatted = formatRaceTime(item.timeSeconds);
           return (
             <div className="card" key={item.bucket}>
-              <div className="label">{bucketLabel(item.bucket)}</div>
+              <div className="label">
+                {bucketLabel(item.bucket)}
+                <InfoButton text={t("stats.info.raceTime")} />
+              </div>
               <div className="value">{timeFormatted}</div>
               <div className="card__sub">
                 <span

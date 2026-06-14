@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import type { BestEffort } from "../lib/types";
 import { formatPace } from "../lib/format";
 import { ShareButton } from "./ShareButton";
+import { InfoButton } from "./InfoButton";
 
 interface Props {
   efforts: BestEffort[];
@@ -25,7 +26,10 @@ export function BestEfforts({ efforts, locale }: Props) {
       <div className="cards">
         {efforts.map((e) => (
           <div className="card" key={e.bucket}>
-            <div className="label">{t(`stats.bestEfforts.${e.bucket}`)}</div>
+            <div className="label">
+              {t(`stats.bestEfforts.${e.bucket}`)}
+              <InfoButton text={t("stats.info.bestPace")} />
+            </div>
             <div className="value">
               {formatPace(e.paceSecPerKm)}
               <span className="unit">{t("units.minPerKm")}</span>

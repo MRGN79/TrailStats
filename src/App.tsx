@@ -226,6 +226,14 @@ export default function App() {
   const dayOfWeekStats = useMemo(() => computeDayOfWeekStats(filtered), [filtered]);
   const distanceHistogram = useMemo(() => computeDistanceHistogram(filtered), [filtered]);
   const longRunTrend = useMemo(() => computeLongRunTrend(filtered), [filtered]);
+  const filteredFirstDate = useMemo(() => {
+    if (filtered.length === 0) return null;
+    return filtered.reduce((min, a) => (a.date < min ? a.date : min), filtered[0].date);
+  }, [filtered]);
+  const filteredLastDate = useMemo(() => {
+    if (filtered.length === 0) return null;
+    return filtered.reduce((max, a) => (a.date > max ? a.date : max), filtered[0].date);
+  }, [filtered]);
 
   return (
     <div className="app">
@@ -327,7 +335,7 @@ export default function App() {
                   <h2 className="dash-section__title" ref={dashHeadingRef} tabIndex={-1}>
                     {t("stats.sections.social")}
                   </h2>
-                  <TotalsCards totals={totals} locale={locale} />
+                  <TotalsCards totals={totals} locale={locale} firstDate={filteredFirstDate} lastDate={filteredLastDate} />
                   <StreakRecords streak={streak} records={records} locale={locale} />
                   <BestEfforts efforts={bestEfforts} locale={locale} />
                   <RacePredictor

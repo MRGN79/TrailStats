@@ -11,6 +11,15 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 - **Borrado de datos desde el panel de privacidad:** el panel de privacidad incluye ahora un botón para eliminar las actividades guardadas en este navegador. Solo aparece cuando hay datos almacenados y pide confirmación antes de borrar, para que nunca pierdas tu historial por accidente.
 - CI en GitHub Actions: cada PR hacia `main` ejecuta automáticamente la verificación de tipos TypeScript y la batería de tests antes de permitir el merge.
 
+## [0.11.0] — 2026-06-14
+
+### Added
+- **Botón de información (ⓘ) en las tarjetas de métricas:** cada tarjeta de métrica incluye ahora un botón de información que abre una explicación en lenguaje claro de qué significa el dato y cómo se calcula, disponible en inglés y castellano. Pensado para que cualquiera entienda métricas como la racha, el número de Eddington o la predicción de carrera sin conocimientos previos.
+- **Rango de fechas en los totales históricos:** debajo de "Totales históricos" se muestra ahora, de forma discreta, el periodo que cubren tus datos (primera – última actividad), para situar de un vistazo a qué tramo de tiempo corresponden las cifras.
+
+### Changed
+- **Decimales de distancia más pequeños en Racha y Récords:** en las tarjetas de mejor semana y mejor mes, la parte decimal de la distancia se muestra ahora en un tamaño menor, para que la cifra principal destaque y se lea con más facilidad.
+
 ## [0.10.0] — 2026-06-14
 
 ### Added

@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import type { EddingtonStat } from "../lib/types";
 import { formatNumber } from "../lib/format";
 import { ShareButton } from "./ShareButton";
+import { InfoButton } from "./InfoButton";
 
 interface Props {
   stats: EddingtonStat[];
@@ -26,7 +27,10 @@ export function EddingtonCards({ stats, locale }: Props) {
       <div className="cards">
         {stats.map((s) => (
           <div className="card" key={s.sport}>
-            <div className="label">{t(`stats.eddington.${s.sport}`)}</div>
+            <div className="label">
+              {t(`stats.eddington.${s.sport}`)}
+              <InfoButton text={t(`stats.info.eddington${s.sport === "run" ? "Run" : "Cycling"}`)} />
+            </div>
             <div className="value">{formatNumber(s.number, locale)}</div>
             {s.next.remaining > 0 && (
               <div className="card__sub">
