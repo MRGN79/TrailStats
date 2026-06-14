@@ -24,12 +24,20 @@ import { DistanceHistogram } from "./components/DistanceHistogram";
 import { LongRunTrend } from "./components/LongRunTrend";
 import { HrTrend } from "./components/HrTrend";
 import { HrZones } from "./components/HrZones";
+import { CadenceTrend } from "./components/CadenceTrend";
+import { PowerTrend } from "./components/PowerTrend";
 import { processFile } from "./lib/loadDataset";
 import { generateDemoDataset } from "./lib/demoData";
 import { saveDataset, loadDataset, clearStorage, saveBannerDismissed, loadBannerDismissed, clearBannerDismissed } from "./lib/storage";
 import {
   computeAvgHr,
   computeBestEfforts,
+  computeCadenceTrend,
+  computePowerTrend,
+  computeTotalCalories,
+  detectSportCategory,
+  hasCadenceData,
+  hasPowerData,
   computeDayOfWeekStats,
   computeDistanceHistogram,
   computeEddington,
@@ -215,6 +223,14 @@ export default function App() {
   const avgHrBpm = useMemo(() => computeAvgHr(filtered), [filtered]);
   const hrTrend = useMemo(() => computeHrTrend(filtered), [filtered]);
   const hrZones = useMemo(() => computeHrZones(filtered), [filtered]);
+  const sportCategory = useMemo(() => detectSportCategory(selectedType), [selectedType]);
+  const totalCalories = useMemo(() => computeTotalCalories(filtered), [filtered]);
+  const hasCadence = useMemo(() => hasCadenceData(filtered), [filtered]);
+  const hasPower = useMemo(() => hasPowerData(filtered), [filtered]);
+  const cadenceTrend = useMemo(() => computeCadenceTrend(filtered), [filtered]);
+  const powerTrend = useMemo(() => computePowerTrend(filtered), [filtered]);
+  const showRunningMetrics = sportCategory === "running" || sportCategory === "mixed";
+  const showCyclingMetrics = sportCategory === "cycling" || sportCategory === "mixed";
   const filteredFirstDate = useMemo(() => {
     if (filtered.length === 0) return null;
     return filtered.reduce((min, a) => (a.date < min ? a.date : min), filtered[0].date);
@@ -320,15 +336,19 @@ export default function App() {
                   <h2 className="dash-section__title" ref={dashHeadingRef} tabIndex={-1}>
                     {t("stats.sections.social")}
                   </h2>
-                  <TotalsCards totals={totals} locale={locale} firstDate={filteredFirstDate} lastDate={filteredLastDate} avgHrBpm={avgHrBpm} />
+                  <TotalsCards totals={totals} locale={locale} firstDate={filteredFirstDate} lastDate={filteredLastDate} avgHrBpm={avgHrBpm} totalCalories={totalCalories} />
                   <StreakRecords streak={streak} records={records} locale={locale} />
-                  <BestEfforts efforts={bestEfforts} locale={locale} />
-                  <RacePredictor
-                    predictions={racePredictions.items}
-                    baseBucket={racePredictions.base}
-                    hasEfforts={bestEfforts.length > 0}
-                    locale={locale}
-                  />
+                  {showRunningMetrics && (
+                    <>
+                      <BestEfforts efforts={bestEfforts} locale={locale} />
+                      <RacePredictor
+                        predictions={racePredictions.items}
+                        baseBucket={racePredictions.base}
+                        hasEfforts={bestEfforts.length > 0}
+                        locale={locale}
+                      />
+                    </>
+                  )}
                   <EddingtonCards stats={eddington} locale={locale} />
                 </div>
 
@@ -343,9 +363,13 @@ export default function App() {
                   <TrainingLoad load={trainingLoad} locale={locale} />
                   <FitnessChart data={fitnessData} locale={locale} />
                   <TrendsChart activities={filtered} locale={locale} />
-                  <LongRunTrend points={longRunTrend} locale={locale} />
-                  <PaceEvolution points={paceEvolution} />
-                  <PaceZones zones={paceZones} locale={locale} />
+                  {showRunningMetrics && (
+                    <>
+                      <LongRunTrend points={longRunTrend} locale={locale} />
+                      <PaceEvolution points={paceEvolution} />
+                      <PaceZones zones={paceZones} locale={locale} />
+                    </>
+                  )}
                   <DayOfWeekChart stats={dayOfWeekStats} locale={locale} />
                   <DistanceHistogram buckets={distanceHistogram} />
                   {breakdown.length > 1 && (
@@ -356,6 +380,12 @@ export default function App() {
                       <HrTrend points={hrTrend} />
                       <HrZones zones={hrZones} />
                     </>
+                  )}
+                  {hasCadence && (
+                    <CadenceTrend points={cadenceTrend} sportCategory={sportCategory} />
+                  )}
+                  {showCyclingMetrics && hasPower && (
+                    <PowerTrend points={powerTrend} />
                   )}
                 </div>
               </div>

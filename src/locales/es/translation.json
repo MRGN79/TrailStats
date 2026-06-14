@@ -29,6 +29,8 @@
       "movingTime": "Tiempo total en movimiento. No se cuentan las paradas ni los descansos.",
       "elevation": "Metros de desnivel positivo acumulados. Es la suma de todas las subidas.",
       "avgHr": "Frecuencia cardíaca media de todas las actividades, ponderada por la duración. Solo se tienen en cuenta las actividades con datos de FC.",
+      "calories": "Calorías totales estimadas quemadas en las actividades con dato de calorías.",
+      "avgCadence": "Cadencia media ponderada por duración. Pasos por minuto en carrera, RPM en ciclismo.",
       "currentStreak": "Semanas seguidas con al menos una actividad hasta hoy. Una semana sin actividad la reinicia a cero.",
       "longestStreak": "La racha más larga de semanas consecutivas con actividad en todo tu historial.",
       "bestWeek": "La semana con más kilómetros en todo tu historial.",
@@ -79,6 +81,7 @@
       "distance": "Distancia",
       "time": "Tiempo en movimiento",
       "elevation": "Desnivel positivo",
+      "calories": "Calorías",
       "avgHr": "FC media",
       "dateRange": "{{first}} – {{last}}"
     },
@@ -168,6 +171,16 @@
       "chartAlt": "Gráfica de FC media mensual. Usa el botón inferior para ver los datos como tabla.",
       "bpmLabel": "FC media"
     },
+    "cadenceTrend": {
+      "title": "Tendencia de cadencia",
+      "chartAlt": "Gráfica de cadencia media mensual. Usa el botón inferior para ver los datos como tabla.",
+      "cadenceLabel": "Cadencia media"
+    },
+    "powerTrend": {
+      "title": "Tendencia de potencia",
+      "chartAlt": "Gráfica de potencia media mensual. Usa el botón inferior para ver los datos como tabla.",
+      "powerLabel": "Potencia media"
+    },
     "hrZones": {
       "title": "Zonas de frecuencia cardíaca",
       "z1": "Z1 · Recuperación  <120 ppm",
@@ -227,7 +240,11 @@
     "km": "km",
     "m": "m",
     "minPerKm": "min/km",
-    "bpm": "ppm"
+    "bpm": "ppm",
+    "kcal": "kcal",
+    "spm": "ppm",
+    "rpm": "rpm",
+    "w": "W"
   },
   "lang": {
     "toggle": "Idioma"

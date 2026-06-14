@@ -29,6 +29,8 @@
       "movingTime": "Total time spent moving. Stops and rests are not counted.",
       "elevation": "Total metres of positive elevation gain — the sum of every climb.",
       "avgHr": "Average heart rate across all activities, weighted by duration. Only activities with heart rate data are counted.",
+      "calories": "Total estimated calories burned across all activities with calorie data.",
+      "avgCadence": "Average cadence weighted by duration. Steps per minute for running, RPM for cycling.",
       "currentStreak": "Consecutive weeks with at least one activity up to today. One week with no activity resets it to zero.",
       "longestStreak": "The longest streak of consecutive active weeks in your entire history.",
       "bestWeek": "The week with the most kilometres in your entire history.",
@@ -79,6 +81,7 @@
       "distance": "Distance",
       "time": "Moving time",
       "elevation": "Elevation gain",
+      "calories": "Calories",
       "avgHr": "Avg heart rate",
       "dateRange": "{{first}} – {{last}}"
     },
@@ -168,6 +171,16 @@
       "chartAlt": "Monthly average heart rate chart. Use the button below to view the data as a table.",
       "bpmLabel": "Avg HR"
     },
+    "cadenceTrend": {
+      "title": "Cadence trend",
+      "chartAlt": "Monthly average cadence chart. Use the button below to view the data as a table.",
+      "cadenceLabel": "Avg cadence"
+    },
+    "powerTrend": {
+      "title": "Power trend",
+      "chartAlt": "Monthly average power chart. Use the button below to view the data as a table.",
+      "powerLabel": "Avg power"
+    },
     "hrZones": {
       "title": "Heart rate zones",
       "z1": "Z1 · Recovery  <120 bpm",
@@ -227,7 +240,11 @@
     "km": "km",
     "m": "m",
     "minPerKm": "min/km",
-    "bpm": "bpm"
+    "bpm": "bpm",
+    "kcal": "kcal",
+    "spm": "spm",
+    "rpm": "rpm",
+    "w": "W"
   },
   "lang": {
     "toggle": "Language"
