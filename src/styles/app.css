@@ -486,7 +486,6 @@ h3:focus {
   padding-top: var(--space-md);
   padding-bottom: var(--space-md);
   min-width: 0;
-  overflow: hidden;
 }
 
 @media (min-width: 560px) {
@@ -504,6 +503,55 @@ h3:focus {
   letter-spacing: 0.08em;
   color: rgba(250, 248, 243, 0.55);
   margin-bottom: var(--space-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+/* ── Botón de información (i) ──────────────────────────────── */
+
+.info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(250, 248, 243, 0.28);
+  background: transparent;
+  color: rgba(250, 248, 243, 0.45);
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.info-btn:hover,
+.info-btn[aria-expanded="true"] {
+  border-color: var(--moss);
+  color: var(--paper);
+}
+
+.info-btn__popover {
+  position: fixed;
+  z-index: 1200;
+  transform: translateX(-50%);
+  width: min(260px, calc(90vw - 2rem));
+  background: var(--forest-deep);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: rgba(250, 248, 243, 0.88);
+  line-height: 1.55;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.65);
+  pointer-events: none;
 }
 
 .card .value {
@@ -551,6 +599,17 @@ h3:focus {
   letter-spacing: -0.02em;
   line-height: 1.05;
   margin: 0 0 var(--space-md);
+}
+
+/* ── Subtítulo de sección (rango de fechas, etc.) ─────────── */
+
+.section-sub {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: rgba(250, 248, 243, 0.38);
+  margin: calc(-1 * var(--space-xs)) 0 var(--space-md);
+  letter-spacing: 0.04em;
+  font-feature-settings: "tnum" 1;
 }
 
 /* ── Disclaimer de sección ────────────────────────────────── */

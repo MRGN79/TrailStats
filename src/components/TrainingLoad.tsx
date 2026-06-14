@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import type { TrainingLoad as TrainingLoadData } from "../lib/types";
 import { formatNumber } from "../lib/format";
 import { ShareButton } from "./ShareButton";
+import { InfoButton } from "./InfoButton";
 
 interface Props {
   load: TrainingLoadData | null;
@@ -38,6 +39,7 @@ export function TrainingLoad({ load, locale }: Props) {
         <div className="load__header">
           <span className="load__index">{formatNumber(indexPct, locale)}%</span>
           <span className="load__state">{t(`stats.load.state.${load.state}`)}</span>
+          <InfoButton text={t("stats.info.trainingLoad")} />
         </div>
         <div
           className="load__bar"

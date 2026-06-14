@@ -22,6 +22,22 @@
     "discarded": "{{count}} rows could not be read and were skipped."
   },
   "stats": {
+    "info": {
+      "button": "More information",
+      "activities": "Total number of activities recorded in the selected period.",
+      "distance": "Total kilometres covered across all your activities.",
+      "movingTime": "Total time spent moving. Stops and rests are not counted.",
+      "elevation": "Total metres of positive elevation gain — the sum of every climb.",
+      "currentStreak": "Consecutive weeks with at least one activity up to today. One week with no activity resets it to zero.",
+      "longestStreak": "The longest streak of consecutive active weeks in your entire history.",
+      "bestWeek": "The week with the most kilometres in your entire history.",
+      "bestMonth": "The month with the most kilometres in your entire history.",
+      "bestPace": "Your fastest average pace over this distance, taken from your best activity.",
+      "raceTime": "Estimated finish time based on your best effort, using the Riegel formula. Times marked as Actual come directly from your activities.",
+      "eddingtonRun": "The Eddington number E is the largest value such that you have done E runs of at least E km. E.g. E40 means you have completed at least 40 runs of 40 km or more. Invented by astrophysicist Arthur Eddington.",
+      "eddingtonCycling": "Your Eddington number for cycling: the largest E such that you have done E rides of at least E km.",
+      "trainingLoad": "Compares this week's training volume to your 6-week average. An index above 100% means you are training harder than usual."
+    },
     "sections": {
       "social": "Social",
       "training": "Training"
@@ -61,7 +77,8 @@
       "activities": "Activities",
       "distance": "Distance",
       "time": "Moving time",
-      "elevation": "Elevation gain"
+      "elevation": "Elevation gain",
+      "dateRange": "{{first}} – {{last}}"
     },
     "view": {
       "weekly": "Weekly",
