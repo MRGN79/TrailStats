@@ -30,7 +30,6 @@
       "elevation": "Metros de desnivel positivo acumulados. Es la suma de todas las subidas.",
       "avgHr": "Frecuencia cardíaca media de todas las actividades, ponderada por la duración. Solo se tienen en cuenta las actividades con datos de FC.",
       "calories": "Calorías totales estimadas quemadas en las actividades con dato de calorías.",
-      "avgCadence": "Cadencia media ponderada por duración. Pasos por minuto en carrera, RPM en ciclismo.",
       "currentStreak": "Semanas seguidas con al menos una actividad hasta hoy. Una semana sin actividad la reinicia a cero.",
       "longestStreak": "La racha más larga de semanas consecutivas con actividad en todo tu historial.",
       "bestWeek": "La semana con más kilómetros en todo tu historial.",
@@ -242,7 +241,7 @@
     "minPerKm": "min/km",
     "bpm": "ppm",
     "kcal": "kcal",
-    "spm": "ppm",
+    "spm": "pasos/min",
     "rpm": "rpm",
     "w": "W"
   },

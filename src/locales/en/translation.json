@@ -30,7 +30,6 @@
       "elevation": "Total metres of positive elevation gain — the sum of every climb.",
       "avgHr": "Average heart rate across all activities, weighted by duration. Only activities with heart rate data are counted.",
       "calories": "Total estimated calories burned across all activities with calorie data.",
-      "avgCadence": "Average cadence weighted by duration. Steps per minute for running, RPM for cycling.",
       "currentStreak": "Consecutive weeks with at least one activity up to today. One week with no activity resets it to zero.",
       "longestStreak": "The longest streak of consecutive active weeks in your entire history.",
       "bestWeek": "The week with the most kilometres in your entire history.",
