@@ -127,6 +127,30 @@
         "veryHigh": "Very high"
       }
     },
+    "dayOfWeek": {
+      "title": "Training pattern",
+      "chartAlt": "Bar chart of total training distance by day of week.",
+      "distanceLabel": "Distance (km)",
+      "dayCol": "Day",
+      "activitiesCol": "Activities"
+    },
+    "histogram": {
+      "title": "Distance profile",
+      "chartAlt": "Bar chart of activity count by distance range.",
+      "countLabel": "Activities",
+      "lt5": "< 5 km",
+      "5to10": "5–10 km",
+      "10to20": "10–20 km",
+      "20to42": "20–42 km",
+      "gt42": "42+ km"
+    },
+    "longRun": {
+      "title": "Long run trend",
+      "chartAlt": "Monthly longest run chart. Use the button below to view the data as a table.",
+      "noData": "At least 2 months of running data needed.",
+      "distanceLabel": "Longest run (km)",
+      "dateCol": "Month"
+    },
     "heatmap": {
       "title": "Activity history",
       "noActivity": "No activity",

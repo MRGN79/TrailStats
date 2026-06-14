@@ -2,6 +2,8 @@ import type {
   Activity,
   AggregatedPeriod,
   BestEffort,
+  DayOfWeekStat,
+  DistanceHistogramBucket,
   EddingtonSport,
   EddingtonStat,
   EffortBucket,
@@ -10,6 +12,7 @@ import type {
   HeatLevel,
   HeatmapData,
   HeatmapDay,
+  LongRunPoint,
   PaceEvolutionPoint,
   PaceZoneData,
   PaceZonesData,
@@ -712,4 +715,58 @@ export function computeFitness(activities: Activity[]): FitnessData {
 export function computeLatestDate(activities: Activity[]): Date {
   if (activities.length === 0) return new Date(0);
   return activities.reduce((max, a) => (a.date > max ? a.date : max), activities[0].date);
+}
+
+export function computeDayOfWeekStats(activities: Activity[]): DayOfWeekStat[] {
+  const stats: DayOfWeekStat[] = Array.from({ length: 7 }, (_, i) => ({
+    dayIndex: i,
+    distanceKm: 0,
+    count: 0,
+  }));
+  for (const a of activities) {
+    if (a.distanceKm <= 0) continue;
+    const d = (a.date.getUTCDay() + 6) % 7; // ISO: Mon=0, Sun=6
+    stats[d].distanceKm += a.distanceKm;
+    stats[d].count += 1;
+  }
+  return stats;
+}
+
+const HISTOGRAM_BUCKETS: Array<{ key: string; min: number; max: number }> = [
+  { key: "lt5",    min: 0,  max: 5 },
+  { key: "5to10",  min: 5,  max: 10 },
+  { key: "10to20", min: 10, max: 20 },
+  { key: "20to42", min: 20, max: 42 },
+  { key: "gt42",   min: 42, max: Infinity },
+];
+
+export function computeDistanceHistogram(
+  activities: Activity[]
+): DistanceHistogramBucket[] {
+  const buckets: DistanceHistogramBucket[] = HISTOGRAM_BUCKETS.map(b => ({ ...b, count: 0 }));
+  for (const a of activities) {
+    if (a.distanceKm <= 0) continue;
+    const b = buckets.find(b => a.distanceKm >= b.min && a.distanceKm < b.max);
+    if (b) b.count += 1;
+  }
+  return buckets.filter(b => b.count > 0);
+}
+
+export function computeLongRunTrend(activities: Activity[]): LongRunPoint[] {
+  const byMonth = new Map<string, number>();
+  for (const a of activities) {
+    if (!isRunning(a.type)) continue;
+    if (a.distanceKm <= 0) continue;
+    const k = monthKey(a.date);
+    if ((byMonth.get(k) ?? 0) < a.distanceKm) byMonth.set(k, a.distanceKm);
+  }
+  return Array.from(byMonth.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, distanceKm]) => {
+      const [y, m] = key.split("-").map(Number);
+      return {
+        date: new Date(Date.UTC(y, m - 1, 1)),
+        distanceKm: Number(distanceKm.toFixed(1)),
+      };
+    });
 }
