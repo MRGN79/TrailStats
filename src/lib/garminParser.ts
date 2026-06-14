@@ -1,6 +1,7 @@
 import FitParser from "fit-file-parser";
 import type { Activity, ParsedDataset } from "./types";
 import type { FitEntry } from "./zipReader";
+import { isValidHr } from "./aggregate";
 
 // fit-file-parser only re-exports FitParser from its public entry point, so we
 // model the subset of the parsed shape we consume rather than importing internals.
@@ -13,6 +14,8 @@ export interface FitSession {
   total_timer_time?: number;
   total_elapsed_time?: number;
   total_ascent?: number;
+  avg_heart_rate?: number;
+  max_heart_rate?: number;
 }
 
 // Map FIT `sport` enum to a human label aligned with Strava activity types.
@@ -72,6 +75,8 @@ export function sessionToActivity(
     distanceKm: session.total_distance ?? 0,
     movingTimeSec,
     elevationGainM: session.total_ascent ?? 0,
+    avgHrBpm: isValidHr(session.avg_heart_rate) ? session.avg_heart_rate : null,
+    maxHrBpm: isValidHr(session.max_heart_rate) ? session.max_heart_rate : null,
   };
 }
 

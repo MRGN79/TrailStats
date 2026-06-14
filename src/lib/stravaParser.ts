@@ -1,5 +1,6 @@
 import Papa from "papaparse";
 import type { Activity, ParsedDataset } from "./types";
+import { isValidHr } from "./aggregate";
 
 // Strava exports activities.csv with headers that vary by account language.
 // We resolve columns by a set of known aliases, falling back gracefully.
@@ -10,6 +11,8 @@ const COLUMN_ALIASES: Record<string, string[]> = {
   distance: ["distance", "distancia"],
   movingTime: ["moving time", "tiempo en movimiento"],
   elevation: ["elevation gain", "desnivel positivo", "elevation"],
+  avgHr: ["average heart rate", "pulsaciones medias", "frecuencia cardiaca media", "fc media"],
+  maxHr: ["max heart rate", "pulsaciones máximas", "frecuencia cardiaca máxima", "fc máxima"],
 };
 
 function normalize(header: string): string {
@@ -101,6 +104,9 @@ function rowToActivity(
   const date = parseActivityDate(dateRaw);
   if (Number.isNaN(date.getTime())) return null;
 
+  const avgHrRaw = toNumber(cols[map.avgHr]);
+  const maxHrRaw = toNumber(cols[map.maxHr]);
+
   return {
     id: cols[map.id]?.trim() || `row-${fallbackId}`,
     date,
@@ -108,6 +114,8 @@ function rowToActivity(
     distanceKm: metersToKm(toNumber(cols[map.distance])),
     movingTimeSec: toNumber(cols[map.movingTime]),
     elevationGainM: toNumber(cols[map.elevation]),
+    avgHrBpm: isValidHr(avgHrRaw) ? avgHrRaw : null,
+    maxHrBpm: isValidHr(maxHrRaw) ? maxHrRaw : null,
   };
 }
 

@@ -22,16 +22,21 @@ import { FitnessChart } from "./components/FitnessChart";
 import { DayOfWeekChart } from "./components/DayOfWeekChart";
 import { DistanceHistogram } from "./components/DistanceHistogram";
 import { LongRunTrend } from "./components/LongRunTrend";
+import { HrTrend } from "./components/HrTrend";
+import { HrZones } from "./components/HrZones";
 import { processFile } from "./lib/loadDataset";
 import { generateDemoDataset } from "./lib/demoData";
 import { saveDataset, loadDataset, clearStorage, saveBannerDismissed, loadBannerDismissed, clearBannerDismissed } from "./lib/storage";
 import {
+  computeAvgHr,
   computeBestEfforts,
   computeDayOfWeekStats,
   computeDistanceHistogram,
   computeEddington,
   computeFitness,
   computeHeatmap,
+  computeHrTrend,
+  computeHrZones,
   computeLongRunTrend,
   computePaceEvolution,
   computePaceZones,
@@ -43,6 +48,7 @@ import {
   computeTrainingLoad,
   computeTypeBreakdown,
   filterByType,
+  hasHeartRateData,
 } from "./lib/aggregate";
 import type { ParsedDataset } from "./lib/types";
 
@@ -205,6 +211,10 @@ export default function App() {
   const dayOfWeekStats = useMemo(() => computeDayOfWeekStats(filtered), [filtered]);
   const distanceHistogram = useMemo(() => computeDistanceHistogram(filtered), [filtered]);
   const longRunTrend = useMemo(() => computeLongRunTrend(filtered), [filtered]);
+  const hasHr = useMemo(() => hasHeartRateData(filtered), [filtered]);
+  const avgHrBpm = useMemo(() => computeAvgHr(filtered), [filtered]);
+  const hrTrend = useMemo(() => computeHrTrend(filtered), [filtered]);
+  const hrZones = useMemo(() => computeHrZones(filtered), [filtered]);
   const filteredFirstDate = useMemo(() => {
     if (filtered.length === 0) return null;
     return filtered.reduce((min, a) => (a.date < min ? a.date : min), filtered[0].date);
@@ -310,7 +320,7 @@ export default function App() {
                   <h2 className="dash-section__title" ref={dashHeadingRef} tabIndex={-1}>
                     {t("stats.sections.social")}
                   </h2>
-                  <TotalsCards totals={totals} locale={locale} firstDate={filteredFirstDate} lastDate={filteredLastDate} />
+                  <TotalsCards totals={totals} locale={locale} firstDate={filteredFirstDate} lastDate={filteredLastDate} avgHrBpm={avgHrBpm} />
                   <StreakRecords streak={streak} records={records} locale={locale} />
                   <BestEfforts efforts={bestEfforts} locale={locale} />
                   <RacePredictor
@@ -340,6 +350,12 @@ export default function App() {
                   <DistanceHistogram buckets={distanceHistogram} />
                   {breakdown.length > 1 && (
                     <TypeBreakdown slices={breakdown} locale={locale} />
+                  )}
+                  {hasHr && (
+                    <>
+                      <HrTrend points={hrTrend} />
+                      <HrZones zones={hrZones} />
+                    </>
                   )}
                 </div>
               </div>

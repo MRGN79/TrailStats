@@ -5,6 +5,8 @@ export interface Activity {
   distanceKm: number;
   movingTimeSec: number;
   elevationGainM: number;
+  avgHrBpm?: number | null;
+  maxHrBpm?: number | null;
 }
 
 export interface Totals {
@@ -171,4 +173,23 @@ export interface DistanceHistogramBucket {
 export interface LongRunPoint {
   date: Date;
   distanceKm: number;
+}
+
+// ── Heart Rate ────────────────────────────────────────────────
+
+export interface HrZoneData {
+  zone: 1 | 2 | 3 | 4 | 5;
+  timeSeconds: number;
+  share: number;
+}
+
+export interface HrZonesData {
+  zones: HrZoneData[];
+  basedOn: number;
+}
+
+export interface HrTrendPoint {
+  key: string;
+  label: string;
+  avgHrBpm: number;
 }

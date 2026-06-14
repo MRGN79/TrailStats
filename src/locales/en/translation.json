@@ -28,6 +28,7 @@
       "distance": "Total kilometres covered across all your activities.",
       "movingTime": "Total time spent moving. Stops and rests are not counted.",
       "elevation": "Total metres of positive elevation gain — the sum of every climb.",
+      "avgHr": "Average heart rate across all activities, weighted by duration. Only activities with heart rate data are counted.",
       "currentStreak": "Consecutive weeks with at least one activity up to today. One week with no activity resets it to zero.",
       "longestStreak": "The longest streak of consecutive active weeks in your entire history.",
       "bestWeek": "The week with the most kilometres in your entire history.",
@@ -78,6 +79,7 @@
       "distance": "Distance",
       "time": "Moving time",
       "elevation": "Elevation gain",
+      "avgHr": "Avg heart rate",
       "dateRange": "{{first}} – {{last}}"
     },
     "view": {
@@ -161,6 +163,20 @@
       "20to42": "20–42 km",
       "gt42": "42+ km"
     },
+    "hrTrend": {
+      "title": "Heart rate trend",
+      "chartAlt": "Monthly average heart rate chart. Use the button below to view the data as a table.",
+      "bpmLabel": "Avg HR"
+    },
+    "hrZones": {
+      "title": "Heart rate zones",
+      "z1": "Z1 · Recovery  <120 bpm",
+      "z2": "Z2 · Aerobic  120–140",
+      "z3": "Z3 · Tempo  140–155",
+      "z4": "Z4 · Threshold  155–165",
+      "z5": "Z5 · Maximum  >165 bpm",
+      "note": "Based on avg HR per activity with fixed zone thresholds. Estimates only — not medical advice."
+    },
     "longRun": {
       "title": "Long run trend",
       "chartAlt": "Monthly longest run chart. Use the button below to view the data as a table.",
@@ -210,7 +226,8 @@
   "units": {
     "km": "km",
     "m": "m",
-    "minPerKm": "min/km"
+    "minPerKm": "min/km",
+    "bpm": "bpm"
   },
   "lang": {
     "toggle": "Language"
@@ -220,7 +237,8 @@
     "heading": "Your data stays with you",
     "points": {
       "local": "Your export is read and analyzed entirely inside this browser tab.",
-      "noServer": "Nothing is uploaded — there is no server and no account. Your activities are cached in your browser's local storage for convenience, and you can delete them at any time.",
+      "noServer": "Nothing is uploaded — there is no server and no account. Your activities (including any heart rate data) are stored in your browser's local database (IndexedDB) and you can delete them at any time.",
+      "healthData": "Heart rate is a health data point. TrailStats processes it only on your device — it is never transmitted anywhere.",
       "noTracking": "No tracking, no cookies, no analytics. We never see your activities."
     },
     "clearData": "Delete my stored activities from this browser",

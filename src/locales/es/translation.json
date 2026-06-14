@@ -28,6 +28,7 @@
       "distance": "Suma de kilómetros recorridos en todas tus actividades.",
       "movingTime": "Tiempo total en movimiento. No se cuentan las paradas ni los descansos.",
       "elevation": "Metros de desnivel positivo acumulados. Es la suma de todas las subidas.",
+      "avgHr": "Frecuencia cardíaca media de todas las actividades, ponderada por la duración. Solo se tienen en cuenta las actividades con datos de FC.",
       "currentStreak": "Semanas seguidas con al menos una actividad hasta hoy. Una semana sin actividad la reinicia a cero.",
       "longestStreak": "La racha más larga de semanas consecutivas con actividad en todo tu historial.",
       "bestWeek": "La semana con más kilómetros en todo tu historial.",
@@ -78,6 +79,7 @@
       "distance": "Distancia",
       "time": "Tiempo en movimiento",
       "elevation": "Desnivel positivo",
+      "avgHr": "FC media",
       "dateRange": "{{first}} – {{last}}"
     },
     "view": {
@@ -161,6 +163,20 @@
       "20to42": "20–42 km",
       "gt42": "42+ km"
     },
+    "hrTrend": {
+      "title": "Tendencia de frecuencia cardíaca",
+      "chartAlt": "Gráfica de FC media mensual. Usa el botón inferior para ver los datos como tabla.",
+      "bpmLabel": "FC media"
+    },
+    "hrZones": {
+      "title": "Zonas de frecuencia cardíaca",
+      "z1": "Z1 · Recuperación  <120 ppm",
+      "z2": "Z2 · Aeróbica  120–140",
+      "z3": "Z3 · Tempo  140–155",
+      "z4": "Z4 · Umbral  155–165",
+      "z5": "Z5 · Máxima  >165 ppm",
+      "note": "Basado en FC media por actividad con umbrales fijos. Solo orientativo — no es consejo médico."
+    },
     "longRun": {
       "title": "Evolución de la tirada larga",
       "chartAlt": "Gráfica de la salida más larga por mes. Usa el botón inferior para ver los datos como tabla.",
@@ -210,7 +226,8 @@
   "units": {
     "km": "km",
     "m": "m",
-    "minPerKm": "min/km"
+    "minPerKm": "min/km",
+    "bpm": "ppm"
   },
   "lang": {
     "toggle": "Idioma"
@@ -220,7 +237,8 @@
     "heading": "Tus datos se quedan contigo",
     "points": {
       "local": "Tu export se lee y se analiza por completo dentro de esta pestaña del navegador.",
-      "noServer": "No se sube nada — no hay servidor ni cuenta. Tus actividades se almacenan en el almacenamiento local de tu navegador para mayor comodidad, y puedes eliminarlas en cualquier momento.",
+      "noServer": "No se sube nada — no hay servidor ni cuenta. Tus actividades (incluidos los datos de frecuencia cardíaca) se almacenan en la base de datos local de tu navegador (IndexedDB) y puedes eliminarlas en cualquier momento.",
+      "healthData": "La frecuencia cardíaca es un dato de salud. TrailStats la procesa únicamente en tu dispositivo y nunca se transmite a ningún lugar.",
       "noTracking": "Sin rastreo, sin cookies, sin analíticas. Nunca vemos tus actividades."
     },
     "clearData": "Eliminar mis actividades guardadas de este navegador",

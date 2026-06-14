@@ -8,6 +8,11 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 ## [Unreleased]
 
 ### Added
+- **Frecuencia cardíaca:** TrailStats lee ahora la FC media y máxima de los exports de Strava (CSV) y Garmin (FIT). Con esos datos aparecen automáticamente dos nuevas secciones en el panel de entrenamiento:
+  - **Tendencia de FC:** gráfica de línea con la FC media mensual, para ver si tu corazón trabaja menos a igual esfuerzo (señal de mejora aeróbica).
+  - **Zonas de FC:** distribución del tiempo de movimiento en cinco zonas de intensidad cardíaca (Z1 recuperación a Z5 máxima), con umbrales fijos expresados en ppm.
+  Ambas secciones solo aparecen si tus datos incluyen información de FC; si no, el panel es idéntico al anterior. La FC media global también se muestra en la tarjeta de Totales.
+- **Privacidad de datos de salud:** el panel de privacidad informa ahora explícitamente de que la FC es un dato de salud y se procesa únicamente en tu dispositivo, sin transmitirse a ningún servidor. También se precisa que el almacenamiento usa IndexedDB (no solo "local storage").
 - **Borrado de datos desde el panel de privacidad:** el panel de privacidad incluye ahora un botón para eliminar las actividades guardadas en este navegador. Solo aparece cuando hay datos almacenados y pide confirmación antes de borrar, para que nunca pierdas tu historial por accidente.
 - CI en GitHub Actions: cada PR hacia `main` ejecuta automáticamente la verificación de tipos TypeScript y la batería de tests antes de permitir el merge.
 
