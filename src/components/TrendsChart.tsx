@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Bar,
@@ -10,21 +10,37 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { AggregatedPeriod, YearOverYearData } from "../lib/types";
+import { aggregateByPeriod, computeYearOverYear } from "../lib/aggregate";
+import type { Activity, ViewMode } from "../lib/types";
 import { formatDistance } from "../lib/format";
 import { axisTickStyle, tooltipStyle } from "./chartStyles";
 
 interface Props {
-  periods: AggregatedPeriod[];
+  activities: Activity[];
   locale: string;
-  yearOverYear?: YearOverYearData | null;
 }
 
-export function TrendsChart({ periods, locale, yearOverYear }: Props) {
+function monthLabels(locale: string): string[] {
+  const fmt = new Intl.DateTimeFormat(locale, { month: "short" });
+  return Array.from({ length: 12 }, (_, i) => fmt.format(new Date(2020, i, 1)));
+}
+
+export function TrendsChart({ activities, locale }: Props) {
   const { t } = useTranslation();
+  const [view, setView] = useState<ViewMode>("monthly");
   const [showTable, setShowTable] = useState(false);
   const [compareYears, setCompareYears] = useState(false);
   const hintId = useId();
+
+  const periods = useMemo(
+    () => aggregateByPeriod(activities, view),
+    [activities, view]
+  );
+
+  const yearOverYear = useMemo(
+    () => computeYearOverYear(activities, view, monthLabels(locale)),
+    [activities, view, locale]
+  );
 
   useEffect(() => {
     if (yearOverYear == null) setCompareYears(false);
@@ -48,6 +64,28 @@ export function TrendsChart({ periods, locale, yearOverYear }: Props) {
     <section aria-label={t("stats.trends.title")}>
       <div className="trends-header">
         <h2 className="section-title">{t("stats.trends.title")}</h2>
+
+        <div
+          className="segmented"
+          role="group"
+          aria-label={`${t("stats.view.weekly")} / ${t("stats.view.monthly")}`}
+        >
+          <button
+            type="button"
+            aria-pressed={view === "weekly"}
+            onClick={() => setView("weekly")}
+          >
+            {t("stats.view.weekly")}
+          </button>
+          <button
+            type="button"
+            aria-pressed={view === "monthly"}
+            onClick={() => setView("monthly")}
+          >
+            {t("stats.view.monthly")}
+          </button>
+        </div>
+
         {yearOverYear && (
           <>
             <label className="switch">

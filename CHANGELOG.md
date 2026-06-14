@@ -12,6 +12,7 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 - CI en GitHub Actions: cada PR hacia `main` ejecuta automáticamente la verificación de tipos TypeScript y la batería de tests antes de permitir el merge.
 
 ### Changed
+- **Selector Semanal/Mensual junto a la sección Tendencias:** el selector de vista Semanal/Mensual aparece ahora junto a la gráfica de Tendencias, en lugar de en la barra de controles global. Así queda más cerca de la gráfica a la que afecta y la barra de controles superior queda más despejada. El funcionamiento es el mismo de siempre.
 - **Toggle "Comparar años" junto a la sección Tendencias:** el conmutador "Comparar años" aparece ahora junto al título de la sección Tendencias, en lugar de en la barra de controles global. Así queda más cerca de la gráfica a la que afecta y la barra de controles superior queda más despejada.
 - **Ritmo visual del panel más uniforme:** se ha homogeneizado la separación vertical entre las secciones del dashboard, eliminando huecos desiguales para que la lectura de arriba a abajo sea más regular. También se ha unificado el tamaño de las etiquetas pequeñas (subtítulos de sección, descargos, distintivos) para una apariencia más consistente.
 
