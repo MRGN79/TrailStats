@@ -255,6 +255,7 @@
       "local": "Your export is read and analyzed entirely inside this browser tab.",
       "noServer": "Nothing is uploaded — there is no server and no account. Your activities (including any heart rate data) are stored in your browser's local database (IndexedDB) and you can delete them at any time.",
       "healthData": "Heart rate is a health data point. TrailStats processes it only on your device — it is never transmitted anywhere.",
+      "activityNames": "Activity names are free text — they may contain personal details. Like everything else, they are stored only in your browser's local database (IndexedDB) and never leave your device.",
       "noTracking": "No tracking, no cookies, no analytics. We never see your activities."
     },
     "clearData": "Delete my stored activities from this browser",
