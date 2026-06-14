@@ -648,6 +648,7 @@ h3:focus {
 
 .table-toggle {
   margin-top: var(--space-md);
+  margin-bottom: var(--space-xl);
   font-family: var(--font-body);
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -668,6 +669,7 @@ table.data-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: var(--space-md);
+  margin-bottom: var(--space-xl);
   font-size: var(--step--1);
 }
 
