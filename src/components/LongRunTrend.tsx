@@ -115,8 +115,8 @@ export function LongRunTrend({ points, locale }: Props) {
             </tr>
           </thead>
           <tbody>
-            {data.map((row, i) => (
-              <tr key={i}>
+            {data.map((row) => (
+              <tr key={row.longLabel}>
                 <th scope="row">{row.longLabel}</th>
                 <td>{row.distanceKm} {t("units.km")}</td>
               </tr>

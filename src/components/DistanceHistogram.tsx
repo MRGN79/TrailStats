@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Bar,
@@ -17,6 +18,7 @@ interface Props {
 
 export function DistanceHistogram({ buckets }: Props) {
   const { t } = useTranslation();
+  const [showTable, setShowTable] = useState(false);
 
   if (buckets.length === 0) return null;
 
@@ -68,6 +70,35 @@ export function DistanceHistogram({ buckets }: Props) {
           </BarChart>
         </ResponsiveContainer>
       </div>
+
+      <button
+        type="button"
+        className="table-toggle"
+        aria-expanded={showTable}
+        onClick={() => setShowTable((v) => !v)}
+      >
+        {showTable ? t("stats.trends.hideTable") : t("stats.trends.showTable")}
+      </button>
+
+      {showTable && (
+        <table className="data-table">
+          <caption className="visually-hidden">{t("stats.histogram.title")}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{t("stats.trends.period")}</th>
+              <th scope="col">{t("stats.histogram.countLabel")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((row) => (
+              <tr key={row.label}>
+                <th scope="row">{row.label}</th>
+                <td>{row.count}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </section>
   );
 }

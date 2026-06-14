@@ -11,6 +11,21 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 - **Borrado de datos desde el panel de privacidad:** el panel de privacidad incluye ahora un botón para eliminar las actividades guardadas en este navegador. Solo aparece cuando hay datos almacenados y pide confirmación antes de borrar, para que nunca pierdas tu historial por accidente.
 - CI en GitHub Actions: cada PR hacia `main` ejecuta automáticamente la verificación de tipos TypeScript y la batería de tests antes de permitir el merge.
 
+## [0.10.0] — 2026-06-14
+
+### Added
+- **Patrón de entrenamiento:** nueva gráfica de barras que muestra la distancia total acumulada por día de la semana (de lunes a domingo). De un vistazo descubres qué días entrenas más y cuáles sueles dejar para descansar.
+- **Perfil de distancias:** nuevo histograma que reparte tus actividades según su distancia (menos de 5 km, de 5 a 10, de 10 a 20, de 20 a 42 y más de 42 km). Te ayuda a ver si predominan las salidas cortas, las medias o las largas.
+- **Evolución de la tirada larga:** nueva gráfica de líneas con la carrera más larga de cada mes (solo actividades de carrera). Sirve para seguir cómo progresa tu salida más exigente a lo largo del tiempo.
+
+### Changed
+- **Panel reordenado para una lectura más natural:** se ha reorganizado el orden de las secciones del panel para que la información fluya mejor y encuentres antes lo que más miras.
+  - Sección social: Totales → Racha y récords → Mejores marcas → Predictor de carreras → Eddington.
+  - Sección de entrenamiento: Historial de actividad → Carga de entrenamiento → Forma física y frescura → Tendencias → Evolución de la tirada larga → Evolución del ritmo → Zonas de ritmo → Patrón de entrenamiento → Perfil de distancias → Desglose por tipo de actividad.
+
+### Notes
+- Todo el cálculo sigue siendo 100% local en el navegador; ningún dato sale de tu dispositivo. Las tres gráficas nuevas no añaden dependencias.
+
 ## [0.9.5] — 2026-06-13
 
 ### Fixed
