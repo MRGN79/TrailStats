@@ -453,7 +453,8 @@ h3:focus {
   margin-bottom: var(--space-2xs);
 }
 
-.field select {
+.field select,
+.field input[type="date"] {
   font: inherit;
   font-family: var(--font-body);
   padding: 0.4rem 0.6rem;
@@ -462,6 +463,13 @@ h3:focus {
   background: rgba(255, 255, 255, 0.07);
   color: var(--paper);
   color-scheme: dark;
+}
+
+.date-range-inputs {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  margin-top: var(--space-xs);
 }
 
 .segmented {

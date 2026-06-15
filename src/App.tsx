@@ -59,6 +59,9 @@ import {
   hasHeartRateData,
 } from "./lib/aggregate";
 import type { ParsedDataset } from "./lib/types";
+import { initialDateRange, type DateRangeState } from "./lib/dateRange";
+
+export type { DatePreset, DateRangeState } from "./lib/dateRange";
 
 type Status =
   | { kind: "idle" }
@@ -92,6 +95,7 @@ export default function App() {
 
   const [status, setStatus] = useState<Status>({ kind: "restoring" });
   const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [dateRange, setDateRange] = useState<DateRangeState>(initialDateRange);
 
   const [srMsg, setSrMsg] = useState("");
   const [hasStoredData, setHasStoredData] = useState(false);
@@ -133,6 +137,7 @@ export default function App() {
     const saveGen = ++saveGenRef.current;
     setStatus({ kind: "processing" });
     setSelectedType(null);
+    setDateRange(initialDateRange);
 
     setRestoredFromCache(false);
     setSaveError(false);
@@ -162,6 +167,7 @@ export default function App() {
 
   function handleDemo() {
     setSelectedType(null);
+    setDateRange(initialDateRange);
 
 
     setRestoredFromCache(false);
@@ -185,17 +191,23 @@ export default function App() {
     setCacheBannerDismissed(false);
     setStatus({ kind: "idle" });
     setSelectedType(null);
-
-
+    setDateRange(initialDateRange);
   }
 
   const dataset = status.kind === "ready" ? status.dataset : null;
   const isDemo = status.kind === "ready" && status.demo === true;
 
-  const filtered = useMemo(
-    () => (dataset ? filterByType(dataset.activities, selectedType) : []),
-    [dataset, selectedType]
-  );
+  const filtered = useMemo(() => {
+    if (!dataset) return [];
+    let acts = filterByType(dataset.activities, selectedType);
+    if (dateRange.from) acts = acts.filter((a) => a.date >= dateRange.from!);
+    if (dateRange.to) {
+      const end = new Date(dateRange.to);
+      end.setHours(23, 59, 59, 999);
+      acts = acts.filter((a) => a.date <= end);
+    }
+    return acts;
+  }, [dataset, selectedType, dateRange]);
 
   const totals = useMemo(() => computeTotals(filtered), [filtered]);
 
@@ -320,7 +332,8 @@ export default function App() {
                   activityTypes={dataset.activityTypes}
                   selectedType={selectedType}
                   onTypeChange={setSelectedType}
-
+                  dateRange={dateRange}
+                  onDateRangeChange={setDateRange}
                   onReset={() => setStatus({ kind: "idle" })}
                   onClearData={isDemo ? undefined : handleClearData}
                 />

@@ -1,9 +1,13 @@
 import { useTranslation } from "react-i18next";
+import { DateRangeFilter } from "./DateRangeFilter";
+import type { DateRangeState } from "../lib/dateRange";
 
 interface Props {
   activityTypes: string[];
   selectedType: string | null;
   onTypeChange: (type: string | null) => void;
+  dateRange: DateRangeState;
+  onDateRangeChange: (range: DateRangeState) => void;
   onReset: () => void;
   onClearData?: () => void;
 }
@@ -12,6 +16,8 @@ export function Toolbar({
   activityTypes,
   selectedType,
   onTypeChange,
+  dateRange,
+  onDateRangeChange,
   onReset,
   onClearData,
 }: Props) {
@@ -34,6 +40,8 @@ export function Toolbar({
           ))}
         </select>
       </div>
+
+      <DateRangeFilter value={dateRange} onChange={onDateRangeChange} />
 
       <button type="button" className="btn-secondary" onClick={onReset}>
         {t("upload.loadAnother")}

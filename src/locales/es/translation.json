@@ -233,7 +233,18 @@
   },
   "filter": {
     "activityType": "Tipo de actividad",
-    "allTypes": "Todos los tipos"
+    "allTypes": "Todos los tipos",
+    "datePreset": "Periodo",
+    "preset": {
+      "all": "Todo el historial",
+      "thisYear": "Este año",
+      "lastYear": "Año anterior",
+      "last6m": "Últimos 6 meses",
+      "last3m": "Últimos 3 meses",
+      "custom": "Personalizado"
+    },
+    "from": "Desde",
+    "to": "Hasta"
   },
   "units": {
     "km": "km",
