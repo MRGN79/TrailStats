@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { saveLang } from "../lib/storage";
+import { saveLang } from "../lib/preferences";
 
 export function LanguageToggle() {
   const { i18n, t } = useTranslation();

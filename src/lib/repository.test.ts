@@ -1,12 +1,7 @@
 import "fake-indexeddb/auto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  clearStorage,
-  loadDataset,
-  loadLang,
-  saveDataset,
-  saveLang,
-} from "./storage";
+import { repository } from "./repository";
+import { loadLang, saveLang } from "./preferences";
 import type { ParsedDataset } from "./types";
 
 const dataset: ParsedDataset = {
@@ -24,18 +19,18 @@ const dataset: ParsedDataset = {
   discardedRows: 0,
 };
 
-describe("storage: IndexedDB dataset persistence", () => {
+describe("IndexedDBRepository: dataset persistence", () => {
   beforeEach(async () => {
-    await clearStorage();
+    await repository.clear();
   });
 
   it("returns null when nothing has been saved", async () => {
-    expect(await loadDataset()).toBeNull();
+    expect(await repository.load()).toBeNull();
   });
 
   it("round-trips a dataset through save and load", async () => {
-    await saveDataset(dataset);
-    const loaded = await loadDataset();
+    await repository.save(dataset);
+    const loaded = await repository.load();
     expect(loaded).not.toBeNull();
     expect(loaded?.activities).toHaveLength(1);
     expect(loaded?.activities[0].id).toBe("a1");
@@ -44,8 +39,8 @@ describe("storage: IndexedDB dataset persistence", () => {
   });
 
   it("preserves Date instances across the IndexedDB structured clone", async () => {
-    await saveDataset(dataset);
-    const loaded = await loadDataset();
+    await repository.save(dataset);
+    const loaded = await repository.load();
     expect(loaded?.activities[0].date).toBeInstanceOf(Date);
     expect(loaded?.activities[0].date.getTime()).toBe(
       dataset.activities[0].date.getTime()
@@ -53,7 +48,7 @@ describe("storage: IndexedDB dataset persistence", () => {
   });
 
   it("overwrites the previous dataset on a second save (single 'current' slot)", async () => {
-    await saveDataset(dataset);
+    await repository.save(dataset);
     const second: ParsedDataset = {
       ...dataset,
       activities: [
@@ -61,21 +56,21 @@ describe("storage: IndexedDB dataset persistence", () => {
         { ...dataset.activities[0], id: "b2", distanceKm: 21 },
       ],
     };
-    await saveDataset(second);
-    const loaded = await loadDataset();
+    await repository.save(second);
+    const loaded = await repository.load();
     expect(loaded?.activities).toHaveLength(2);
     expect(loaded?.activities.map((a) => a.id)).toEqual(["b1", "b2"]);
   });
 
-  it("clearStorage removes the stored dataset", async () => {
-    await saveDataset(dataset);
-    expect(await loadDataset()).not.toBeNull();
-    await clearStorage();
-    expect(await loadDataset()).toBeNull();
+  it("clear removes the stored dataset", async () => {
+    await repository.save(dataset);
+    expect(await repository.load()).not.toBeNull();
+    await repository.clear();
+    expect(await repository.load()).toBeNull();
   });
 });
 
-describe("storage: language persistence in localStorage", () => {
+describe("preferences: language persistence in localStorage", () => {
   beforeEach(() => {
     localStorage.clear();
   });
@@ -92,7 +87,7 @@ describe("storage: language persistence in localStorage", () => {
   });
 });
 
-describe("storage: language helpers never throw when storage is unavailable", () => {
+describe("preferences: language helpers never throw when storage is unavailable", () => {
   const original = globalThis.localStorage;
 
   afterEach(() => {

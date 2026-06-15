@@ -29,7 +29,8 @@ import { PowerTrend } from "./components/PowerTrend";
 import { SummaryCardModal } from "./components/SummaryCardModal";
 import { processFile } from "./lib/loadDataset";
 import { generateDemoDataset } from "./lib/demoData";
-import { saveDataset, loadDataset, clearStorage, saveBannerDismissed, loadBannerDismissed, clearBannerDismissed } from "./lib/storage";
+import { repository } from "./lib/repository";
+import { saveBannerDismissed, loadBannerDismissed, clearBannerDismissed } from "./lib/preferences";
 import {
   computeAvgHr,
   computeBestEfforts,
@@ -81,7 +82,7 @@ export default function App() {
 
   // Restore persisted dataset from IndexedDB on first mount.
   useEffect(() => {
-    loadDataset()
+    repository.load()
       .then((stored) => {
         if (stored && stored.activities.length > 0) {
           setHasStoredData(true);
@@ -154,7 +155,7 @@ export default function App() {
         return;
       }
       setStatus({ kind: "ready", dataset });
-      saveDataset(dataset)
+      repository.save(dataset)
         .then(() => { if (saveGenRef.current === saveGen) setHasStoredData(true); })
         .catch(() => { if (saveGenRef.current === saveGen) setSaveError(true); });
     } catch (err) {
@@ -182,7 +183,7 @@ export default function App() {
     if (!window.confirm(t("upload.purgeConfirm"))) return;
     saveGenRef.current++;
     try {
-      await clearStorage();
+      await repository.clear();
     } catch {
       window.alert(t("upload.error.clearFailed"));
       return;

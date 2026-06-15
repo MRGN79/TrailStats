@@ -3,13 +3,17 @@ import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ParsedDataset } from "./lib/types";
 
-// Control whether the local persistence (saveDataset) succeeds or fails so we
+// Control whether the local persistence (save) succeeds or fails so we
 // can exercise the saveError branch surfaced in App's handleFile catch.
-const saveDatasetMock = vi.fn<[ParsedDataset], Promise<void>>();
-vi.mock("./lib/storage", () => ({
-  loadDataset: () => Promise.resolve(null),
-  saveDataset: (ds: ParsedDataset) => saveDatasetMock(ds),
-  clearStorage: vi.fn().mockResolvedValue(undefined),
+const saveMock = vi.fn<[ParsedDataset], Promise<void>>();
+vi.mock("./lib/repository", () => ({
+  repository: {
+    load: vi.fn().mockResolvedValue(null),
+    save: (ds: ParsedDataset) => saveMock(ds),
+    clear: vi.fn().mockResolvedValue(undefined),
+  },
+}));
+vi.mock("./lib/preferences", () => ({
   saveLang: vi.fn(),
   loadLang: () => null,
   saveBannerDismissed: vi.fn(),
@@ -55,7 +59,7 @@ beforeAll(async () => {
 });
 
 beforeEach(() => {
-  saveDatasetMock.mockReset();
+  saveMock.mockReset();
   processFileMock.mockReset();
   processFileMock.mockResolvedValue(dataset(20));
 });
@@ -63,8 +67,8 @@ beforeEach(() => {
 afterEach(() => cleanup());
 
 describe("App — local save error handling", () => {
-  it("shows the save-failed alert when saveDataset rejects", async () => {
-    saveDatasetMock.mockRejectedValue(new Error("quota exceeded"));
+  it("shows the save-failed alert when repository.save rejects", async () => {
+    saveMock.mockRejectedValue(new Error("quota exceeded"));
     const user = userEvent.setup();
     render(<App />);
 
@@ -74,8 +78,8 @@ describe("App — local save error handling", () => {
     expect(alert.textContent).toContain(i18n.t("upload.error.saveFailed"));
   });
 
-  it("does NOT show the save-failed alert when saveDataset resolves", async () => {
-    saveDatasetMock.mockResolvedValue(undefined);
+  it("does NOT show the save-failed alert when repository.save resolves", async () => {
+    saveMock.mockResolvedValue(undefined);
     const user = userEvent.setup();
     render(<App />);
 
