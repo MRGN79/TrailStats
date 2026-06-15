@@ -8,6 +8,7 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 ## [Unreleased]
 
 ### Added
+- **Compartir resumen como imagen:** el botón "Compartir resumen" de la barra lateral genera una tarjeta 1080×1080 px con las seis métricas clave (actividades, distancia, tiempo, desnivel, racha actual y mejor semana). En móviles usa la API de compartir nativa del sistema; en escritorio descarga un PNG directamente. La tarjeta sigue la misma identidad visual de TrailStats (fondo oscuro, tipografía monoespaciada, patrón topo).
 - **Filtro por periodo:** el panel de control incluye ahora un selector de periodo junto al filtro de tipo de actividad. Se pueden elegir presets rápidos (Este año, Año anterior, Últimos 6 meses, Últimos 3 meses) o definir un rango personalizado con fechas de inicio y fin. Al cargar un nuevo archivo o volver al modo demo el periodo se resetea a "Todo el historial".
 - **Métricas extendidas — cadencia, potencia y calorías:** TrailStats lee ahora cadencia media, potencia media (vatios) y calorías tanto de los exports de Strava (CSV) como de Garmin (FIT). Con esos datos aparecen automáticamente nuevas secciones en el panel:
   - **Tendencia de cadencia:** evolución mensual de la cadencia media, con unidades adaptadas a la disciplina (ppm para carrera, rpm para ciclismo).

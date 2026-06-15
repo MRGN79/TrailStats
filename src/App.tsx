@@ -26,6 +26,7 @@ import { HrTrend } from "./components/HrTrend";
 import { HrZones } from "./components/HrZones";
 import { CadenceTrend } from "./components/CadenceTrend";
 import { PowerTrend } from "./components/PowerTrend";
+import { SummaryCardModal } from "./components/SummaryCardModal";
 import { processFile } from "./lib/loadDataset";
 import { generateDemoDataset } from "./lib/demoData";
 import { saveDataset, loadDataset, clearStorage, saveBannerDismissed, loadBannerDismissed, clearBannerDismissed } from "./lib/storage";
@@ -96,6 +97,7 @@ export default function App() {
   const [status, setStatus] = useState<Status>({ kind: "restoring" });
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [dateRange, setDateRange] = useState<DateRangeState>(initialDateRange);
+  const [showSummaryCard, setShowSummaryCard] = useState(false);
 
   const [srMsg, setSrMsg] = useState("");
   const [hasStoredData, setHasStoredData] = useState(false);
@@ -243,6 +245,27 @@ export default function App() {
   const powerTrend = useMemo(() => computePowerTrend(filtered), [filtered]);
   const showRunningMetrics = sportCategory === "running" || sportCategory === "mixed";
   const showCyclingMetrics = sportCategory === "cycling" || sportCategory === "mixed";
+
+  const summaryCardData = useMemo(() => ({
+    totalActivities: totals.activities,
+    totalDistanceKm: totals.distanceKm,
+    totalMovingTimeSec: totals.movingTimeSec,
+    totalElevationGainM: totals.elevationGainM,
+    currentStreak: streak.current,
+    bestWeekDistanceKm: records.bestWeek?.distanceKm ?? null,
+    locale,
+    labels: {
+      activities: t("stats.totals.activities"),
+      distance: t("stats.totals.distance"),
+      time: t("stats.totals.time"),
+      elevation: t("stats.totals.elevation"),
+      currentStreak: t("stats.streak.current"),
+      bestWeek: t("stats.records.bestWeek"),
+      weeks: t("share.weeksUnit"),
+      km: t("units.km"),
+      m: t("units.m"),
+    },
+  }), [totals, streak, records, locale, t]);
   const filteredFirstDate = useMemo(() => {
     if (filtered.length === 0) return null;
     return filtered.reduce((min, a) => (a.date < min ? a.date : min), filtered[0].date);
@@ -337,9 +360,22 @@ export default function App() {
                   onReset={() => setStatus({ kind: "idle" })}
                   onClearData={isDemo ? undefined : handleClearData}
                 />
+                <button
+                  type="button"
+                  className="btn-secondary toolbar__share-summary"
+                  onClick={() => setShowSummaryCard(true)}
+                >
+                  {t("share.summaryButton")}
+                </button>
               </div>
 
               <div className="dashboard__main">
+                {showSummaryCard && (
+                  <SummaryCardModal
+                    data={summaryCardData}
+                    onClose={() => setShowSummaryCard(false)}
+                  />
+                )}
                 {saveError && (
                   <p className="notice" role="alert">
                     {t("upload.error.saveFailed")}

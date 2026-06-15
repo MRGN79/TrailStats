@@ -280,7 +280,12 @@
   },
   "share": {
     "button": "Share",
-    "buttonFor": "Share {{item}}"
+    "buttonFor": "Share {{item}}",
+    "summaryButton": "Share summary",
+    "summaryTitle": "Your stats",
+    "downloadPng": "Download PNG",
+    "close": "Close",
+    "weeksUnit": "weeks"
   },
   "demo": {
     "or": "or",
