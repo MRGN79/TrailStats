@@ -12,6 +12,9 @@ import type {
   HeatLevel,
   HeatmapData,
   HeatmapDay,
+  HrTrendPoint,
+  HrZoneData,
+  HrZonesData,
   LongRunPoint,
   PaceEvolutionPoint,
   PaceZoneData,
@@ -400,12 +403,6 @@ export function computeHeatmap(
 }
 
 // ── Pace, esfuerzos y carga (running) ───────────────────────
-//
-// Zonas de FC: NO implementadas. El modelo Activity solo expone
-// id/date/type/distanceKm/movingTimeSec/elevationGainM, y ni stravaParser
-// (activities.csv) ni garminParser (sesiones FIT) extraen avgHrBpm/maxHrBpm.
-// Sin datos de frecuencia cardiaca en origen, una sección de zonas de FC sería
-// inventada; se omite hasta que los parsers capturen FC.
 
 // Patrones de tipo que se consideran "carrera a pie" para pace y esfuerzos.
 const RUNNING_PATTERNS = ["run", "trail"];
@@ -770,4 +767,93 @@ export function computeLongRunTrend(activities: Activity[]): LongRunPoint[] {
         distanceKm: Number(distanceKm.toFixed(1)),
       };
     });
+}
+
+// ── Frecuencia cardíaca ──────────────────────────────────────
+
+const HR_MIN = 30;
+const HR_MAX = 240;
+const MIN_HR_ACTIVITIES = 5;
+
+// Absolute HR zone bounds (upper boundary of each zone).
+// Z1 < 120, Z2 120-140, Z3 140-155, Z4 155-165, Z5 > 165 bpm.
+// Using absolute values (not % of maxHR) because we don't have the user's
+// personal max HR and a single outlier datum would skew relative zones.
+const HR_ZONE_BOUNDS = [120, 140, 155, 165] as const;
+
+export function isValidHr(bpm: number | null | undefined): bpm is number {
+  return bpm != null && Number.isFinite(bpm) && bpm >= HR_MIN && bpm <= HR_MAX;
+}
+
+export function hasHeartRateData(activities: Activity[]): boolean {
+  return activities.some((a) => isValidHr(a.avgHrBpm));
+}
+
+function hrZoneFor(bpm: number): 1 | 2 | 3 | 4 | 5 {
+  if (bpm < HR_ZONE_BOUNDS[0]) return 1;
+  if (bpm < HR_ZONE_BOUNDS[1]) return 2;
+  if (bpm < HR_ZONE_BOUNDS[2]) return 3;
+  if (bpm < HR_ZONE_BOUNDS[3]) return 4;
+  return 5;
+}
+
+export function computeHrZones(activities: Activity[]): HrZonesData | null {
+  const valid = activities.filter(
+    (a) => isValidHr(a.avgHrBpm) && a.movingTimeSec > 0
+  );
+  if (valid.length < MIN_HR_ACTIVITIES) return null;
+
+  const timeByZone = new Map<number, number>([
+    [1, 0], [2, 0], [3, 0], [4, 0], [5, 0],
+  ]);
+  for (const a of valid) {
+    const zone = hrZoneFor(a.avgHrBpm as number);
+    timeByZone.set(zone, (timeByZone.get(zone) ?? 0) + a.movingTimeSec);
+  }
+
+  const totalTime = valid.reduce((s, a) => s + a.movingTimeSec, 0);
+  const zones: HrZoneData[] = ([1, 2, 3, 4, 5] as const).map((zone) => ({
+    zone,
+    timeSeconds: timeByZone.get(zone) ?? 0,
+    share: totalTime > 0 ? (timeByZone.get(zone) ?? 0) / totalTime : 0,
+  }));
+
+  return { zones, basedOn: valid.length };
+}
+
+export function computeHrTrend(activities: Activity[]): HrTrendPoint[] {
+  // Monthly weighted-average HR (weighted by movingTime) across all activity types.
+  const byMonth = new Map<string, { weightedSum: number; totalTime: number }>();
+  for (const a of activities) {
+    if (!isValidHr(a.avgHrBpm) || a.movingTimeSec <= 0) continue;
+    const k = monthKey(a.date);
+    const prev = byMonth.get(k) ?? { weightedSum: 0, totalTime: 0 };
+    byMonth.set(k, {
+      weightedSum: prev.weightedSum + (a.avgHrBpm as number) * a.movingTimeSec,
+      totalTime: prev.totalTime + a.movingTimeSec,
+    });
+  }
+  return Array.from(byMonth.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, { weightedSum, totalTime }]) => {
+      const [y, m] = key.split("-").map(Number);
+      const date = new Date(y, m - 1, 1);
+      return {
+        key,
+        label: date.toLocaleDateString("en", { month: "short", year: "2-digit" }),
+        avgHrBpm: Math.round(weightedSum / totalTime),
+      };
+    });
+}
+
+export function computeAvgHr(activities: Activity[]): number | null {
+  let weightedSum = 0;
+  let totalTime = 0;
+  for (const a of activities) {
+    if (!isValidHr(a.avgHrBpm) || a.movingTimeSec <= 0) continue;
+    weightedSum += (a.avgHrBpm as number) * a.movingTimeSec;
+    totalTime += a.movingTimeSec;
+  }
+  if (totalTime === 0) return null;
+  return Math.round(weightedSum / totalTime);
 }

@@ -10,9 +10,10 @@ interface Props {
   locale: string;
   firstDate: Date | null;
   lastDate: Date | null;
+  avgHrBpm?: number | null;
 }
 
-export function TotalsCards({ totals, locale, firstDate, lastDate }: Props) {
+export function TotalsCards({ totals, locale, firstDate, lastDate, avgHrBpm }: Props) {
   const { t } = useTranslation();
 
   const dateRangeLabel = useMemo(() => {
@@ -57,6 +58,16 @@ export function TotalsCards({ totals, locale, firstDate, lastDate }: Props) {
       shareValue: formatNumber(totals.elevationGainM, locale),
       shareUnit: t("units.m"),
     },
+    ...(avgHrBpm != null
+      ? [{
+          label: t("stats.totals.avgHr"),
+          value: formatNumber(avgHrBpm, locale),
+          unit: t("units.bpm"),
+          infoKey: "avgHr",
+          shareValue: formatNumber(avgHrBpm, locale),
+          shareUnit: t("units.bpm"),
+        }]
+      : []),
   ];
 
   const categoryLabel = t("stats.totals.title");
