@@ -145,6 +145,18 @@ describe("computeTypeBreakdown", () => {
     expect(slices[1].share).toBeCloseTo(0.3, 5);
     expect(slices.reduce((s, x) => s + x.share, 0)).toBeCloseTo(1, 5);
   });
+
+  it("excludes types with total distance 0 (e.g. weight training)", () => {
+    const acts = [
+      act("2026-01-05", "Run", 10, 100, 0),
+      act("2026-01-06", "WeightTraining", 0, 3600, 0),
+      act("2026-01-07", "Yoga", 0, 1800, 0),
+    ];
+    const slices = computeTypeBreakdown(acts);
+    expect(slices).toHaveLength(1);
+    expect(slices[0].type).toBe("Run");
+    expect(slices[0].share).toBeCloseTo(1, 5);
+  });
 });
 
 describe("availableYears", () => {

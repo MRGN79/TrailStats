@@ -81,7 +81,8 @@ describe("computeEddington", () => {
       ...runs([3, 3, 3], "HIKE"),
       ...runs([4, 4, 4, 4], "VirtualRide"),
     ]);
-    expect(stats.find((s) => s.sport === "run")?.number).toBe(3);
+    // Hike no cuenta como running en Eddington (sí en RUN_PATTERNS antes de este cambio)
+    expect(stats.find((s) => s.sport === "run")).toBeUndefined();
     expect(stats.find((s) => s.sport === "cycling")?.number).toBe(4);
   });
 });
