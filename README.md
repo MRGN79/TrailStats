@@ -139,11 +139,9 @@ npm run build
 
 No requiere servidor de aplicación, runtime de Node en producción ni variables de entorno.
 
-## Contribuir
+## Reportar bugs
 
-- **Reportar bugs o proponer features:** abre un issue describiendo el comportamiento esperado y el observado, con pasos para reproducir.
-- **Pull requests:** crea una rama desde `main` (`feat/`, `fix/`, `docs/`…), asegúrate de que `npm run lint` y `npm test` pasan en verde, y abre el PR usando la plantilla del repositorio.
-- **i18n:** cualquier texto visible al usuario debe ir mediante clave i18n en `src/locales/en/` y `src/locales/es/` — nunca hardcodeado.
+Para reportar bugs o proponer mejoras, abre un issue describiendo el comportamiento esperado y el observado, con pasos para reproducir. Las contribuciones de código externas (pull requests) no son aceptadas sin acuerdo previo por escrito con el propietario. Consultas: marugann@gmail.com
 
 ## Privacidad
 
@@ -152,3 +150,29 @@ TrailStats no recoge, almacena ni transmite ningún dato. Todo el procesamiento 
 ## Aviso legal
 
 TrailStats es una herramienta independiente y no está afiliada a Strava, Inc. ni a Garmin Ltd., ni cuenta con su respaldo o patrocinio. "Strava" y "Garmin" son marcas registradas de sus respectivos titulares. TrailStats trabaja exclusivamente con el archivo de export que el propio usuario descarga de su cuenta de Strava o de Garmin Connect.
+
+## Licencia
+
+TrailStats es software **source-available**, no open source.
+
+Copyright (c) 2026 MRGN79. All rights reserved.
+
+Se permite ver el código fuente y ejecutar TrailStats para uso personal y no comercial. Cualquier uso comercial, redistribución u hospedaje del software (o de un derivado) requiere permiso previo y por escrito del propietario. Consulta el archivo [LICENSE](./LICENSE) para los términos completos, o contacta a marugann@gmail.com para consultas de licenciamiento comercial.
+
+## Third-Party Notices
+
+TrailStats incorpora los siguientes componentes de terceros, bajo sus respectivas licencias:
+
+| Componente | Licencia |
+|---|---|
+| [@zip.js/zip.js](https://github.com/gildas-lormeau/zip.js) | BSD-3-Clause |
+| [fit-file-parser](https://github.com/jimmykane/fit-parser) | MIT |
+| [Inter](https://rsms.me/inter/) (via @fontsource/inter) | SIL Open Font License 1.1 |
+| [JetBrains Mono](https://www.jetbrains.com/lp/mono/) (via @fontsource/jetbrains-mono) | SIL Open Font License 1.1 |
+| [Space Grotesk](https://github.com/floriankarsten/space-grotesk) (via @fontsource/space-grotesk) | SIL Open Font License 1.1 |
+| [PapaParse](https://www.papaparse.com/) | MIT |
+| [React](https://react.dev/) | MIT |
+| [Recharts](https://recharts.org/) | MIT |
+| [i18next](https://www.i18next.com/) / [react-i18next](https://react.i18next.com/) | MIT |
+
+Los textos completos de las licencias de los componentes de terceros están disponibles en sus repositorios y en el directorio `node_modules/` correspondiente.

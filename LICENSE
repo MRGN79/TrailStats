@@ -1,21 +1,119 @@
-MIT License
+TrailStats License
 
-Copyright (c) 2026 MRGN79
+Copyright (c) 2026 MRGN79. All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. Definitions
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+"Software" means the TrailStats source code, compiled artifacts,
+documentation, and all associated files contained in this repository.
+
+"Licensor" means the copyright holder identified above, the owner of the
+Software.
+
+"You" means any individual or legal entity exercising permissions granted
+by this License.
+
+"Personal, Non-Commercial Use" means use by an individual, for that
+individual's own private purposes, that is not intended for or directed
+toward commercial advantage or monetary compensation, whether direct or
+indirect.
+
+2. Grant of Limited License
+
+Subject to your full compliance with the terms of this License, the
+Licensor grants You a worldwide, royalty-free, non-exclusive,
+non-transferable, revocable license to:
+
+(a) access and view the source code of the Software for the purposes of
+    reading, evaluation, and study;
+
+(b) run the Software for Personal, Non-Commercial Use, including running
+    the publicly hosted instance of the Software in a web browser; and
+
+(c) create private modifications of the Software solely for Personal,
+    Non-Commercial Use, provided that such modifications are not
+    distributed, published, or made available to any third party.
+
+3. Restrictions
+
+Except as expressly permitted in Section 2, and except where such
+restriction is prohibited by applicable mandatory law, You may NOT,
+without the prior express written permission of the Licensor:
+
+(a) use the Software, in whole or in part, for any commercial purpose,
+    including but not limited to offering it as a hosted or managed
+    service, charging fees for access to it, or using it as a component
+    of any product or service offered for monetary compensation or
+    commercial advantage;
+
+(b) copy, reproduce, distribute, republish, sublicense, sell, rent,
+    lease, or otherwise transfer the Software or any portion of it to any
+    third party;
+
+(c) host, deploy, or otherwise make the Software, or any derivative or
+    substantially similar work based on it, publicly available to third
+    parties;
+
+(d) remove, alter, or obscure any copyright, trademark, or other
+    proprietary notices contained in the Software; or
+
+(e) use the name "TrailStats", the Licensor's name, or any associated
+    branding to endorse or promote any product without prior written
+    permission.
+
+4. Third-Party Components
+
+The Software incorporates third-party open-source components that are
+licensed under their own respective terms. Those components are not
+covered by this License and remain governed by the licenses under which
+they were obtained. The applicable third-party notices, where required,
+are provided separately. Nothing in this License grants You any rights in
+those third-party components beyond those granted by their own licenses.
+
+5. Reservation of Rights
+
+All rights not expressly granted to You in this License are reserved by
+the Licensor. No rights are granted by implication, estoppel, or
+otherwise. This License does not transfer ownership of the Software or any
+intellectual property rights in it.
+
+6. Commercial Licensing
+
+For any use not permitted under this License, including any commercial
+use, You must obtain a separate written license from the Licensor.
+Inquiries may be directed to: marugann@gmail.com
+
+7. Termination
+
+This License and the rights granted hereunder terminate automatically and
+immediately, without notice, if You breach any of its terms. Upon
+termination, You must cease all use of the Software and destroy all copies
+in your possession or control. Sections 3, 5, 8, and 9 survive
+termination.
+
+8. Disclaimer of Warranty
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. THE LICENSOR DOES
+NOT WARRANT THAT THE SOFTWARE WILL BE ERROR-FREE OR UNINTERRUPTED.
+
+9. Limitation of Liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL THE
+LICENSOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN
+AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+NOTHING IN THIS LICENSE EXCLUDES OR LIMITS LIABILITY THAT CANNOT BE
+EXCLUDED OR LIMITED UNDER APPLICABLE MANDATORY LAW, INCLUDING LIABILITY
+FOR DEATH OR PERSONAL INJURY CAUSED BY NEGLIGENCE, OR FOR FRAUD.
+
+10. Governing Law
+
+This License shall be governed by and construed in accordance with the
+laws of Spain, without regard to its conflict-of-law provisions, and
+subject to the mandatory consumer-protection and other non-waivable rights
+that may apply to You under the law of your country of residence. Any
+dispute arising under this License shall be subject to the jurisdiction of
+the competent courts of Spain, without prejudice to any mandatory
+jurisdiction rules that protect consumers.

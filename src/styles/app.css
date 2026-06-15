@@ -1082,6 +1082,12 @@ table.data-table td:first-child {
   margin: var(--space-2xs) 0 0;
 }
 
+.app-copyright {
+  font-size: var(--step--2);
+  color: rgba(250, 248, 243, 0.45);
+  margin: var(--space-2xs) 0 0;
+}
+
 .app-version {
   font-family: var(--font-mono);
   font-size: var(--step--2);

@@ -1,7 +1,7 @@
 {
   "name": "trailstats",
   "private": true,
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "version": "0.11.0",
   "description": "Analyze your Strava or Garmin export history locally in your browser — aggregated stats and trends, no backend, no data leaves your device.",
   "type": "module",
