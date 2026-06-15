@@ -10,7 +10,7 @@ El usuario se centra en funcionalidad y negocio. Claude gestiona todo lo técnic
 
 | Agente | Rol principal | Modo de acceso |
 |---|---|---|
-| **Jefe** | Orquestador, PM, punto de entrada preferido | Directo o vía invocación |
+| **Jefe** | Orquestador, PM, punto de entrada preferido. Al delegar tareas largas informa al usuario de qué se está haciendo y cuándo se espera resultado. Cuando la tarea completa, reporta proactivamente sin esperar pregunta. | Directo o vía invocación |
 | **Analista Funcional** | Traduce requisitos a especificaciones | Vía Jefe o directo |
 | **Arquitecto** | Diseño técnico y decisiones de sistema | Vía Jefe o directo |
 | **UX-UI** | Experiencia de usuario e interfaz | Vía Jefe o directo |
@@ -176,6 +176,17 @@ El agente responde sin necesidad de pasar por el Jefe
 - Cualquier acción con coste económico
 - Cambios que afecten a sistemas compartidos o en producción
 
+### Protocolo de recuperación cuando un subagente se queda sin contexto
+
+Si un subagente (worktree o paralelo) termina sin haber hecho commit o sin reportar resultado claro:
+
+1. Ejecutar `git diff` y `git status` en el worktree o rama del subagente para determinar el estado real del trabajo.
+2. Identificar qué parte estaba completa (ficheros escritos y correctos) y qué faltaba.
+3. Continuar desde ese estado — no reempezar desde cero.
+4. Informar al usuario de qué recuperó el orquestador y qué tuvo que completar manualmente.
+
+Nunca asumir que un subagente sin respuesta ha terminado correctamente.
+
 ---
 
 ## La Regla del Abogado
@@ -208,6 +219,9 @@ El Abogado revisa siempre:
 - `main` es la única rama permanente — nunca commits directos, siempre vía PR
 - Las ramas de feature son de vida corta: días, no semanas
 - Eliminar la rama tras el merge
+
+### Ramas en paralelo — política de conflictos
+No crear ramas de feature nuevas mientras haya PRs abiertos que modifiquen ficheros compartidos (`App.tsx`, `CHANGELOG.md`, `package.json`, ficheros de i18n, CSS raíz). Esperar al merge o aceptar el coste explícito del rebase. Si se crea una rama en paralelo conscientemente, hay que hacer `git rebase origin/main` antes de abrir la PR y resolver los conflictos en ese momento, no al final del desarrollo.
 
 ### Merge strategy
 - **Squash merge** al fusionar a `main` — historial limpio, un commit por feature
@@ -300,7 +314,7 @@ Cada vez que el scaffold recibe mejoras significativas: el Jefe actualiza `.clau
 - **Auditoría de seguridad**: ejecutar antes de cada release (el agente Seguridad lo hace)
 - **Actualizaciones major**: requieren revisión del Arquitecto — pueden introducir breaking changes
 - **Dependencias sin mantenimiento**: si el último release tiene más de 12 meses en un proyecto activo, señalar como riesgo
-- **Añadir una dependencia nueva**: el agente implementador (Frontend o Backend) justifica frente a implementación propia si la funcionalidad es pequeña; si la dependencia tiene impacto arquitectónico significativo (nueva categoría, alternativa a algo ya usado, cambio de paradigma), consulta al Arquitecto antes de añadirla; el Abogado revisa la licencia en el gate pre-release
+- **Añadir una dependencia nueva**: el agente implementador (Frontend o Backend) justifica frente a implementación propia si la funcionalidad es pequeña; si la dependencia tiene impacto arquitectónico significativo (nueva categoría, alternativa a algo ya usado, cambio de paradigma), consulta al Arquitecto antes de añadirla; el Abogado revisa la licencia **en el momento de añadirla** — no solo en el gate pre-release. Una dependencia con licencia incompatible es más barata de descartar antes de integrarla que después.
 
 ---
 

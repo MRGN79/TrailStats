@@ -49,8 +49,10 @@ Completarlo en orden — cada paso prepara el terreno para el siguiente.
 - [ ] `.env.example` con todas las variables necesarias
 
 ### Legal y privacidad
-- [ ] Invocar al **Abogado** en modo inicialización (orientativo, no vinculante — la revisión formal ocurre antes del release): proporcionar contexto del proyecto (tipo de usuarios, mercados, datos que se tratarán, stack tecnológico) — el Abogado revisa también las licencias de las dependencias principales del stack
+- [ ] Invocar al **Abogado** en modo inicialización: proporcionar contexto del proyecto (tipo de usuarios, mercados, datos que se tratarán, stack tecnológico, intención comercial presente o futura)
 - [ ] El Abogado confirma qué regulación aplica y qué documentos legales serán necesarios (política de privacidad, ToS, etc.)
+- [ ] El Abogado revisa y valida el fichero `LICENSE` **antes de hacer el primer commit público**: ¿MIT, propietaria, source-available, dual? La elección depende de la intención comercial — cambiarla retroactivamente es posible pero más costoso. Un `LICENSE` incorrecto en el repositorio desde el día 1 concede permisos que pueden ser difíciles de revocar.
+- [ ] El Abogado revisa las licencias de las dependencias principales del stack elegido y confirma que son compatibles con la licencia del proyecto.
 
 ---
 
