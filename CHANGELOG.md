@@ -8,6 +8,12 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 ## [Unreleased]
 
 ### Added
+- **Métricas extendidas — cadencia, potencia y calorías:** TrailStats lee ahora cadencia media, potencia media (vatios) y calorías tanto de los exports de Strava (CSV) como de Garmin (FIT). Con esos datos aparecen automáticamente nuevas secciones en el panel:
+  - **Tendencia de cadencia:** evolución mensual de la cadencia media, con unidades adaptadas a la disciplina (ppm para carrera, rpm para ciclismo).
+  - **Tendencia de potencia:** evolución mensual de la potencia media en vatios (solo visible cuando hay datos de potencia en actividades de ciclismo).
+  - **Calorías totales:** tarjeta en la sección de Totales con las kcal acumuladas (solo si tus actividades incluyen ese dato).
+  Como siempre, estas secciones solo aparecen si tus datos incluyen la información correspondiente.
+- **Visualización contextual por tipo de actividad:** al filtrar por tipo de actividad mediante el desplegable, el panel muestra ahora solo las secciones relevantes para esa disciplina. Las métricas de carrera (ritmo, zonas de ritmo, mejores esfuerzos, predictor de carrera, tirada larga) se ocultan al filtrar por ciclismo o actividades sin distancia, y la potencia solo aparece en contexto de ciclismo. Cuando se selecciona "Todos los tipos" o una categoría mixta, se muestran todas las secciones disponibles.
 - **Frecuencia cardíaca:** TrailStats lee ahora la FC media y máxima de los exports de Strava (CSV) y Garmin (FIT). Con esos datos aparecen automáticamente dos nuevas secciones en el panel de entrenamiento:
   - **Tendencia de FC:** gráfica de línea con la FC media mensual, para ver si tu corazón trabaja menos a igual esfuerzo (señal de mejora aeróbica).
   - **Zonas de FC:** distribución del tiempo de movimiento en cinco zonas de intensidad cardíaca (Z1 recuperación a Z5 máxima), con umbrales fijos expresados en ppm.

@@ -16,6 +16,10 @@ export interface FitSession {
   total_ascent?: number;
   avg_heart_rate?: number;
   max_heart_rate?: number;
+  avg_cadence?: number;
+  total_calories?: number;
+  avg_power?: number;
+  name?: string;
 }
 
 // Map FIT `sport` enum to a human label aligned with Strava activity types.
@@ -67,6 +71,10 @@ export function sessionToActivity(
   const movingTimeSec =
     session.total_timer_time ?? session.total_elapsed_time ?? 0;
 
+  const cadence = session.avg_cadence;
+  const calories = session.total_calories;
+  const power = session.avg_power;
+
   return {
     id: fallbackId,
     date,
@@ -77,6 +85,10 @@ export function sessionToActivity(
     elevationGainM: session.total_ascent ?? 0,
     avgHrBpm: isValidHr(session.avg_heart_rate) ? session.avg_heart_rate : null,
     maxHrBpm: isValidHr(session.max_heart_rate) ? session.max_heart_rate : null,
+    avgCadence: cadence != null && cadence >= 20 && cadence <= 250 ? cadence : null,
+    calories: calories != null && calories > 0 && calories < 50000 ? calories : null,
+    avgPowerW: power != null && power > 0 && power < 3000 ? power : null,
+    activityName: session.name?.trim() || null,
   };
 }
 

@@ -2,6 +2,7 @@ import type {
   Activity,
   AggregatedPeriod,
   BestEffort,
+  CadenceTrendPoint,
   DayOfWeekStat,
   DistanceHistogramBucket,
   EddingtonSport,
@@ -21,8 +22,10 @@ import type {
   PaceZonesData,
   PeriodRecord,
   PeriodRecords,
+  PowerTrendPoint,
   RacePredictionItem,
   RacePredictorResult,
+  SportCategory,
   StreakStats,
   Totals,
   TrainingLoad,
@@ -856,4 +859,97 @@ export function computeAvgHr(activities: Activity[]): number | null {
   }
   if (totalTime === 0) return null;
   return Math.round(weightedSum / totalTime);
+}
+
+// ── Métricas extendidas: cadencia, potencia, calorías ────────
+
+const CADENCE_MIN = 20;
+const CADENCE_MAX = 250;
+const POWER_MIN = 1;
+const POWER_MAX = 3000;
+
+function isValidCadence(c: number | null | undefined): c is number {
+  return c != null && Number.isFinite(c) && c >= CADENCE_MIN && c <= CADENCE_MAX;
+}
+
+function isValidPower(w: number | null | undefined): w is number {
+  return w != null && Number.isFinite(w) && w >= POWER_MIN && w <= POWER_MAX;
+}
+
+export function detectSportCategory(selectedType: string | null): SportCategory {
+  if (!selectedType) return "mixed";
+  const lower = selectedType.toLowerCase();
+  if (lower.includes("run") || lower.includes("trail") || lower.includes("jog")) return "running";
+  if (lower.includes("ride") || lower.includes("cycl") || lower.includes("bike") || lower.includes("velo")) return "cycling";
+  return "other";
+}
+
+export function hasCadenceData(activities: Activity[]): boolean {
+  return activities.some((a) => isValidCadence(a.avgCadence));
+}
+
+export function hasPowerData(activities: Activity[]): boolean {
+  return activities.some((a) => isValidPower(a.avgPowerW));
+}
+
+export function computeTotalCalories(activities: Activity[]): number | null {
+  let sum = 0;
+  let found = false;
+  for (const a of activities) {
+    if (a.calories != null && Number.isFinite(a.calories) && a.calories > 0) {
+      sum += a.calories;
+      found = true;
+    }
+  }
+  return found ? Math.round(sum) : null;
+}
+
+export function computeCadenceTrend(activities: Activity[]): CadenceTrendPoint[] {
+  const byMonth = new Map<string, { weightedSum: number; totalTime: number }>();
+  for (const a of activities) {
+    if (!isValidCadence(a.avgCadence) || a.movingTimeSec <= 0) continue;
+    const k = monthKey(a.date);
+    const prev = byMonth.get(k) ?? { weightedSum: 0, totalTime: 0 };
+    byMonth.set(k, {
+      weightedSum: prev.weightedSum + (a.avgCadence as number) * a.movingTimeSec,
+      totalTime: prev.totalTime + a.movingTimeSec,
+    });
+  }
+  const points = Array.from(byMonth.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, { weightedSum, totalTime }]) => {
+      const [y, m] = key.split("-").map(Number);
+      const date = new Date(y, m - 1, 1);
+      return {
+        key,
+        label: date.toLocaleDateString("en", { month: "short", year: "2-digit" }),
+        avgCadence: Math.round(weightedSum / totalTime),
+      };
+    });
+  return points.length < 2 ? [] : points;
+}
+
+export function computePowerTrend(activities: Activity[]): PowerTrendPoint[] {
+  const byMonth = new Map<string, { weightedSum: number; totalTime: number }>();
+  for (const a of activities) {
+    if (!isValidPower(a.avgPowerW) || a.movingTimeSec <= 0) continue;
+    const k = monthKey(a.date);
+    const prev = byMonth.get(k) ?? { weightedSum: 0, totalTime: 0 };
+    byMonth.set(k, {
+      weightedSum: prev.weightedSum + (a.avgPowerW as number) * a.movingTimeSec,
+      totalTime: prev.totalTime + a.movingTimeSec,
+    });
+  }
+  const points = Array.from(byMonth.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, { weightedSum, totalTime }]) => {
+      const [y, m] = key.split("-").map(Number);
+      const date = new Date(y, m - 1, 1);
+      return {
+        key,
+        label: date.toLocaleDateString("en", { month: "short", year: "2-digit" }),
+        avgPowerW: Math.round(weightedSum / totalTime),
+      };
+    });
+  return points.length < 2 ? [] : points;
 }

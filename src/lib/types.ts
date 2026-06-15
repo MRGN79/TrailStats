@@ -7,6 +7,24 @@ export interface Activity {
   elevationGainM: number;
   avgHrBpm?: number | null;
   maxHrBpm?: number | null;
+  avgCadence?: number | null;
+  calories?: number | null;
+  avgPowerW?: number | null;
+  activityName?: string | null;
+}
+
+export type SportCategory = "running" | "cycling" | "other" | "mixed";
+
+export interface CadenceTrendPoint {
+  key: string;
+  label: string;
+  avgCadence: number;
+}
+
+export interface PowerTrendPoint {
+  key: string;
+  label: string;
+  avgPowerW: number;
 }
 
 export interface Totals {

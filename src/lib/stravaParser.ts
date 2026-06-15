@@ -13,6 +13,10 @@ const COLUMN_ALIASES: Record<string, string[]> = {
   elevation: ["elevation gain", "desnivel positivo", "elevation"],
   avgHr: ["average heart rate", "pulsaciones medias", "frecuencia cardiaca media", "fc media"],
   maxHr: ["max heart rate", "pulsaciones máximas", "frecuencia cardiaca máxima", "fc máxima"],
+  cadence: ["average cadence", "cadencia media"],
+  calories: ["calories", "calorías", "calorias"],
+  power: ["average watts", "vatios medios"],
+  activityName: ["activity name", "nombre de la actividad"],
 };
 
 function normalize(header: string): string {
@@ -107,6 +111,10 @@ function rowToActivity(
   const avgHrRaw = toNumber(cols[map.avgHr]);
   const maxHrRaw = toNumber(cols[map.maxHr]);
 
+  const cadenceRaw = toNumber(cols[map.cadence]);
+  const caloriesRaw = toNumber(cols[map.calories]);
+  const powerRaw = toNumber(cols[map.power]);
+
   return {
     id: cols[map.id]?.trim() || `row-${fallbackId}`,
     date,
@@ -116,6 +124,10 @@ function rowToActivity(
     elevationGainM: toNumber(cols[map.elevation]),
     avgHrBpm: isValidHr(avgHrRaw) ? avgHrRaw : null,
     maxHrBpm: isValidHr(maxHrRaw) ? maxHrRaw : null,
+    avgCadence: cadenceRaw >= 20 && cadenceRaw <= 250 ? cadenceRaw : null,
+    calories: caloriesRaw > 0 && caloriesRaw < 50000 ? caloriesRaw : null,
+    avgPowerW: powerRaw > 0 && powerRaw < 3000 ? powerRaw : null,
+    activityName: cols[map.activityName]?.trim() || null,
   };
 }
 

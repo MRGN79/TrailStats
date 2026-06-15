@@ -11,6 +11,7 @@ export function PrivacyPanel({ onClearData }: Props) {
     t("privacy.points.local"),
     t("privacy.points.noServer"),
     t("privacy.points.healthData"),
+    t("privacy.points.activityNames"),
     t("privacy.points.noTracking"),
   ];
 
