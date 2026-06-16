@@ -1,10 +1,10 @@
 # TrailStats
 
-Your training history, in numbers — analiza el export completo de tu plataforma de actividad (Strava, Garmin Connect) sin que ningún dato salga de tu navegador.
+Your training history, in numbers — analiza el export completo de tu plataforma de actividad (Strava, Garmin Connect, Apple Health, Polar Flow y dispositivos que exportan en FIT como Coros o Wahoo) sin que ningún dato salga de tu navegador.
 
 ## ¿Qué es esto?
 
-TrailStats es una aplicación web 100% cliente para deportistas. Cargas el export oficial de tu histórico desde tu plataforma de actividad (Strava o Garmin Connect), la app detecta automáticamente el formato, extrae y parsea tus actividades **en el propio navegador** y te muestra estadísticas agregadas: totales de todo tu histórico, agregados semanales y mensuales, y gráficas de tendencias en el tiempo.
+TrailStats es una aplicación web 100% cliente para deportistas. Cargas el export oficial de tu histórico desde tu plataforma de actividad (Strava, Garmin Connect, Apple Health o Polar Flow; los dispositivos que exportan en formato FIT estándar como Coros o Wahoo también funcionan), la app detecta automáticamente el formato, extrae y parsea tus actividades **en el propio navegador** y te muestra estadísticas agregadas: totales de todo tu histórico, agregados semanales y mensuales, y gráficas de tendencias en el tiempo.
 
 Está pensada para quien quiere una foto global de su volumen y su progresión sin depender de la API de ninguna plataforma ni subir sus datos a ningún servidor. **Privacidad por diseño:** no hay backend, no hay cuentas, no hay tracking. Una vez cargada la página, la app funciona sin conexión y ningún archivo abandona tu dispositivo.
 
@@ -18,8 +18,9 @@ La interfaz es bilingüe (inglés por defecto, castellano) y todo el procesamien
 | TypeScript | 5.4 | Tipado |
 | Vite | 5.3 | Build y dev server |
 | @zip.js/zip.js | 2.7 | Lectura en streaming del ZIP del export |
-| PapaParse | 5.4 | Parseo del `activities.csv` (export Strava) |
-| fit-file-parser | 3.0 | Parseo de archivos FIT (export Garmin Connect) |
+| PapaParse | 5.4 | Parseo de CSV (`activities.csv` de Strava, `training-sessions.csv` de Polar Flow) |
+| fit-file-parser | 3.0 | Parseo de archivos FIT (Garmin Connect, Coros, Wahoo) |
+| DOMParser (nativo) | — | Parseo del `export.xml` de Apple Health (API nativa del navegador, sin dependencia) |
 | Recharts | 2.12 | Gráficas de tendencias |
 | react-i18next / i18next | 14.1 / 23.11 | Internacionalización EN/ES |
 | Vitest | 1.6 | Tests |
@@ -74,8 +75,11 @@ npm run preview
 1. Descarga el export oficial de tu plataforma de actividad:
    - **Strava:** **Ajustes → Mi cuenta → Descargar o eliminar tu cuenta → Solicitar tu archivo**. Strava te envía por email un ZIP con todo tu histórico (incluye `activities.csv`).
    - **Garmin Connect:** **Account Management Center → Exportar tus datos**. Garmin te envía un ZIP con el export masivo de tu histórico (incluye los archivos `.fit` de tus actividades).
+   - **Apple Health:** en la app Salud de iOS, **tu foto de perfil → Exportar todos los datos de salud**. Se genera un ZIP que incluye `export.xml` con tus entrenamientos.
+   - **Polar Flow:** **Configuración → Cuenta → Exportar datos**. Polar te envía un ZIP que incluye `training-sessions.csv`.
+   - **Coros, Wahoo y otros dispositivos:** cualquier export en formato FIT estándar funciona igual que el de Garmin; arrastra el ZIP o el archivo `.fit`.
 2. Abre TrailStats y arrastra ese ZIP a la zona de carga (o haz clic para seleccionarlo).
-3. La app detecta automáticamente la plataforma de origen y lee el contenido relevante del ZIP: `activities.csv` en el export de Strava, o los archivos `.fit` en el export masivo de Garmin (ignora fotos, mensajes y el resto del export).
+3. La app detecta automáticamente la plataforma de origen y lee el contenido relevante del ZIP: `activities.csv` en el export de Strava, los archivos `.fit` en el export masivo de Garmin (o de dispositivos compatibles con FIT como Coros y Wahoo), `export.xml` en el export de Apple Health, o `training-sessions.csv` en el de Polar Flow (ignora fotos, mensajes y el resto del export).
 4. Explora los totales de tu histórico, cambia entre vista semanal y mensual, filtra por tipo de actividad y revisa la gráfica de tendencias.
 5. Cambia el idioma con el selector EN/ES en la barra superior.
 
@@ -156,7 +160,7 @@ TrailStats no recoge, almacena ni transmite ningún dato. Todo el procesamiento 
 
 ## Aviso legal
 
-TrailStats es una herramienta independiente y no está afiliada a Strava, Inc. ni a Garmin Ltd., ni cuenta con su respaldo o patrocinio. "Strava" y "Garmin" son marcas registradas de sus respectivos titulares. TrailStats trabaja exclusivamente con el archivo de export que el propio usuario descarga de su cuenta de Strava o de Garmin Connect.
+TrailStats es una herramienta independiente y no está afiliada a Strava, Inc., Garmin Ltd., Apple Inc. ni Polar Electro Oy, ni cuenta con su respaldo o patrocinio. "Strava", "Garmin", "Apple Health", "Polar", "Coros" y "Wahoo" son marcas de sus respectivos titulares. TrailStats trabaja exclusivamente con el archivo de export que el propio usuario descarga de su cuenta o dispositivo.
 
 ## Licencia
 
