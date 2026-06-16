@@ -5,7 +5,7 @@ Todos los cambios relevantes de este proyecto se documentan en este archivo.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
-## [Unreleased]
+## [0.12.0] — 2026-06-17
 
 ### Added
 - **Soporte multi-plataforma — Apple Health y Polar Flow:** TrailStats detecta ahora automáticamente el origen del export y lo procesa con el parser correspondiente. Se añaden dos nuevas plataformas compatibles:
