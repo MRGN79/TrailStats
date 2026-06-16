@@ -2,11 +2,15 @@ import type { ParsedDataset } from "./types";
 import {
   detectPlatform,
   extractActivitiesCsv,
+  extractAppleHealthXml,
   extractFitFiles,
+  extractPolarCsv,
   type Platform,
 } from "./zipReader";
 import { parseActivitiesCsv } from "./stravaParser";
 import { parseFitFiles } from "./garminParser";
+import { parseAppleHealthXml } from "./appleHealthParser";
+import { parsePolarCsv } from "./polarParser";
 
 export interface ParseProgress {
   done: number;
@@ -38,6 +42,20 @@ const PARSERS: Record<Platform, PlatformParser> = {
         onProgress?.({ done, total })
       );
       return parseFitFiles(entries);
+    },
+  },
+  "apple-health": {
+    platform: "apple-health",
+    async parse(file) {
+      const xml = await extractAppleHealthXml(file);
+      return parseAppleHealthXml(xml);
+    },
+  },
+  polar: {
+    platform: "polar",
+    async parse(file) {
+      const csv = await extractPolarCsv(file);
+      return parsePolarCsv(csv);
     },
   },
 };
