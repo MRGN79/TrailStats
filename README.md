@@ -104,12 +104,19 @@ TrailStats/
 │   │   └── LanguageToggle.tsx    Selector de idioma EN/ES
 │   ├── lib/                 Lógica de dominio (sin UI)
 │   │   ├── zipReader.ts          Lectura en streaming del ZIP (zip.js)
-│   │   ├── detectFormat.ts       Detección automática de plataforma (Strava CSV / Garmin FIT)
+│   │   ├── parserRegistry.ts     Detección automática y registro de parsers por plataforma
 │   │   ├── stravaParser.ts       Mapeo y parseo de activities.csv (export Strava)
-│   │   ├── garminParser.ts       Parseo de archivos FIT (export Garmin Connect)
+│   │   ├── garminParser.ts       Parseo de archivos FIT (Garmin Connect, Coros, Wahoo)
+│   │   ├── appleHealthParser.ts  Parseo de export.xml (export Apple Health)
+│   │   ├── polarParser.ts        Parseo de training-sessions.csv (export Polar Flow)
+│   │   ├── repository.ts         Interfaz ActivityRepository + IndexedDB (ver ADR-002)
+│   │   ├── preferences.ts        Preferencias de UI en localStorage (idioma, banner)
 │   │   ├── aggregate.ts          Agregados semanales/mensuales y totales
 │   │   ├── format.ts             Formateo de números/fechas por locale
 │   │   ├── loadDataset.ts        Orquestación carga → parseo → agregación
+│   │   ├── summaryCard.ts        Generación de tarjeta PNG para compartir
+│   │   ├── demoData.ts           Datos de muestra para el modo demo
+│   │   ├── dateRange.ts          Utilidades de filtrado por rango de fechas
 │   │   ├── processor.worker.ts   Web Worker para procesamiento pesado
 │   │   └── types.ts              Modelo de datos interno
 │   ├── locales/             Traducciones
