@@ -5,6 +5,11 @@ Todos los cambios relevantes de este proyecto se documentan en este archivo.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
+## [Unreleased]
+
+### Added
+- **Soporte para Google AdSense:** la aplicación incluye ahora dos posiciones publicitarias (entre secciones y al final del panel). Los anuncios solo se muestran si las variables de entorno `VITE_ADSENSE_PUBLISHER_ID`, `VITE_ADSENSE_SLOT_BETWEEN` y `VITE_ADSENSE_SLOT_BOTTOM` están configuradas; en caso contrario la UI no cambia. Se añade `.env.example` con la documentación de estas variables.
+
 ## [0.12.0] — 2026-06-17
 
 ### Added

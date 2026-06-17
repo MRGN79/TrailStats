@@ -302,5 +302,8 @@
   },
   "legal": {
     "copyright": "© 2026 TrailStats — Todos los derechos reservados. Solo uso personal y no comercial."
+  },
+  "ads": {
+    "label": "Publicidad"
   }
 }

@@ -27,6 +27,10 @@ import { HrZones } from "./components/HrZones";
 import { CadenceTrend } from "./components/CadenceTrend";
 import { PowerTrend } from "./components/PowerTrend";
 import { SummaryCardModal } from "./components/SummaryCardModal";
+import { AdUnit } from "./components/AdUnit";
+
+const AD_SLOT_BETWEEN = (import.meta.env.VITE_ADSENSE_SLOT_BETWEEN as string | undefined) ?? "";
+const AD_SLOT_BOTTOM = (import.meta.env.VITE_ADSENSE_SLOT_BOTTOM as string | undefined) ?? "";
 import { processFile } from "./lib/loadDataset";
 import { generateDemoDataset } from "./lib/demoData";
 import { repository } from "./lib/repository";
@@ -402,6 +406,8 @@ export default function App() {
                   <EddingtonCards stats={eddington} locale={locale} />
                 </div>
 
+                <AdUnit slot={AD_SLOT_BETWEEN} className="ad-unit--between-sections" />
+
                 <div className="dash-section">
                   <h2 className="dash-section__title">{t("stats.sections.training")}</h2>
                   {dataset.discardedRows > 0 && (
@@ -438,6 +444,8 @@ export default function App() {
                     <PowerTrend points={powerTrend} />
                   )}
                 </div>
+
+                <AdUnit slot={AD_SLOT_BOTTOM} className="ad-unit--bottom" />
               </div>
             </div>
           </>
