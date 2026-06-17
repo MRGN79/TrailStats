@@ -7,8 +7,6 @@ declare global {
   }
 }
 
-const PUBLISHER_ID = import.meta.env.VITE_ADSENSE_PUBLISHER_ID as string | undefined;
-
 interface AdUnitProps {
   slot: string;
   consent: boolean;
@@ -18,14 +16,15 @@ interface AdUnitProps {
 
 export function AdUnit({ slot, consent, format = "auto", className }: AdUnitProps) {
   const { t } = useTranslation();
+  const publisherId = import.meta.env.VITE_ADSENSE_PUBLISHER_ID as string | undefined;
 
   useEffect(() => {
-    if (!PUBLISHER_ID || !slot || !consent) return;
+    if (!publisherId || !slot || !consent) return;
 
     if (!document.querySelector('script[src*="adsbygoogle"]')) {
       const script = document.createElement("script");
       script.async = true;
-      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${PUBLISHER_ID}`;
+      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${publisherId}`;
       script.crossOrigin = "anonymous";
       document.head.appendChild(script);
     }
@@ -35,16 +34,16 @@ export function AdUnit({ slot, consent, format = "auto", className }: AdUnitProp
     } catch {
       // non-fatal in development
     }
-  }, [slot, consent]);
+  }, [publisherId, slot, consent]);
 
-  if (!PUBLISHER_ID || !slot || !consent) return null;
+  if (!publisherId || !slot || !consent) return null;
 
   return (
     <div role="complementary" className={`ad-unit${className ? ` ${className}` : ""}`} aria-label={t("ads.label")}>
       <ins
         className="adsbygoogle"
         style={{ display: "block" }}
-        data-ad-client={PUBLISHER_ID}
+        data-ad-client={publisherId}
         data-ad-slot={slot}
         data-ad-format={format}
         data-full-width-responsive="true"
