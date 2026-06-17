@@ -3,14 +3,18 @@ import { cleanup, render, screen, waitFor, within } from "@testing-library/react
 import userEvent from "@testing-library/user-event";
 import type { ParsedDataset } from "./lib/types";
 
-// Mock the storage layer so we control whether a dataset is "restored" from
-// IndexedDB on mount, and so saveDataset/clearStorage are no-ops in jsdom.
-const loadDatasetMock = vi.fn<[], Promise<ParsedDataset | null>>();
+// Mock the repository and preferences so we control whether a dataset is
+// "restored" from IndexedDB on mount, and so save/clear are no-ops in jsdom.
+const loadMock = vi.fn<[], Promise<ParsedDataset | null>>();
 const loadBannerDismissedMock = vi.fn<[], boolean>();
-vi.mock("./lib/storage", () => ({
-  loadDataset: () => loadDatasetMock(),
-  saveDataset: vi.fn().mockResolvedValue(undefined),
-  clearStorage: vi.fn().mockResolvedValue(undefined),
+vi.mock("./lib/repository", () => ({
+  repository: {
+    load: () => loadMock(),
+    save: vi.fn().mockResolvedValue(undefined),
+    clear: vi.fn().mockResolvedValue(undefined),
+  },
+}));
+vi.mock("./lib/preferences", () => ({
   saveLang: vi.fn(),
   loadLang: () => null,
   saveBannerDismissed: vi.fn(),
@@ -62,7 +66,7 @@ beforeAll(async () => {
 });
 
 beforeEach(() => {
-  loadDatasetMock.mockReset();
+  loadMock.mockReset();
   processFileMock.mockReset();
   loadBannerDismissedMock.mockReset();
   loadBannerDismissedMock.mockReturnValue(false);
@@ -72,7 +76,7 @@ afterEach(() => cleanup());
 
 describe("App — CacheBanner integration", () => {
   it("shows the cache banner after an IndexedDB restore, with count and latest date", async () => {
-    loadDatasetMock.mockResolvedValue(dataset(42, "2026-04-10T08:00:00Z"));
+    loadMock.mockResolvedValue(dataset(42, "2026-04-10T08:00:00Z"));
     render(<App />);
 
     const banner = await findCacheBanner();
@@ -84,7 +88,7 @@ describe("App — CacheBanner integration", () => {
   });
 
   it("hides the cache banner when the dismiss button is clicked", async () => {
-    loadDatasetMock.mockResolvedValue(dataset(5));
+    loadMock.mockResolvedValue(dataset(5));
     const user = userEvent.setup();
     render(<App />);
 
@@ -99,7 +103,7 @@ describe("App — CacheBanner integration", () => {
   });
 
   it("returns to the upload (idle) screen when 'Load another export' is clicked", async () => {
-    loadDatasetMock.mockResolvedValue(dataset(5));
+    loadMock.mockResolvedValue(dataset(5));
     const user = userEvent.setup();
     render(<App />);
 
@@ -118,7 +122,7 @@ describe("App — CacheBanner integration", () => {
 
   it("does NOT show the cache banner for demo data", async () => {
     // No stored dataset → idle screen with the demo CTA.
-    loadDatasetMock.mockResolvedValue(null);
+    loadMock.mockResolvedValue(null);
     const user = userEvent.setup();
     render(<App />);
 
@@ -131,7 +135,7 @@ describe("App — CacheBanner integration", () => {
   });
 
   it("does NOT show the cache banner after a fresh file upload (only after IDB restore)", async () => {
-    loadDatasetMock.mockResolvedValue(null);
+    loadMock.mockResolvedValue(null);
     processFileMock.mockResolvedValue(dataset(12));
     const user = userEvent.setup();
     render(<App />);
@@ -154,7 +158,7 @@ describe("App — CacheBanner integration", () => {
 
 describe("App — banner dismissed persistence", () => {
   it("does NOT show the cache banner when loadBannerDismissed returns true (pre-dismissed)", async () => {
-    loadDatasetMock.mockResolvedValue(dataset(10));
+    loadMock.mockResolvedValue(dataset(10));
     loadBannerDismissedMock.mockReturnValue(true);
     render(<App />);
 
@@ -164,7 +168,7 @@ describe("App — banner dismissed persistence", () => {
   });
 
   it("renders singular 'saved activity' for a dataset of exactly 1 activity", async () => {
-    loadDatasetMock.mockResolvedValue(dataset(1, "2026-04-10T08:00:00Z"));
+    loadMock.mockResolvedValue(dataset(1, "2026-04-10T08:00:00Z"));
     render(<App />);
 
     const banner = await findCacheBanner();
@@ -188,7 +192,7 @@ describe("App — latestDate derivation", () => {
       activityTypes: ["Run"],
       discardedRows: 0,
     };
-    loadDatasetMock.mockResolvedValue(out);
+    loadMock.mockResolvedValue(out);
     render(<App />);
 
     const banner = await findCacheBanner();
