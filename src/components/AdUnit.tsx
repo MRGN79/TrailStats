@@ -30,7 +30,7 @@ export function AdUnit({ slot, format = "auto", className }: AdUnitProps) {
   if (!PUBLISHER_ID || !slot) return null;
 
   return (
-    <div className={`ad-unit${className ? ` ${className}` : ""}`} aria-label={t("ads.label")}>
+    <div role="complementary" className={`ad-unit${className ? ` ${className}` : ""}`} aria-label={t("ads.label")}>
       <ins
         className="adsbygoogle"
         style={{ display: "block" }}
