@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "TrailStats",
-    "tagline": "Tu histórico de entrenamiento, en números",
+    "tagline": "Analítica premium de entrenamiento — gratis. Tus actividades nunca salen de tu navegador.",
     "disclaimer": "TrailStats no está afiliado a Strava, Inc., Garmin Ltd., Apple Inc. ni Polar Electro Oy, ni cuenta con su respaldo. «Strava», «Garmin», «Apple Health» y «Polar» son marcas registradas de sus respectivos titulares."
   },
   "upload": {
@@ -260,17 +260,18 @@
     "toggle": "Idioma"
   },
   "privacy": {
-    "note": "Todo se procesa en tu navegador. Tus datos nunca salen de este dispositivo.",
-    "heading": "Tus datos se quedan contigo",
+    "note": "Tus datos de actividad nunca salen de este dispositivo. Este sitio es gratuito y se financia con publicidad.",
+    "heading": "Tus datos de entrenamiento se quedan contigo",
     "points": {
       "local": "Tu export se lee y se analiza por completo dentro de esta pestaña del navegador.",
-      "noServer": "No se sube nada — no hay servidor ni cuenta. Tus actividades (incluidos los datos de frecuencia cardíaca) se almacenan en la base de datos local de tu navegador (IndexedDB) y puedes eliminarlas en cualquier momento.",
+      "noServer": "No se sube nada — no hay servidor ni cuenta. Tus actividades se almacenan en la base de datos local de tu navegador (IndexedDB) y puedes eliminarlas en cualquier momento.",
       "healthData": "La frecuencia cardíaca es un dato de salud. TrailStats la procesa únicamente en tu dispositivo y nunca se transmite a ningún lugar.",
       "activityNames": "Los nombres de actividad son texto libre y pueden contener información personal. Como el resto de datos, se almacenan únicamente en la base de datos local de tu navegador (IndexedDB) y nunca salen de tu dispositivo.",
-      "noTracking": "Sin rastreo, sin cookies, sin analíticas. Nunca vemos tus actividades."
+      "ads": "TrailStats es gratuito y se financia con publicidad de Google AdSense. Los anuncios pueden usar cookies e información general de navegación (dirección IP, navegador, ubicación aproximada). Tus datos de actividad nunca se comparten con anunciantes.",
+      "noTracking": "Tus archivos de actividad nunca se suben a ningún servidor. Las cookies publicitarias pueden rechazarse en cualquier momento desde la opción al pie de la página."
     },
     "clearData": "Eliminar mis actividades guardadas de este navegador",
-    "verify": "No te fíes solo de nuestra palabra: abre las herramientas de desarrollo de tu navegador, ve a la pestaña Red y carga un archivo — verás que ningún dato sale de tu dispositivo.",
+    "verify": "Tus archivos de actividad nunca salen de tu dispositivo: abre las herramientas de desarrollo del navegador, ve a la pestaña Red y carga un archivo — no verás ningún dato de actividad enviado a ningún servidor.",
     "licenses": "Licencias de terceros"
   },
   "cache": {
@@ -305,5 +306,11 @@
   },
   "ads": {
     "label": "Publicidad"
+  },
+  "consent": {
+    "ariaLabel": "Consentimiento publicitario",
+    "text": "TrailStats es gratuito y se financia con publicidad. Google AdSense puede usar cookies para personalizar los anuncios. Tus datos de entrenamiento siempre permanecen en tu dispositivo.",
+    "accept": "Aceptar",
+    "reject": "Rechazar"
   }
 }
