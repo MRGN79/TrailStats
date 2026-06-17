@@ -9,6 +9,11 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ### Added
 - **Soporte para Google AdSense:** la aplicación incluye ahora dos posiciones publicitarias (entre secciones y al final del panel). Los anuncios solo se muestran si las variables de entorno `VITE_ADSENSE_PUBLISHER_ID`, `VITE_ADSENSE_SLOT_BETWEEN` y `VITE_ADSENSE_SLOT_BOTTOM` están configuradas; en caso contrario la UI no cambia. Se añade `.env.example` con la documentación de estas variables.
+- **Banner de consentimiento publicitario (ePrivacy):** al entrar por primera vez, aparece un banner en el pie de la página con las opciones Aceptar/Rechazar igualmente accesibles. El script de AdSense solo se carga si el usuario acepta; el rechazo se persiste en localStorage. El `<head>` solo incluye el meta de verificación de AdSense (sin cookies ni tracking).
+
+### Changed
+- **Panel de privacidad actualizado:** se añade la declaración de uso de Google AdSense (qué datos recoge, que no incluyen datos de actividad) y un enlace a la Política de Privacidad de Google. Los textos anteriores de "sin tracking / ningún dato sale del dispositivo" se han ajustado para distinguir con precisión los datos de actividad (permanecen locales) de las cookies publicitarias (sujetas a consentimiento).
+- **Nuevo tagline:** "Premium training analytics — free. Your activity data never leaves this browser."
 
 ## [0.12.0] — 2026-06-17
 
