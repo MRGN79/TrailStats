@@ -272,7 +272,8 @@
     },
     "clearData": "Delete my stored activities from this browser",
     "verify": "Your activity files never leave your device: open your browser's developer tools, go to the Network tab, and load a file — you will see no activity data sent to any server.",
-    "licenses": "Third-party licenses"
+    "licenses": "Third-party licenses",
+    "googlePolicy": "Google Privacy Policy"
   },
   "cache": {
     "bannerText_one": "Showing {{count}} saved activity (last: {{date}}).",

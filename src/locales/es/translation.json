@@ -272,7 +272,8 @@
     },
     "clearData": "Eliminar mis actividades guardadas de este navegador",
     "verify": "Tus archivos de actividad nunca salen de tu dispositivo: abre las herramientas de desarrollo del navegador, ve a la pestaña Red y carga un archivo — no verás ningún dato de actividad enviado a ningún servidor.",
-    "licenses": "Licencias de terceros"
+    "licenses": "Licencias de terceros",
+    "googlePolicy": "Política de privacidad de Google"
   },
   "cache": {
     "bannerText_one": "Mostrando {{count}} actividad guardada (última: {{date}}).",
