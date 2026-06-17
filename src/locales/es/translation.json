@@ -2,10 +2,10 @@
   "app": {
     "title": "TrailStats",
     "tagline": "Tu histórico de entrenamiento, en números",
-    "disclaimer": "TrailStats no está afiliado a Strava, Inc. ni a Garmin Ltd., ni cuenta con su respaldo. \"Strava\" y \"Garmin\" son marcas registradas de sus respectivos titulares."
+    "disclaimer": "TrailStats no está afiliado a Strava, Inc., Garmin Ltd., Apple Inc. ni Polar Electro Oy, ni cuenta con su respaldo. «Strava», «Garmin», «Apple Health» y «Polar» son marcas registradas de sus respectivos titulares."
   },
   "upload": {
-    "dropzone": "Arrastra aquí tu ZIP de export, o haz clic para buscarlo — Strava, Garmin y otras",
+    "dropzone": "Arrastra aquí tu ZIP de export, o haz clic para buscarlo — Strava, Garmin, Apple Health, Polar y otras",
     "restoring": "Cargando tus actividades guardadas…",
     "processing": "Leyendo tus actividades…",
     "processingProgress": "Leyendo actividades… {{done}} de {{total}} archivos",
@@ -14,7 +14,7 @@
     "purge": "Borrar datos guardados",
     "purgeConfirm": "¿Eliminar las actividades guardadas en este navegador? Esta acción no se puede deshacer.",
     "error": {
-      "invalidZip": "Esto no parece un export compatible. Asegúrate de que es el ZIP completo que descargaste de Strava, Garmin u otra plataforma compatible.",
+      "invalidZip": "Esto no parece un export compatible. Asegúrate de que es el ZIP completo que descargaste de Strava, Garmin, Apple Health, Polar u otra plataforma compatible.",
       "noActivities": "No se han encontrado actividades en este export.",
       "clearFailed": "No se pudieron eliminar las actividades guardadas. Inténtalo de nuevo o borra los datos del sitio en los ajustes de tu navegador.",
       "saveFailed": "No se pudieron guardar los datos localmente. Se perderán al cerrar la pestaña."

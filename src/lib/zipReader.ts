@@ -8,8 +8,10 @@ import {
   type FileEntry,
 } from "@zip.js/zip.js";
 
-const ACTIVITIES_ENTRY = /(^|\/)activities\.csv$/i;
-const FIT_ENTRY = /\.fit$/i;
+const ACTIVITIES_ENTRY    = /(^|\/)activities\.csv$/i;
+const FIT_ENTRY           = /\.fit$/i;
+const APPLE_HEALTH_ENTRY  = /\bexport\.xml$/i;
+const POLAR_ENTRY         = /(^|\/)training-sessions\.csv$/i;
 
 function isFileEntry(e: Entry): e is FileEntry {
   return !e.directory;
@@ -52,6 +54,26 @@ export async function extractActivitiesCsv(
   });
 }
 
+export async function extractAppleHealthXml(
+  file: File | Uint8Array
+): Promise<string> {
+  return withZipEntries(file, async (entries) => {
+    const entry = entries.find((e) => APPLE_HEALTH_ENTRY.test(e.filename));
+    if (!entry) throw new Error("NO_ACTIVITIES");
+    return entry.getData(new TextWriter());
+  });
+}
+
+export async function extractPolarCsv(
+  file: File | Uint8Array
+): Promise<string> {
+  return withZipEntries(file, async (entries) => {
+    const entry = entries.find((e) => POLAR_ENTRY.test(e.filename));
+    if (!entry) throw new Error("NO_ACTIVITIES");
+    return entry.getData(new TextWriter());
+  });
+}
+
 export interface FitEntry {
   filename: string;
   bytes: Uint8Array;
@@ -75,14 +97,17 @@ export async function extractFitFiles(
   });
 }
 
-export type Platform = "strava" | "garmin";
+export type Platform = "strava" | "garmin" | "apple-health" | "polar";
 
 export async function detectPlatform(
   file: File | Uint8Array
 ): Promise<Platform> {
   return withZipEntries(file, async (entries) => {
-    if (entries.some((e) => ACTIVITIES_ENTRY.test(e.filename))) return "strava";
-    if (entries.some((e) => FIT_ENTRY.test(e.filename))) return "garmin";
+    // Priority: Strava CSV > Apple Health XML > Polar CSV > any FIT files
+    if (entries.some((e) => ACTIVITIES_ENTRY.test(e.filename)))   return "strava";
+    if (entries.some((e) => APPLE_HEALTH_ENTRY.test(e.filename))) return "apple-health";
+    if (entries.some((e) => POLAR_ENTRY.test(e.filename)))        return "polar";
+    if (entries.some((e) => FIT_ENTRY.test(e.filename)))          return "garmin";
     throw new Error("NO_ACTIVITIES");
   });
 }

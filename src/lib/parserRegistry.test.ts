@@ -40,6 +40,45 @@ describe("detectPlatform", () => {
     expect(await detectPlatform(zip)).toBe("strava");
   });
 
+  it("detects an Apple Health export by export.xml", async () => {
+    const zip = await makeZip([
+      { name: "apple_health_export/export.xml", text: "<HealthData/>" },
+      { name: "apple_health_export/export_cda.xml", text: "" },
+    ]);
+    expect(await detectPlatform(zip)).toBe("apple-health");
+  });
+
+  it("detects a Polar export by training-sessions.csv", async () => {
+    const zip = await makeZip([
+      { name: "training-sessions.csv", text: "Date,Sport,Duration\n2026-01-01,RUNNING,0:35:00" },
+    ]);
+    expect(await detectPlatform(zip)).toBe("polar");
+  });
+
+  it("prefers Apple Health over Polar when both markers are present", async () => {
+    const zip = await makeZip([
+      { name: "export.xml", text: "<HealthData/>" },
+      { name: "training-sessions.csv", text: "Date,Sport,Duration\n2026-01-01,RUNNING,0:35:00" },
+    ]);
+    expect(await detectPlatform(zip)).toBe("apple-health");
+  });
+
+  it("prefers Apple Health over Garmin FIT", async () => {
+    const zip = await makeZip([
+      { name: "export.xml", text: "<HealthData/>" },
+      { name: "activity.fit", bytes: new Uint8Array([0x0e]) },
+    ]);
+    expect(await detectPlatform(zip)).toBe("apple-health");
+  });
+
+  it("prefers Polar over Garmin FIT", async () => {
+    const zip = await makeZip([
+      { name: "training-sessions.csv", text: "Date,Sport,Duration\n2026-01-01,RUNNING,0:35:00" },
+      { name: "activity.fit", bytes: new Uint8Array([0x0e]) },
+    ]);
+    expect(await detectPlatform(zip)).toBe("polar");
+  });
+
   it("throws NO_ACTIVITIES for an unrecognized ZIP", async () => {
     const zip = await makeZip([{ name: "readme.txt", text: "hello" }]);
     await expect(detectPlatform(zip)).rejects.toThrow("NO_ACTIVITIES");
