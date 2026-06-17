@@ -446,6 +446,7 @@ export default function App() {
       <footer className="app-footer">
         <p className="privacy-note">{t("privacy.note")}</p>
         <p className="disclaimer">{t("app.disclaimer")}</p>
+        <p className="app-copyright">{t("legal.copyright")}</p>
         <p className="app-version">v{version}</p>
       </footer>
     </div>
