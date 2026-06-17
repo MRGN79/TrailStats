@@ -20,19 +20,10 @@ export function AdUnit({ slot, format = "auto", className }: AdUnitProps) {
 
   useEffect(() => {
     if (!PUBLISHER_ID || !slot) return;
-
-    if (!document.querySelector('script[src*="adsbygoogle"]')) {
-      const script = document.createElement("script");
-      script.async = true;
-      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${PUBLISHER_ID}`;
-      script.crossOrigin = "anonymous";
-      document.head.appendChild(script);
-    }
-
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch {
-      // AdSense init errors are non-fatal (e.g. in development)
+      // non-fatal in development
     }
   }, [slot]);
 
