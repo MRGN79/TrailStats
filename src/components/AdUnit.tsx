@@ -20,15 +20,6 @@ export function AdUnit({ slot, consent, format = "auto", className }: AdUnitProp
 
   useEffect(() => {
     if (!publisherId || !slot || !consent) return;
-
-    if (!document.querySelector('script[src*="adsbygoogle"]')) {
-      const script = document.createElement("script");
-      script.async = true;
-      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${publisherId}`;
-      script.crossOrigin = "anonymous";
-      document.head.appendChild(script);
-    }
-
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch {
