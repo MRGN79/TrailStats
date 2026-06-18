@@ -1380,3 +1380,65 @@ table.data-table td:first-child {
   margin-top: var(--space-md);
   width: 100%;
 }
+
+/* ─── Consent banner ───────────────────────────────────────────────── */
+
+.consent-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--forest-deep);
+  color: var(--paper);
+  padding: var(--space-md) var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+  z-index: 200;
+  border-top: 2px solid var(--moss);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.25);
+}
+
+.consent-banner__text {
+  flex: 1;
+  min-width: 200px;
+  font-size: var(--step--1);
+  margin: 0;
+  opacity: 0.9;
+}
+
+.consent-banner__actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+/* btn overrides on dark bg — same pattern as cache-banner */
+.consent-banner .btn-secondary {
+  color: #a3d9b9;
+  border-color: #a3d9b9;
+}
+
+.consent-banner .btn-secondary:hover {
+  background: rgba(163, 217, 185, 0.15);
+}
+
+/* ─── Ad units ─────────────────────────────────────────────────────── */
+.ad-unit {
+  width: 100%;
+  min-height: 90px;
+  text-align: center;
+}
+
+.ad-unit--between-sections {
+  margin: var(--space-xl) 0;
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--border);
+}
+
+.ad-unit--bottom {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--border);
+}

@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "TrailStats",
-    "tagline": "Your training history, in numbers",
+    "tagline": "Premium training analytics — free. Your activity data never leaves this browser.",
     "disclaimer": "TrailStats is not affiliated with or endorsed by Strava, Inc., Garmin Ltd., Apple Inc. or Polar Electro Oy. \"Strava\", \"Garmin\", \"Apple Health\" and \"Polar\" are trademarks of their respective owners."
   },
   "upload": {
@@ -260,18 +260,20 @@
     "toggle": "Language"
   },
   "privacy": {
-    "note": "Everything runs in your browser. Your data never leaves this device.",
-    "heading": "Your data stays with you",
+    "note": "Your activity data never leaves this device. This site is free and ad-supported.",
+    "heading": "Your training data stays with you",
     "points": {
       "local": "Your export is read and analyzed entirely inside this browser tab.",
-      "noServer": "Nothing is uploaded — there is no server and no account. Your activities (including any heart rate data) are stored in your browser's local database (IndexedDB) and you can delete them at any time.",
+      "noServer": "Nothing is uploaded — there is no server and no account. Your activities are stored in your browser's local database (IndexedDB) and you can delete them at any time.",
       "healthData": "Heart rate is a health data point. TrailStats processes it only on your device — it is never transmitted anywhere.",
       "activityNames": "Activity names are free text — they may contain personal details. Like everything else, they are stored only in your browser's local database (IndexedDB) and never leave your device.",
-      "noTracking": "No tracking, no cookies, no analytics. We never see your activities."
+      "ads": "TrailStats is free and supported by Google AdSense advertising. Ads may use cookies and collect general browsing information (IP address, browser, approximate location). Your activity data is never shared with advertisers.",
+      "noTracking": "Your activity files are never uploaded. Advertising cookies can be declined at any time using the consent option at the bottom of the page."
     },
     "clearData": "Delete my stored activities from this browser",
-    "verify": "Don't take our word for it: open your browser's developer tools, go to the Network tab, and load a file — you'll see no data ever leaves your device.",
-    "licenses": "Third-party licenses"
+    "verify": "Your activity files never leave your device: open your browser's developer tools, go to the Network tab, and load a file — you will see no activity data sent to any server.",
+    "licenses": "Third-party licenses",
+    "googlePolicy": "Google Privacy Policy"
   },
   "cache": {
     "bannerText_one": "Showing {{count}} saved activity (last: {{date}}).",
@@ -302,5 +304,14 @@
   },
   "legal": {
     "copyright": "© 2026 TrailStats — All rights reserved. Personal, non-commercial use only."
+  },
+  "ads": {
+    "label": "Advertisement"
+  },
+  "consent": {
+    "ariaLabel": "Advertising consent",
+    "text": "TrailStats is free and ad-supported. Google AdSense may use cookies to personalise ads. Your training data always stays on your device.",
+    "accept": "Accept",
+    "reject": "Reject"
   }
 }

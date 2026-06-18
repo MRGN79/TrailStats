@@ -6,7 +6,7 @@ Your training history, in numbers — analiza el export completo de tu plataform
 
 TrailStats es una aplicación web 100% cliente para deportistas. Cargas el export oficial de tu histórico desde tu plataforma de actividad (Strava, Garmin Connect, Apple Health o Polar Flow; los dispositivos que exportan en formato FIT estándar como Coros o Wahoo también funcionan), la app detecta automáticamente el formato, extrae y parsea tus actividades **en el propio navegador** y te muestra estadísticas agregadas: totales de todo tu histórico, agregados semanales y mensuales, y gráficas de tendencias en el tiempo.
 
-Está pensada para quien quiere una foto global de su volumen y su progresión sin depender de la API de ninguna plataforma ni subir sus datos a ningún servidor. **Privacidad por diseño:** no hay backend, no hay cuentas, no hay tracking. Una vez cargada la página, la app funciona sin conexión y ningún archivo abandona tu dispositivo.
+Está pensada para quien quiere una foto global de su volumen y su progresión sin depender de la API de ninguna plataforma ni subir sus datos a ningún servidor. **Tus archivos de actividad nunca abandonan tu dispositivo:** no hay backend, no hay cuentas, el procesamiento ocurre íntegramente en el navegador. La app se financia con publicidad de Google AdSense — al aceptar el banner de consentimiento, AdSense puede usar cookies e información de navegación general; los datos de actividad no se comparten con anunciantes.
 
 La interfaz es bilingüe (inglés por defecto, castellano) y todo el procesamiento pesado corre en un Web Worker para que la UI siga fluida incluso con exports de miles de actividades.
 
@@ -42,11 +42,13 @@ npm install
 
 ## Variables de entorno
 
-TrailStats no necesita variables de entorno. Toda la funcionalidad es cliente y no hay configuración secreta ni endpoints externos.
+Las variables de entorno son opcionales. Sin ellas la app funciona sin anuncios. Cópialas de `.env.example` a `.env.local` (nunca va a git) para activar Google AdSense.
 
 | Variable | Descripción | Obligatoria | Ejemplo |
 |---|---|---|---|
-| — | No aplica | No | — |
+| `VITE_ADSENSE_PUBLISHER_ID` | ID de editor de Google AdSense | No | `ca-pub-XXXXXXXXXXXXXXXXX` |
+| `VITE_ADSENSE_SLOT_BETWEEN` | ID de la unidad de anuncio entre secciones | No | `XXXXXXXXXX` |
+| `VITE_ADSENSE_SLOT_BOTTOM` | ID de la unidad de anuncio al pie del dashboard | No | `XXXXXXXXXX` |
 
 ## Cómo ejecutar
 
@@ -156,7 +158,7 @@ Para reportar bugs o proponer mejoras, abre un issue describiendo el comportamie
 
 ## Privacidad
 
-TrailStats no recoge, almacena ni transmite ningún dato. Todo el procesamiento del export ocurre localmente en tu navegador. Tus archivos nunca se suben a ningún servidor.
+Los archivos de actividad se procesan íntegramente en tu navegador y nunca se suben a ningún servidor. La app usa Google AdSense para mostrar publicidad: al aceptar el banner de consentimiento, AdSense puede establecer cookies e información de navegación general (IP, navegador, ubicación aproximada). Tus datos de entrenamiento no se comparten con anunciantes. Puedes rechazar el consentimiento publicitario en cualquier momento desde el banner en el pie de la página.
 
 ## Aviso legal
 
