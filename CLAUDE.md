@@ -279,6 +279,8 @@ El estándar es [Semantic Versioning](https://semver.org): `MAJOR.MINOR.PATCH`.
 
 Cuando hay duda sobre si un cambio es MINOR o MAJOR, el **Arquitecto** decide. Documentación propone el número de versión y actualiza el manifiesto; DevOps crea el tag en `main` con confirmación del Jefe.
 
+**Anuncio de versión obligatorio:** cada vez que se actualice la versión del proyecto (en `package.json` o equivalente), el agente responsable debe anunciar explícitamente al usuario la versión nueva con el formato: `Nueva versión: vX.Y.Z`. No se puede omitir ni diferir.
+
 ---
 
 ## Versión del Scaffold
