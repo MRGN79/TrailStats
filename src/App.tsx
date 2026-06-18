@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { version } from "../package.json";
 import { UploadZone } from "./components/UploadZone";
@@ -29,15 +29,13 @@ import { PowerTrend } from "./components/PowerTrend";
 import { SummaryCardModal } from "./components/SummaryCardModal";
 import { AdUnit } from "./components/AdUnit";
 import { ConsentBanner } from "./components/ConsentBanner";
-import { loadAdConsent, saveAdConsent } from "./lib/adConsent";
+import { loadAdConsent, saveAdConsent, resetAdConsent, loadAdSenseScript } from "./lib/adConsent";
 import type { ConsentState } from "./lib/adConsent";
-
-const AD_SLOT_BETWEEN = (import.meta.env.VITE_ADSENSE_SLOT_BETWEEN as string | undefined) ?? "";
-const AD_SLOT_BOTTOM = (import.meta.env.VITE_ADSENSE_SLOT_BOTTOM as string | undefined) ?? "";
 import { processFile } from "./lib/loadDataset";
 import { generateDemoDataset } from "./lib/demoData";
 import { repository } from "./lib/repository";
 import { saveBannerDismissed, loadBannerDismissed, clearBannerDismissed } from "./lib/preferences";
+
 import {
   computeAvgHr,
   computeBestEfforts,
@@ -71,6 +69,11 @@ import type { ParsedDataset } from "./lib/types";
 import { initialDateRange, type DateRangeState } from "./lib/dateRange";
 
 export type { DatePreset, DateRangeState } from "./lib/dateRange";
+
+const PUBLISHER_ID = import.meta.env.VITE_ADSENSE_PUBLISHER_ID as string | undefined;
+const AD_SLOT_BETWEEN = (import.meta.env.VITE_ADSENSE_SLOT_BETWEEN as string | undefined) ?? "";
+const AD_SLOT_BOTTOM = (import.meta.env.VITE_ADSENSE_SLOT_BOTTOM as string | undefined) ?? "";
+const adsEnabled = Boolean(PUBLISHER_ID && (AD_SLOT_BETWEEN || AD_SLOT_BOTTOM));
 
 type Status =
   | { kind: "idle" }
@@ -113,8 +116,9 @@ export default function App() {
   const [cacheBannerDismissed, setCacheBannerDismissed] = useState(() => loadBannerDismissed());
   const [adConsent, setAdConsent] = useState<ConsentState>(() => loadAdConsent());
 
-  function handleConsentAccept() { saveAdConsent("accepted"); setAdConsent("accepted"); }
-  function handleConsentReject() { saveAdConsent("rejected"); setAdConsent("rejected"); }
+  const handleConsentAccept = useCallback(() => { saveAdConsent("accepted"); setAdConsent("accepted"); }, []);
+  const handleConsentReject = useCallback(() => { saveAdConsent("rejected"); setAdConsent("rejected"); }, []);
+  const handleConsentReset = useCallback(() => { resetAdConsent(); setAdConsent(null); }, []);
   const [saveError, setSaveError] = useState(false);
 
   const dashHeadingRef = useRef<HTMLHeadingElement>(null);
@@ -146,6 +150,10 @@ export default function App() {
       setSrMsg(t("upload.dashboardReady"));
     }
   }, [status, t]);
+
+  useEffect(() => {
+    if (adConsent === "accepted" && PUBLISHER_ID) loadAdSenseScript(PUBLISHER_ID);
+  }, [adConsent]);
 
   async function handleFile(file: File) {
     const saveGen = ++saveGenRef.current;
@@ -291,7 +299,7 @@ export default function App() {
     <div className="app">
       <div className="sr-only" aria-live="polite" aria-atomic="true">{srMsg}</div>
       <a href="#main-content" className="skip-link">{t("a11y.skipToMain")}</a>
-      {adConsent === null && (
+      {adsEnabled && adConsent === null && (
         <ConsentBanner onAccept={handleConsentAccept} onReject={handleConsentReject} />
       )}
 
@@ -341,7 +349,11 @@ export default function App() {
               </p>
             )}
 
-            <PrivacyPanel onClearData={hasStoredData ? handleClearData : undefined} />
+            <PrivacyPanel
+              onClearData={hasStoredData ? handleClearData : undefined}
+              adConsent={adsEnabled ? adConsent : undefined}
+              onResetConsent={adsEnabled ? handleConsentReset : undefined}
+            />
           </div>
         )}
 

@@ -268,12 +268,17 @@
       "healthData": "La frecuencia cardíaca es un dato de salud. TrailStats la procesa únicamente en tu dispositivo y nunca se transmite a ningún lugar.",
       "activityNames": "Los nombres de actividad son texto libre y pueden contener información personal. Como el resto de datos, se almacenan únicamente en la base de datos local de tu navegador (IndexedDB) y nunca salen de tu dispositivo.",
       "ads": "TrailStats es gratuito y se financia con publicidad de Google AdSense. Los anuncios pueden usar cookies e información general de navegación (dirección IP, navegador, ubicación aproximada). Tus datos de actividad nunca se comparten con anunciantes.",
-      "noTracking": "Tus archivos de actividad nunca se suben a ningún servidor. Las cookies publicitarias pueden rechazarse en cualquier momento desde la opción al pie de la página."
+      "noTracking": "Tus archivos de actividad nunca se suben a ningún servidor. Tus preferencias publicitarias se pueden gestionar en cualquier momento desde este panel de privacidad."
     },
     "clearData": "Eliminar mis actividades guardadas de este navegador",
     "verify": "Tus archivos de actividad nunca salen de tu dispositivo: abre las herramientas de desarrollo del navegador, ve a la pestaña Red y carga un archivo — no verás ningún dato de actividad enviado a ningún servidor.",
     "licenses": "Licencias de terceros",
-    "googlePolicy": "Política de privacidad de Google"
+    "googlePolicy": "Política de privacidad de Google",
+    "adConsent": {
+      "accepted": "Publicidad: aceptada",
+      "rejected": "Publicidad: rechazada",
+      "change": "Cambiar preferencia"
+    }
   },
   "cache": {
     "bannerText_one": "Mostrando {{count}} actividad guardada (última: {{date}}).",

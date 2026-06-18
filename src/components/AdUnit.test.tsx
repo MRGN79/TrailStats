@@ -118,8 +118,9 @@ describe("ConsentBanner", () => {
         <ConsentBanner onAccept={vi.fn()} onReject={vi.fn()} />
       </I18nextProvider>
     );
-    const dialog = getByRole("dialog");
+    const dialog = getByRole("alertdialog");
     expect(dialog).toBeTruthy();
     expect(dialog.getAttribute("aria-label")).toBe(i18n.t("consent.ariaLabel"));
+    expect(dialog.getAttribute("aria-describedby")).toBe("consent-banner-desc");
   });
 });

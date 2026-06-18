@@ -268,12 +268,17 @@
       "healthData": "Heart rate is a health data point. TrailStats processes it only on your device — it is never transmitted anywhere.",
       "activityNames": "Activity names are free text — they may contain personal details. Like everything else, they are stored only in your browser's local database (IndexedDB) and never leave your device.",
       "ads": "TrailStats is free and supported by Google AdSense advertising. Ads may use cookies and collect general browsing information (IP address, browser, approximate location). Your activity data is never shared with advertisers.",
-      "noTracking": "Your activity files are never uploaded. Advertising cookies can be declined at any time using the consent option at the bottom of the page."
+      "noTracking": "Your activity files are never uploaded. Your advertising preferences can be managed at any time in this privacy panel."
     },
     "clearData": "Delete my stored activities from this browser",
     "verify": "Your activity files never leave your device: open your browser's developer tools, go to the Network tab, and load a file — you will see no activity data sent to any server.",
     "licenses": "Third-party licenses",
-    "googlePolicy": "Google Privacy Policy"
+    "googlePolicy": "Google Privacy Policy",
+    "adConsent": {
+      "accepted": "Advertising: accepted",
+      "rejected": "Advertising: declined",
+      "change": "Change preference"
+    }
   },
   "cache": {
     "bannerText_one": "Showing {{count}} saved activity (last: {{date}}).",

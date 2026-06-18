@@ -1,10 +1,13 @@
 import { useTranslation } from "react-i18next";
+import type { ConsentState } from "../lib/adConsent";
 
 interface Props {
   onClearData?: () => void;
+  adConsent?: ConsentState;
+  onResetConsent?: () => void;
 }
 
-export function PrivacyPanel({ onClearData }: Props) {
+export function PrivacyPanel({ onClearData, adConsent, onResetConsent }: Props) {
   const { t } = useTranslation();
 
   const points = [
@@ -33,6 +36,15 @@ export function PrivacyPanel({ onClearData }: Props) {
         <p className="privacy-panel__clear">
           <button type="button" className="btn-link" onClick={onClearData}>
             {t("privacy.clearData")}
+          </button>
+        </p>
+      )}
+      {onResetConsent && adConsent !== null && (
+        <p className="privacy-panel__clear">
+          {adConsent === "accepted" ? t("privacy.adConsent.accepted") : t("privacy.adConsent.rejected")}
+          {" — "}
+          <button type="button" className="btn-link" onClick={onResetConsent}>
+            {t("privacy.adConsent.change")}
           </button>
         </p>
       )}
