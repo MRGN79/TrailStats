@@ -51,7 +51,7 @@ function futureActivity(km = 5): Activity {
 describe("computeStreak — future-dated activities (Fix 1)", () => {
   // CA-1: an activity pre-registered for the future must not fabricate a streak.
   it("returns zeros when the only activity is in the future", () => {
-    expect(computeStreak([futureActivity()])).toEqual({ current: 0, longest: 0 });
+    expect(computeStreak([futureActivity()])).toMatchObject({ current: 0, longest: 0, longestStart: null, longestEnd: null });
   });
 
   // CA-2: a future activity counts for neither the current nor the longest streak.
@@ -88,7 +88,7 @@ describe("computeStreak — future-dated activities (Fix 1)", () => {
       act("2025-01-13", "Run", 5, 100, 0),
       act("2025-01-20", "Run", 5, 100, 0),
     ];
-    expect(computeStreak(acts)).toEqual({ current: 0, longest: 3 });
+    expect(computeStreak(acts)).toMatchObject({ current: 0, longest: 3 });
   });
 });
 

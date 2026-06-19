@@ -151,8 +151,14 @@ function isoWeekStartUtc(date: Date): number {
 
 const WEEK_MS = 7 * 86400000;
 
+function tsToIsoDate(ts: number): string {
+  const d = new Date(ts);
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
+}
+
 export function computeStreak(activities: Activity[]): StreakStats {
-  if (activities.length === 0) return { current: 0, longest: 0 };
+  const empty: StreakStats = { current: 0, longest: 0, longestStart: null, longestEnd: null, isCurrentLongest: false };
+  if (activities.length === 0) return empty;
 
   const today = new Date();
   const weeks = Array.from(
@@ -163,17 +169,26 @@ export function computeStreak(activities: Activity[]): StreakStats {
     )
   ).sort((a, b) => a - b);
 
-  if (weeks.length === 0) return { current: 0, longest: 0 };
+  if (weeks.length === 0) return empty;
 
   let longest = 1;
   let run = 1;
+  let runStart = weeks[0];
+  let longestRunStart = weeks[0];
+  let longestRunEnd = weeks[0];
+
   for (let i = 1; i < weeks.length; i++) {
     if (weeks[i] - weeks[i - 1] === WEEK_MS) {
       run += 1;
     } else {
       run = 1;
+      runStart = weeks[i];
     }
-    if (run > longest) longest = run;
+    if (run >= longest) {  // >= keeps most recent run on ties
+      longest = run;
+      longestRunStart = runStart;
+      longestRunEnd = weeks[i];
+    }
   }
 
   // Current streak: consecutive weeks ending at the most recent active week.
@@ -189,7 +204,15 @@ export function computeStreak(activities: Activity[]): StreakStats {
     current = 0;
   }
 
-  return { current, longest };
+  const isCurrentLongest = current > 0 && current === longest;
+
+  return {
+    current,
+    longest,
+    longestStart: tsToIsoDate(longestRunStart),
+    longestEnd: tsToIsoDate(longestRunEnd + 6 * 86400000),  // Monday + 6 days = Sunday
+    isCurrentLongest,
+  };
 }
 
 function bestPeriod(periods: AggregatedPeriod[]): PeriodRecord | null {
