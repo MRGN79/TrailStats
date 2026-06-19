@@ -443,6 +443,24 @@ h3:focus {
   margin-bottom: var(--space-lg);
 }
 
+.toolbar__filters {
+  display: flex;
+  gap: var(--space-md);
+  flex: 1;
+  min-width: 0;
+}
+
+.toolbar__filters > .field {
+  flex: 1;
+  min-width: 110px;
+}
+
+.toolbar__filters .field select,
+.toolbar__filters .field input[type="date"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .field label {
   display: block;
   font-family: var(--font-display);
