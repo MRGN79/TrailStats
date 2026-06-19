@@ -11,7 +11,10 @@ export function ConsentBanner({ onAccept, onReject }: ConsentBannerProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    dialogRef.current?.focus();
+    const active = document.activeElement;
+    if (!active || active === document.body || active === document.documentElement) {
+      dialogRef.current?.focus();
+    }
   }, []);
 
   return (

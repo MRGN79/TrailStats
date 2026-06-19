@@ -118,7 +118,7 @@ export default function App() {
 
   const handleConsentAccept = useCallback(() => { saveAdConsent("accepted"); setAdConsent("accepted"); }, []);
   const handleConsentReject = useCallback(() => { saveAdConsent("rejected"); setAdConsent("rejected"); }, []);
-  const handleConsentReset = useCallback(() => { resetAdConsent(); setAdConsent(null); }, []);
+  const handleConsentReset = useCallback(() => { resetAdConsent(); window.location.reload(); }, []);
   const [saveError, setSaveError] = useState(false);
 
   const dashHeadingRef = useRef<HTMLHeadingElement>(null);
@@ -152,7 +152,8 @@ export default function App() {
   }, [status, t]);
 
   useEffect(() => {
-    if (adConsent === "accepted" && PUBLISHER_ID) loadAdSenseScript(PUBLISHER_ID);
+    if (!adsEnabled || adConsent !== "accepted" || !PUBLISHER_ID) return;
+    loadAdSenseScript(PUBLISHER_ID);
   }, [adConsent]);
 
   async function handleFile(file: File) {

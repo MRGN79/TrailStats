@@ -39,10 +39,10 @@ export function PrivacyPanel({ onClearData, adConsent, onResetConsent }: Props) 
           </button>
         </p>
       )}
-      {onResetConsent && adConsent !== null && (
+      {onResetConsent && adConsent != null && (
         <p className="privacy-panel__clear">
           {adConsent === "accepted" ? t("privacy.adConsent.accepted") : t("privacy.adConsent.rejected")}
-          {" — "}
+          {t("privacy.separator.dash")}
           <button type="button" className="btn-link" onClick={onResetConsent}>
             {t("privacy.adConsent.change")}
           </button>
@@ -53,7 +53,7 @@ export function PrivacyPanel({ onClearData, adConsent, onResetConsent }: Props) 
         <a href={`${import.meta.env.BASE_URL}third-party-licenses.txt`} target="_blank" rel="noopener noreferrer">
           {t("privacy.licenses")}
         </a>
-        {" · "}
+        {t("privacy.separator.dot")}
         <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
           {t("privacy.googlePolicy")}
         </a>

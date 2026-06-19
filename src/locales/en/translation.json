@@ -278,6 +278,10 @@
       "accepted": "Advertising: accepted",
       "rejected": "Advertising: declined",
       "change": "Change preference"
+    },
+    "separator": {
+      "dash": " — ",
+      "dot": " · "
     }
   },
   "cache": {
