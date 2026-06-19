@@ -81,7 +81,7 @@ describe("aggregateByPeriod", () => {
 
 describe("computeStreak", () => {
   it("returns zeros for empty input", () => {
-    expect(computeStreak([])).toEqual({ current: 0, longest: 0 });
+    expect(computeStreak([])).toMatchObject({ current: 0, longest: 0, longestStart: null, longestEnd: null, isCurrentLongest: false });
   });
 
   it("counts consecutive ISO weeks for current and longest", () => {
@@ -107,7 +107,7 @@ describe("computeStreak", () => {
       act("2026-06-04", "Ride", 5, 100, 0), // last week, Wednesday (same ISO week)
       act("2026-06-09", "Run", 5, 100, 0),  // this week
     ];
-    expect(computeStreak(acts)).toEqual({ current: 2, longest: 2 });
+    expect(computeStreak(acts)).toMatchObject({ current: 2, longest: 2 });
   });
 });
 

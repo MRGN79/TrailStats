@@ -37,13 +37,23 @@ export function StreakRecords({ streak, records, locale }: Props) {
         </div>
 
         {/* Longest streak */}
-        <div className="card">
+        <div className={`card${streak.isCurrentLongest ? " card--longest-active" : ""}`}>
           <div className="label">
             {t("stats.streak.longest")}
             <InfoButton text={t("stats.info.longestStreak")} />
           </div>
           <div className="value">{formatNumber(streak.longest, locale)}</div>
           <div className="card__sub">{t("stats.streak.weeks", { count: streak.longest })}</div>
+          {streak.longestStart && streak.longestEnd && (() => {
+            const startDate = new Date(streak.longestStart + "T00:00:00Z");
+            const endDate = new Date(streak.longestEnd + "T00:00:00Z");
+            const yearsDiffer = startDate.getUTCFullYear() !== endDate.getUTCFullYear();
+            const shortOpts: Intl.DateTimeFormatOptions = { timeZone: "UTC", month: "short", day: "numeric" };
+            const longOpts: Intl.DateTimeFormatOptions = { ...shortOpts, year: "numeric" };
+            const startStr = startDate.toLocaleDateString(locale, yearsDiffer ? longOpts : shortOpts);
+            const endStr = endDate.toLocaleDateString(locale, longOpts);
+            return <div className="card__sub card__sub--dates">{startStr} – {endStr}</div>;
+          })()}
           <ShareButton
             getData={() => ({
               category: t("stats.streak.title"),

@@ -54,6 +54,9 @@ export type ViewMode = "weekly" | "monthly";
 export interface StreakStats {
   current: number;
   longest: number;
+  longestStart: string | null;  // ISO date (YYYY-MM-DD) of Monday of first week in longest run
+  longestEnd: string | null;    // ISO date (YYYY-MM-DD) of Sunday of last week in longest run
+  isCurrentLongest: boolean;
 }
 
 export interface PeriodRecord {
