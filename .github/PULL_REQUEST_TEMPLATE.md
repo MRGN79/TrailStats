@@ -4,8 +4,8 @@
 ## Tipo de cambio
 - [ ] `feat` — nueva funcionalidad
 - [ ] `fix` — corrección de bug
+- [ ] `hotfix` — fix urgente de producción (gates reducidos, ver flujo Hotfix)
 - [ ] `refactor` — refactorización sin cambio de comportamiento
-- [ ] `perf` — mejora de rendimiento
 - [ ] `test` — tests (sin cambios en producción)
 - [ ] `docs` — documentación
 - [ ] `chore` — mantenimiento, dependencias, configuración

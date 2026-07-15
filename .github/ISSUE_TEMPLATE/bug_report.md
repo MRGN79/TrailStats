@@ -18,6 +18,9 @@ labels: bug
 2. 
 3. 
 
+## Área o componente afectado
+<!-- Dónde se manifiesta: interfaz, API, datos, autenticación... El Jefe lo usa para asignar el diagnóstico (Frontend o Backend) -->
+
 ## Entorno
 - OS: [ej. macOS 14, Windows 11, Ubuntu 22.04]
 - Navegador (si aplica): [ej. Chrome 121, Firefox 122]

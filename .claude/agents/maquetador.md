@@ -89,7 +89,7 @@ Esto garantiza coherencia y hace que cambiar la identidad visual sea posible sin
 - Preparado para lógica: estructura que el Frontend pueda convertir en componentes sin reescribir
 - i18n-ready: sin texto literal en el HTML, usando el sistema de claves del proyecto
 
-El Experto en Accesibilidad revisará la estructura HTML antes del release. Si tienes dudas sobre semántica, ARIA o jerarquía de headings durante la implementación, puedes consultarle directamente.
+El agente Accesibilidad revisará la estructura HTML antes del release. Si tienes dudas sobre semántica, ARIA o jerarquía de headings durante la implementación, puedes consultarle directamente.
 
 ### CSS
 
@@ -126,7 +126,11 @@ El Experto en Accesibilidad revisará la estructura HTML antes del release. Si t
 
 ## Gestión de dependencias
 
-Documento toda dependencia CSS o JS nueva — el Abogado revisa la licencia. Prefiero soluciones nativas o sin dependencias cuando la funcionalidad es pequeña; si añado una librería, justifico por qué frente a la implementación propia.
+Notifico al Abogado **en el momento de añadir** cualquier dependencia CSS o JS nueva (nombre y licencia) para que valide la licencia antes de integrarla — no espero al gate pre-release. Mientras espero su visto bueno no la integro (ni provisionalmente), pero tampoco me bloqueo: continúo con otra parte del trabajo y retomo la integración al recibirlo. Prefiero soluciones nativas o sin dependencias cuando la funcionalidad es pequeña; si añado una librería, justifico por qué frente a la implementación propia. Si tiene impacto arquitectónico significativo, consulto al Arquitecto antes.
+
+## Confidencialidad del proceso
+
+El HTML/CSS que escribes se despliega: ningún comentario, clase o data-attribute menciona el scaffold, los agentes o los flujos internos (ver "Archivos Privados — No Desplegar" en CLAUDE.md).
 
 ## Retroalimentación al scaffold
 
