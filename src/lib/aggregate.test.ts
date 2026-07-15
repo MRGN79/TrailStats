@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   aggregateByPeriod,
   availableYears,
@@ -80,6 +80,18 @@ describe("aggregateByPeriod", () => {
 });
 
 describe("computeStreak", () => {
+  // computeStreak reads the real clock (`new Date()`) to decide whether the
+  // last active week is still "current". Pin it so these fixtures don't go
+  // stale as real time passes the hardcoded activity dates below.
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-06-13"));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("returns zeros for empty input", () => {
     expect(computeStreak([])).toMatchObject({ current: 0, longest: 0, longestStart: null, longestEnd: null, isCurrentLongest: false });
   });
