@@ -121,28 +121,47 @@ describe("TotalsCards — Summit reveal choreography (US-1 beat wiring)", () => 
 });
 
 describe("TotalsCards — count-up (US-2, scenario a)", () => {
-  it("counts from a hidden node and lands on the exact format.ts value", () => {
+  it("counts on a throwaway overlay while the real React node is hidden, then reveals it (points 1 & 2)", () => {
     mockMatchMedia(false); // motion allowed
     installRaf();
     const { container } = renderCards(RICH, 1, "en");
 
-    // During the count the animated figure is aria-hidden and a screen-reader
-    // node carries the final value (only the final figure is announced).
     const distanceCard = cards(container)[1];
-    expect(distanceCard.querySelector(".value--countup [aria-hidden='true']")).toBeTruthy();
+    const amount = distanceCard.querySelector<HTMLElement>("[data-countup-amount]");
+
+    // Point 1 (CE-1 no layout collapse): the real value node is hidden with
+    // display:none, and a same-class overlay is inserted as a sibling to sustain
+    // the line's width while the number counts (overlay carries no data attr).
+    expect(amount?.style.display).toBe("none");
+    const overlay = distanceCard.querySelector<HTMLElement>(
+      ".value--countup .value__amount[aria-hidden='true']:not([data-countup-amount])"
+    );
+    expect(overlay).toBeTruthy();
+    expect(overlay).not.toBe(amount);
+    // The overlay is the animated layer; it starts at the formatted zero value.
+    expect(overlay?.textContent).toBe(formatDistance(0, "en"));
+
+    // Point 2 (a11y): the animated overlay is aria-hidden, the unit is
+    // aria-hidden, and exactly one .sr-only node carries the final value (set
+    // once, not per tick) so a reader only ever announces the final figure.
+    expect(distanceCard.querySelectorAll(".value--countup .sr-only").length).toBe(1);
     expect(distanceCard.querySelector(".value--countup .sr-only")?.textContent).toContain(
       formatDistance(RICH.distanceKm, "en")
+    );
+    expect(distanceCard.querySelector(".value--countup .unit")?.getAttribute("aria-hidden")).toBe(
+      "true"
     );
 
     // Drive the loop to completion.
     flush(16);
     flush(100000);
 
-    // Final frame restores the exact React markup: byte-identical to format.ts.
-    const amount = distanceCard.querySelector<HTMLElement>("[data-countup-amount]");
+    // On settle: overlay removed, real React node revealed (display cleared),
+    // exact format.ts value, aria-hidden lifted from the unit, sr helper gone.
+    expect(distanceCard.querySelector(".value__amount[aria-hidden='true']")).toBeNull();
+    expect(amount?.style.display).toBe("");
     expect(amount?.textContent).toBe(formatDistance(RICH.distanceKm, "en"));
-    // aria-hidden lifted and the sr-only helper removed once settled.
-    expect(distanceCard.querySelector(".value--countup [aria-hidden='true']")).toBeNull();
+    expect(distanceCard.querySelector(".value--countup .unit")?.getAttribute("aria-hidden")).toBeNull();
     expect(distanceCard.querySelector(".value--countup .sr-only")).toBeNull();
   });
 
@@ -238,22 +257,28 @@ describe("TotalsCards — no count-up outside an active celebration (scenarios b
 
       const distanceCard = cards(view.container)[1];
       const amount = distanceCard.querySelector<HTMLElement>("[data-countup-amount]");
+      // The hero figure updates to the recalculated value…
       expect(amount?.textContent).toBe(formatDistance(recalculated.distanceKm, "en"));
+      // …and the equivalence line below it stays consistent with it (the exact
+      // mismatch the original bug produced, e.g. "1,434.6 km ≈ 12 marathons").
+      expect(distanceCard.querySelector(".card__equiv")?.textContent).toContain("12 marathons");
     }
   );
 });
 
 describe("TotalsCards — reduced motion (scenario d, CE-8)", () => {
-  it("skips the count loop and shows final values directly", () => {
+  it("bails out to the final value with no overlay and no count loop (point 3)", () => {
     mockMatchMedia(true); // prefers-reduced-motion: reduce
     installRaf();
     const { container } = renderCards(RICH, 1, "en");
-    // Hook bailed before scheduling any frame.
+    // Hook bailed before scheduling any frame or touching the DOM.
     expect(frameCbs.length).toBe(0);
     const distanceCard = cards(container)[1];
     expect(distanceCard.querySelector(".value--countup .sr-only")).toBeNull();
-    expect(distanceCard.querySelector(".value--countup [aria-hidden='true']")).toBeNull();
+    // No overlay layer created, and the real node is never hidden.
+    expect(distanceCard.querySelector(".value__amount[aria-hidden='true']")).toBeNull();
     const amount = distanceCard.querySelector<HTMLElement>("[data-countup-amount]");
+    expect(amount?.style.display).not.toBe("none");
     expect(amount?.textContent).toBe(formatDistance(RICH.distanceKm, "en"));
   });
 });
