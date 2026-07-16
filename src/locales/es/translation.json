@@ -84,6 +84,17 @@
       "avgHr": "FC media",
       "dateRange": "{{first}} – {{last}}"
     },
+    "equivalence": {
+      "prefix": "Equivale a",
+      "marathons_one": "≈ {{value}} maratón",
+      "marathons_other": "≈ {{value}} maratones",
+      "earthLaps_one": "≈ {{value}} vuelta a la Tierra",
+      "earthLaps_other": "≈ {{value}} vueltas a la Tierra",
+      "everests_one": "≈ {{value}} ascenso al Everest",
+      "everests_other": "≈ {{value}} ascensos al Everest",
+      "daysMoving_one": "≈ {{value}} día completo en movimiento",
+      "daysMoving_other": "≈ {{value}} días completos en movimiento"
+    },
     "view": {
       "weekly": "Semanal",
       "monthly": "Mensual"
@@ -245,6 +256,12 @@
     },
     "from": "Desde",
     "to": "Hasta"
+  },
+  "summit": {
+    "a11y": {
+      "achievement": "Logro: {{label}}",
+      "countupFinal": "{{label}}: {{value}}"
+    }
   },
   "units": {
     "km": "km",

@@ -17,6 +17,13 @@ interface Props {
 export function StreakRecords({ streak, records, locale, revealIndex }: Props) {
   const { t } = useTranslation();
 
+  // Trato de "logro" con degradación digna (CE-4, §2.4.1): el halo alpenglow
+  // solo aparece sobre marcas con sustancia. Racha máxima activa con ≥2 semanas
+  // → logro pleno; 1 semana → acento tenue existente sin halo.
+  const longestAchievement = streak.isCurrentLongest && streak.longest >= 2;
+  const weekAchievement = (records.bestWeek?.distanceKm ?? 0) > 0;
+  const monthAchievement = (records.bestMonth?.distanceKm ?? 0) > 0;
+
   return (
     <section
       aria-label={t("stats.records.title")}
@@ -45,7 +52,20 @@ export function StreakRecords({ streak, records, locale, revealIndex }: Props) {
         </div>
 
         {/* Longest streak */}
-        <div className={`card${streak.isCurrentLongest ? " card--longest-active" : ""}`}>
+        <div
+          className={`card${
+            longestAchievement
+              ? " card--achievement"
+              : streak.isCurrentLongest
+                ? " card--longest-active"
+                : ""
+          }`}
+        >
+          {longestAchievement && (
+            <span className="sr-only">
+              {t("summit.a11y.achievement", { label: t("stats.streak.longest") })}
+            </span>
+          )}
           <div className="label">
             {t("stats.streak.longest")}
             <InfoButton text={t("stats.info.longestStreak")} />
@@ -78,7 +98,12 @@ export function StreakRecords({ streak, records, locale, revealIndex }: Props) {
           const formatted = formatDistance(records.bestWeek.distanceKm, locale);
           const { integer, decimal } = splitDecimal(formatted, locale);
           return (
-            <div className="card">
+            <div className={`card${weekAchievement ? " card--achievement" : ""}`}>
+              {weekAchievement && (
+                <span className="sr-only">
+                  {t("summit.a11y.achievement", { label: t("stats.records.bestWeek") })}
+                </span>
+              )}
               <div className="label">
                 {t("stats.records.bestWeek")}
                 <InfoButton text={t("stats.info.bestWeek")} />
@@ -107,7 +132,12 @@ export function StreakRecords({ streak, records, locale, revealIndex }: Props) {
           const formatted = formatDistance(records.bestMonth.distanceKm, locale);
           const { integer, decimal } = splitDecimal(formatted, locale);
           return (
-            <div className="card">
+            <div className={`card${monthAchievement ? " card--achievement" : ""}`}>
+              {monthAchievement && (
+                <span className="sr-only">
+                  {t("summit.a11y.achievement", { label: t("stats.records.bestMonth") })}
+                </span>
+              )}
               <div className="label">
                 {t("stats.records.bestMonth")}
                 <InfoButton text={t("stats.info.bestMonth")} />
