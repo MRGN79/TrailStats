@@ -207,17 +207,14 @@ describe("TotalsCards — no count-up outside an active celebration (scenarios b
     expect(view.container.querySelector(".value--countup .sr-only")).toBeNull();
   });
 
-  // KNOWN BUG (report to Frontend): after the count-up finalises it writes the
-  // figure via `amount.innerHTML = savedHTML` (useCountUp.ts). That direct DOM
-  // mutation detaches the nodes React was tracking, so a later re-render caused
-  // by a filter change (celebrateNonce unchanged) does NOT update the hero
-  // figure — it stays frozen at the celebration-time value while the `.card__equiv`
-  // line below it DOES update, producing a visible mismatch (e.g. "1,434.6 km ≈
-  // 12 marathons"). This violates US-2/CE-6 ("los totales se actualizan de forma
-  // inmediata" on a filter recalc). `it.fails` documents the defect and will turn
-  // red — prompting conversion to a normal `it` — once Frontend fixes it.
-  it.fails(
-    "KNOWN BUG (CE-6): hero figure updates to the recalculated value after a post-celebration filter change",
+  // CE-6: the count-up animates on a throwaway overlay layer, never on the
+  // React-owned value node. After the celebration settles, the real node is
+  // revealed unchanged, so a later re-render from a filter change
+  // (celebrateNonce unchanged) updates the hero figure normally — it stays
+  // consistent with the `.card__equiv` line below it instead of freezing at
+  // the celebration-time value.
+  it(
+    "CE-6: hero figure updates to the recalculated value after a post-celebration filter change",
     () => {
       mockMatchMedia(false);
       installRaf();

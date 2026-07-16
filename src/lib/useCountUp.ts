@@ -14,10 +14,10 @@ const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
 interface Job {
   amount: HTMLElement;
-  savedHTML: string;
+  overlay: HTMLElement;
   format: (n: number) => string;
   value: number;
-  hidden: HTMLElement[];
+  ariaHidden: HTMLElement[];
   srNode: HTMLElement;
   done: boolean;
 }
@@ -25,19 +25,23 @@ interface Job {
 /**
  * Count-up for the hero figures (US-2, ADR-003 §1 & §4).
  *
- * A single requestAnimationFrame loop writes `textContent` through the DOM —
- * never React state, so there is zero re-render per tick. The final frame
- * restores the exact React-rendered markup (integer + `.value__frac`) so the
- * displayed value is byte-identical to the non-animated render.
+ * The animation runs on a throwaway overlay node that React never owns: a
+ * single requestAnimationFrame loop writes `textContent` to that overlay only,
+ * so there is zero re-render per tick AND the real value node stays entirely
+ * under React's control. The real node is merely hidden (inline `display`)
+ * while the overlay counts, then revealed when the loop settles — so the
+ * displayed value is always exactly what React rendered from `totals`. A later
+ * re-render (e.g. a filter recalculation) updates the hero figure normally,
+ * because no imperative code ever detached React's node.
  *
  * Runs only when `celebrateNonce` changes to a positive value (active
  * processing or demo — CE-1). Restoration from cache (nonce 0) and filter
  * recalculations (nonce unchanged) never trigger a count. Under
  * `prefers-reduced-motion` the final value is shown directly (no loop).
  *
- * Accessibility: while counting, the visual number and its unit are
- * `aria-hidden` and a `.sr-only` node carries the final value, so the reader
- * only ever announces the final figure.
+ * Accessibility: while counting, the real value node is hidden, the overlay is
+ * `aria-hidden`, the unit is `aria-hidden`, and a `.sr-only` node carries the
+ * final value, so the reader only ever announces the final figure.
  */
 export function useCountUp(
   containerRef: RefObject<HTMLElement | null>,
@@ -69,25 +73,35 @@ export function useCountUp(
 
       const amount =
         node.querySelector<HTMLElement>("[data-countup-amount]") ?? node;
-      const savedHTML = amount.innerHTML;
 
-      const hidden: HTMLElement[] = [amount];
+      // Overlay layer: React never tracks this node, so the real value node
+      // (amount) keeps its React-owned children untouched and always reflects
+      // the latest `totals`. The count animates here and is removed on settle.
+      const overlay = document.createElement("span");
+      overlay.className = "value__amount";
+      overlay.setAttribute("aria-hidden", "true");
+      overlay.textContent = metric.format(0);
+      amount.parentNode?.insertBefore(overlay, amount);
+      amount.style.display = "none";
+
+      const ariaHidden: HTMLElement[] = [];
       const unit = node.querySelector<HTMLElement>(".unit");
-      if (unit) hidden.push(unit);
-      for (const el of hidden) el.setAttribute("aria-hidden", "true");
+      if (unit) {
+        unit.setAttribute("aria-hidden", "true");
+        ariaHidden.push(unit);
+      }
 
       const srNode = document.createElement("span");
       srNode.className = "sr-only";
       srNode.textContent = metric.srText;
       node.appendChild(srNode);
 
-      amount.textContent = metric.format(0);
       jobs.push({
         amount,
-        savedHTML,
+        overlay,
         format: metric.format,
         value: metric.value,
-        hidden,
+        ariaHidden,
         srNode,
         done: false,
       });
@@ -98,8 +112,9 @@ export function useCountUp(
     const finalize = (job: Job) => {
       if (job.done) return;
       job.done = true;
-      job.amount.innerHTML = job.savedHTML;
-      for (const el of job.hidden) el.removeAttribute("aria-hidden");
+      job.overlay.remove();
+      job.amount.style.display = "";
+      for (const el of job.ariaHidden) el.removeAttribute("aria-hidden");
       job.srNode.remove();
     };
 
@@ -121,7 +136,7 @@ export function useCountUp(
           continue;
         }
         allDone = false;
-        job.amount.textContent = job.format(job.value * easeOutCubic(progress));
+        job.overlay.textContent = job.format(job.value * easeOutCubic(progress));
       }
       if (!allDone) raf = requestAnimationFrame(tick);
     };
