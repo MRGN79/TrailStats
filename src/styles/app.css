@@ -32,6 +32,13 @@
   /* Naranja — acento escaso */
   --ember: #fc5200;
   --ember-text: #c2410c;
+  /* Acento de logro Summit (records) — parte de --ember #fc5200.
+     --alpenglow: borde/edge/icono del logro y resplandor del hero (no-textual ≥3:1).
+     --ember-glow / --ember-glow-soft: aura decorativa del halo — SOLO box-shadow /
+     radial-gradient, nunca texto. */
+  --alpenglow: #ff8a5c;
+  --ember-glow: rgba(252, 82, 0, 0.32);
+  --ember-glow-soft: rgba(255, 138, 92, 0.16);
 
   /* Estados */
   --danger: #a4232b;
@@ -52,6 +59,37 @@
 
   /* Transición con carácter: entra ágil, asienta */
   --ease-instrument: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* ══════════════════════════════════════════════════════════════════
+     SUMMIT — TOKENS DE ANIMACIÓN  (fuente única de timing)
+     Ajustar la velocidad de cualquier pieza = editar UN valor aquí.
+     Consumidos por CSS (@keyframes) y por JS vía readTimingMs().
+     Presupuesto total de la coreografía ≈ 1,5 s ("wow marcado").
+     La palanca prefers-reduced-motion colapsa todo este bloque (ver más abajo).
+     ══════════════════════════════════════════════════════════════════ */
+
+  /* Easing compartido (reutiliza el carácter del instrumento) */
+  --anim-ease: var(--ease-instrument);
+
+  /* Revelación coreografiada del dashboard (US-1) */
+  --anim-reveal-budget: 1500ms;   /* techo duro de la coreografía completa */
+  --anim-reveal-duration: 480ms;  /* fade+ascenso de cada beat/sección */
+  --anim-reveal-stagger: 90ms;    /* retardo entre beats consecutivos */
+  --anim-reveal-distance: 12px;   /* desplazamiento inicial translateY (transform) */
+
+  /* Count-up de cifras héroe (US-2) — lo lee el hook JS con readTimingMs() */
+  --anim-countup-duration: 1100ms; /* conteo 0 → valor final */
+  --anim-countup-delay: 120ms;     /* espera tras aparecer las tarjetas */
+
+  /* Heatmap en cascada POR COLUMNA (US-5), nunca por celda */
+  --anim-heatmap-cascade: 260ms;  /* fade de cada columna */
+  --anim-heatmap-stagger: 14ms;   /* retardo entre columnas */
+
+  /* Halo ámbar de records (US-3) — bloom único, no pulsa en bucle */
+  --anim-records-halo: 2600ms;    /* duración del bloom antes de asentar estático */
+
+  /* Movimiento ambiental del hero (US-4) — deriva imperceptible */
+  --anim-hero-ambient: 9000ms;    /* periodo del acento ambiental del hero */
 
   font-family: var(--font-body);
   color: var(--ink);
@@ -282,13 +320,16 @@ h3:focus {
   max-width: 540px;
   margin: 0 auto;
   transition: border-color 0.15s var(--ease-instrument),
-    background 0.15s var(--ease-instrument);
+    background 0.15s var(--ease-instrument),
+    box-shadow 0.2s var(--ease-instrument);
 }
 
 .dropzone:hover,
 .dropzone.dragover {
   border-color: var(--ember);
   background: rgba(252, 82, 0, 0.08);
+  box-shadow: 0 0 0 4px var(--ember-glow-soft),
+    0 10px 44px -10px var(--ember-glow);
 }
 
 .dropzone input {
@@ -1471,4 +1512,183 @@ table.data-table td:first-child {
   margin-top: var(--space-xl);
   padding-top: var(--space-xl);
   border-top: 1px solid var(--border);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   SUMMIT — Fase 1 · Capa de coreografía y acento de logro
+   Toda animación se define EN TÉRMINOS de los tokens --anim-* de :root.
+   Ninguna duración/delay suelto: ajustar velocidad = editar :root.
+   Solo se anima opacity/transform (jamás propiedades que disparen layout).
+   will-change queda acotado a .is-revealing; Frontend retira la clase al
+   terminar la secuencia y con ello se libera la promoción de capa.
+
+   Contrato de disparo (lo cablea Frontend, sin lógica aquí):
+     · .summit-choreo         → raíz de la coreografía (contenedor del dashboard).
+     · .summit-choreo.is-revealing → Frontend la añade una sola vez, antes del
+       paint, SOLO si shouldCelebrate es true; la retira al acabar. Sin ella,
+       todo se muestra en su estado final desde el primer frame (caché/restore).
+     · .summit-beat + style="--beat-index:N" → cada unidad de revelación.
+     · .heatmap__col + style="--col-index:N"  → cada columna del heatmap.
+     · .card--achievement     → tarjeta de logro (borde alpenglow + halo).
+   ══════════════════════════════════════════════════════════════════ */
+
+/* — Beat: unidad de revelación (fundido + ascenso de 12px) —
+   animation-fill-mode both: durante su retardo el beat sostiene el estado
+   inicial (oculto), evitando un salto cuando arranca la secuencia. */
+.summit-choreo.is-revealing .summit-beat {
+  animation: summit-reveal var(--anim-reveal-duration) var(--anim-ease) both;
+  animation-delay: calc(var(--anim-reveal-stagger) * var(--beat-index, 0));
+  will-change: opacity, transform;
+}
+
+@keyframes summit-reveal {
+  from { opacity: 0; transform: translateY(var(--anim-reveal-distance)); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* — Records: jerarquía emocional de logro (US-3) —
+   El COLOR (borde alpenglow + halo) es estático y se conserva bajo
+   reduced-motion; solo el bloom del halo es movimiento. */
+.card--achievement {
+  border-top-color: var(--alpenglow);
+}
+
+@media (min-width: 560px) {
+  .card + .card--achievement {
+    border-left-color: var(--alpenglow);
+  }
+}
+
+/* Halo estático tenue: núcleo --ember-glow + anillo exterior --ember-glow-soft.
+   Decorativo (aria irrelevante), detrás de la tarjeta, sin capturar puntero. */
+.card--achievement::before {
+  content: "";
+  position: absolute;
+  inset: -14px -10px -6px;
+  z-index: -1;
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(120% 80% at 50% 0%, var(--ember-glow) 0%, transparent 60%),
+    radial-gradient(150% 100% at 50% 12%, var(--ember-glow-soft) 0%, transparent 72%);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+/* Bloom único en la revelación: 0 → pleno → asienta en el halo estático (0.85).
+   Un solo ciclo, NO pulsa en bucle (evita distracción / dark-pattern). */
+.summit-choreo.is-revealing .card--achievement::before {
+  animation: summit-halo-bloom var(--anim-records-halo) var(--anim-ease) both;
+  will-change: opacity;
+}
+
+@keyframes summit-halo-bloom {
+  0%   { opacity: 0; }
+  45%  { opacity: 1; }
+  100% { opacity: 0.85; }
+}
+
+/* — Heatmap: cascada POR COLUMNA (<g>), izquierda→derecha (US-5) —
+   El retardo compone el arranque del beat del heatmap (--beat-index heredado)
+   con el stagger por columna. Solo opacity: cero re-render de React por celda. */
+.summit-choreo.is-revealing .heatmap__col {
+  animation: summit-heatmap-cascade var(--anim-heatmap-cascade) var(--anim-ease) both;
+  animation-delay: calc(
+    var(--anim-reveal-stagger) * var(--beat-index, 0) +
+    var(--anim-heatmap-stagger) * var(--col-index, 0)
+  );
+  will-change: opacity;
+}
+
+@keyframes summit-heatmap-cascade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* — Hero Summit (US-4): cresta + resplandor alpenglow con deriva ambiental —
+   Decorativos, detrás del contenido (z-index 0). El texto/CTA/errores quedan
+   por encima (z-index 1) y conservan su contraste. La deriva la gobierna
+   --anim-hero-ambient (0ms bajo reduced-motion → estáticos). */
+.hero__glow {
+  position: absolute;
+  top: -6%;
+  left: 50%;
+  width: min(680px, 92%);
+  height: 340px;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    60% 60% at 50% 30%,
+    var(--ember-glow-soft) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+  animation: summit-hero-glow var(--anim-hero-ambient) ease-in-out infinite alternate;
+}
+
+.hero__ridge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  color: rgba(250, 248, 243, 0.10);
+  pointer-events: none;
+  z-index: 0;
+  animation: summit-hero-ridge var(--anim-hero-ambient) ease-in-out infinite alternate;
+}
+
+.hero > *:not(.hero__glow):not(.hero__ridge) {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes summit-hero-glow {
+  from { transform: translateX(-50%) translateY(0); opacity: 0.85; }
+  to   { transform: translateX(-50%) translateY(4px); opacity: 1; }
+}
+
+@keyframes summit-hero-ridge {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-3px); }
+}
+
+/* — Marcador de count-up (US-2). Sin efecto visual: es el gancho que el hook
+   useCountUp localiza (data-countup / data-metric) para escribir por ref. — */
+.value--countup { display: block; }
+
+/* — Equivalencia humana bajo la cifra héroe (US-6). Texto real (no decorativo),
+   tenue AA sobre verde profundo. Debe poder envolver a 2 líneas en ES (+30%). — */
+.card__equiv {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: rgba(250, 248, 243, 0.6);
+  margin-top: var(--space-2xs);
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  font-feature-settings: "tnum" 1;
+  max-width: 22ch;
+  text-wrap: balance;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   SUMMIT — prefers-reduced-motion · UNA sola palanca (ADR-003 §3a)
+   Colapsa TODOS los tokens de timing. Como cada animación Summit se define
+   en términos de estos tokens, redefinirlos aquí neutraliza la coreografía
+   completa de golpe (sin parches por componente). El color estático del
+   ember/alpenglow se conserva (el color no es movimiento). Complementa el
+   bloque global `* { transition-duration }` ya existente.
+   ══════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --anim-reveal-duration: 120ms;  /* máximo fundido permitido, ≤150ms */
+    --anim-reveal-stagger: 0ms;
+    --anim-reveal-distance: 0px;    /* sin desplazamiento */
+    --anim-countup-duration: 0ms;
+    --anim-countup-delay: 0ms;
+    --anim-heatmap-cascade: 0ms;
+    --anim-heatmap-stagger: 0ms;
+    --anim-records-halo: 0ms;       /* halo estático; conserva el color */
+    --anim-hero-ambient: 0ms;       /* cresta y resplandor estáticos */
+  }
 }

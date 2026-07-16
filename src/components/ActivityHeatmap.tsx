@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 import type { HeatmapData, HeatLevel } from "../lib/types";
 import { formatDistance } from "../lib/format";
@@ -6,6 +6,9 @@ import { formatDistance } from "../lib/format";
 interface Props {
   data: HeatmapData;
   locale: string;
+  /** Índice de beat para la revelación coreografiada (Summit). Si se omite,
+   *  la sección no participa en la coreografía y se muestra directamente. */
+  revealIndex?: number;
 }
 
 const CELL = 12;
@@ -35,7 +38,7 @@ function weekdayMon0(date: Date): number {
   return d === 0 ? 6 : d - 1;
 }
 
-export function ActivityHeatmap({ data, locale }: Props) {
+export function ActivityHeatmap({ data, locale, revealIndex }: Props) {
   const { t } = useTranslation();
 
   const allEmpty = useMemo(
@@ -92,7 +95,11 @@ export function ActivityHeatmap({ data, locale }: Props) {
   }, [data]);
 
   return (
-    <section aria-label={t("stats.heatmap.title")}>
+    <section
+      aria-label={t("stats.heatmap.title")}
+      className={revealIndex != null ? "summit-beat" : undefined}
+      style={revealIndex != null ? ({ "--beat-index": revealIndex } as CSSProperties) : undefined}
+    >
       <h2 className="section-title">{t("stats.heatmap.title")}</h2>
 
       {allEmpty && (
@@ -134,33 +141,41 @@ export function ActivityHeatmap({ data, locale }: Props) {
             </text>
           ))}
 
-          {columns.map((c) =>
-            c.cells.map((day) => {
-              const row = weekdayMon0(day.date);
-              const dateStr = dateFmt.format(day.date);
-              const hasActivity = day.distanceKm > 0;
-              const label = hasActivity
-                ? t("stats.heatmap.dayLabel", {
-                    date: dateStr,
-                    distance: formatDistance(day.distanceKm, locale),
-                  })
-                : t("stats.heatmap.dayLabelEmpty", { date: dateStr });
-              return (
-                <rect
-                  key={day.date.getTime()}
-                  x={c.x}
-                  y={TOP + row * STEP}
-                  width={CELL}
-                  height={CELL}
-                  rx={2}
-                  fill={LEVEL_FILL[day.level]}
-                  aria-label={label}
-                >
-                  <title>{label}</title>
-                </rect>
-              );
-            })
-          )}
+          {/* Cada columna (semana) es un <g class="heatmap__col"> con su
+              --col-index: la cascada anima el grupo, nunca celda a celda. */}
+          {columns.map((c, ci) => (
+            <g
+              key={c.x}
+              className="heatmap__col"
+              style={{ "--col-index": ci } as CSSProperties}
+            >
+              {c.cells.map((day) => {
+                const row = weekdayMon0(day.date);
+                const dateStr = dateFmt.format(day.date);
+                const hasActivity = day.distanceKm > 0;
+                const label = hasActivity
+                  ? t("stats.heatmap.dayLabel", {
+                      date: dateStr,
+                      distance: formatDistance(day.distanceKm, locale),
+                    })
+                  : t("stats.heatmap.dayLabelEmpty", { date: dateStr });
+                return (
+                  <rect
+                    key={day.date.getTime()}
+                    x={c.x}
+                    y={TOP + row * STEP}
+                    width={CELL}
+                    height={CELL}
+                    rx={2}
+                    fill={LEVEL_FILL[day.level]}
+                    aria-label={label}
+                  >
+                    <title>{label}</title>
+                  </rect>
+                );
+              })}
+            </g>
+          ))}
         </svg>
       </div>
 

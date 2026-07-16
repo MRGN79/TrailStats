@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 import { version } from "../package.json";
 import { UploadZone } from "./components/UploadZone";
@@ -316,6 +316,24 @@ export default function App() {
       <main id="main-content">
         {!dataset && (
           <div className="hero">
+            {/* Acentos Summit decorativos (aria-hidden): resplandor alpenglow y
+                silueta de cresta. Detrás del contenido (z-index 0). */}
+            <div className="hero__glow" aria-hidden="true" />
+            <svg
+              className="hero__ridge"
+              aria-hidden="true"
+              focusable="false"
+              viewBox="0 0 1200 120"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M0 120 L0 78 L120 52 L240 70 L360 30 L480 58 L600 20 L720 54 L840 34 L960 64 L1080 40 L1200 66 L1200 120 Z"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                vectorEffect="non-scaling-stroke"
+              />
+            </svg>
             <div className="topbar">
               <div className="brand">
                 Trail<span>Stats</span>
@@ -397,7 +415,7 @@ export default function App() {
                 </button>
               </div>
 
-              <div className="dashboard__main">
+              <div className="dashboard__main summit-choreo">
                 {showSummaryCard && (
                   <SummaryCardModal
                     data={summaryCardData}
@@ -410,11 +428,16 @@ export default function App() {
                   </p>
                 )}
                 <div className="dash-section">
-                  <h2 className="dash-section__title" ref={dashHeadingRef} tabIndex={-1}>
+                  <h2
+                    className="dash-section__title summit-beat"
+                    ref={dashHeadingRef}
+                    tabIndex={-1}
+                    style={{ "--beat-index": 0 } as CSSProperties}
+                  >
                     {t("stats.sections.social")}
                   </h2>
-                  <TotalsCards totals={totals} locale={locale} firstDate={filteredFirstDate} lastDate={filteredLastDate} avgHrBpm={avgHrBpm} totalCalories={totalCalories} />
-                  <StreakRecords streak={streak} records={records} locale={locale} />
+                  <TotalsCards totals={totals} locale={locale} firstDate={filteredFirstDate} lastDate={filteredLastDate} avgHrBpm={avgHrBpm} totalCalories={totalCalories} revealIndex={1} />
+                  <StreakRecords streak={streak} records={records} locale={locale} revealIndex={2} />
                   {showRunningMetrics && (
                     <>
                       <BestEfforts efforts={bestEfforts} locale={locale} />
@@ -432,13 +455,18 @@ export default function App() {
                 <AdUnit slot={AD_SLOT_BETWEEN} consent={adConsent === "accepted"} className="ad-unit--between-sections" />
 
                 <div className="dash-section">
-                  <h2 className="dash-section__title">{t("stats.sections.training")}</h2>
+                  <h2
+                    className="dash-section__title summit-beat"
+                    style={{ "--beat-index": 3 } as CSSProperties}
+                  >
+                    {t("stats.sections.training")}
+                  </h2>
                   {dataset.discardedRows > 0 && (
                     <p className="notice" role="status">
                       {t("upload.discarded", { count: dataset.discardedRows })}
                     </p>
                   )}
-                  <ActivityHeatmap data={heatmap} locale={locale} />
+                  <ActivityHeatmap data={heatmap} locale={locale} revealIndex={4} />
                   <TrainingLoad load={trainingLoad} locale={locale} />
                   <FitnessChart data={fitnessData} locale={locale} />
                   <TrendsChart activities={filtered} locale={locale} />

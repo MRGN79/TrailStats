@@ -1,3 +1,4 @@
+import { type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 import type { PeriodRecords, StreakStats } from "../lib/types";
 import { formatDistance, formatNumber, splitDecimal } from "../lib/format";
@@ -8,13 +9,20 @@ interface Props {
   streak: StreakStats;
   records: PeriodRecords;
   locale: string;
+  /** Índice de beat para la revelación coreografiada (Summit). Si se omite,
+   *  la sección no participa en la coreografía y se muestra directamente. */
+  revealIndex?: number;
 }
 
-export function StreakRecords({ streak, records, locale }: Props) {
+export function StreakRecords({ streak, records, locale, revealIndex }: Props) {
   const { t } = useTranslation();
 
   return (
-    <section aria-label={t("stats.records.title")}>
+    <section
+      aria-label={t("stats.records.title")}
+      className={revealIndex != null ? "summit-beat" : undefined}
+      style={revealIndex != null ? ({ "--beat-index": revealIndex } as CSSProperties) : undefined}
+    >
       <h2 className="section-title">{t("stats.records.title")}</h2>
       <div className="cards">
         {/* Current streak */}

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 import type { Totals } from "../lib/types";
 import { formatDistance, formatDuration, formatNumber, splitDecimal } from "../lib/format";
@@ -12,9 +12,12 @@ interface Props {
   lastDate: Date | null;
   avgHrBpm?: number | null;
   totalCalories?: number | null;
+  /** Índice de beat para la revelación coreografiada (Summit). Si se omite,
+   *  la sección no participa en la coreografía y se muestra directamente. */
+  revealIndex?: number;
 }
 
-export function TotalsCards({ totals, locale, firstDate, lastDate, avgHrBpm, totalCalories }: Props) {
+export function TotalsCards({ totals, locale, firstDate, lastDate, avgHrBpm, totalCalories, revealIndex }: Props) {
   const { t } = useTranslation();
 
   const dateRangeLabel = useMemo(() => {
@@ -26,12 +29,15 @@ export function TotalsCards({ totals, locale, firstDate, lastDate, avgHrBpm, tot
     return t("stats.totals.dateRange", { first: f, last: l });
   }, [firstDate, lastDate, locale, t]);
 
+  // `countup` marca las cuatro cifras héroe que el hook useCountUp anima
+  // (data-countup / data-metric); calorías y FC media no cuentan (US-2).
   const cards = [
     {
       label: t("stats.totals.activities"),
       value: formatNumber(totals.activities, locale),
       unit: "",
       infoKey: "activities",
+      countup: "activities" as string | undefined,
       shareValue: formatNumber(totals.activities, locale),
       shareUnit: undefined as string | undefined,
     },
@@ -40,6 +46,7 @@ export function TotalsCards({ totals, locale, firstDate, lastDate, avgHrBpm, tot
       value: formatDistance(totals.distanceKm, locale),
       unit: t("units.km"),
       infoKey: "distance",
+      countup: "distance" as string | undefined,
       shareValue: formatDistance(totals.distanceKm, locale),
       shareUnit: t("units.km"),
     },
@@ -48,6 +55,7 @@ export function TotalsCards({ totals, locale, firstDate, lastDate, avgHrBpm, tot
       value: formatDuration(totals.movingTimeSec, locale),
       unit: "",
       infoKey: "movingTime",
+      countup: "movingTime" as string | undefined,
       shareValue: formatDuration(totals.movingTimeSec, locale),
       shareUnit: undefined as string | undefined,
     },
@@ -56,6 +64,7 @@ export function TotalsCards({ totals, locale, firstDate, lastDate, avgHrBpm, tot
       value: formatNumber(totals.elevationGainM, locale),
       unit: t("units.m"),
       infoKey: "elevation",
+      countup: "elevation" as string | undefined,
       shareValue: formatNumber(totals.elevationGainM, locale),
       shareUnit: t("units.m"),
     },
@@ -65,6 +74,7 @@ export function TotalsCards({ totals, locale, firstDate, lastDate, avgHrBpm, tot
           value: formatNumber(totalCalories, locale),
           unit: t("units.kcal"),
           infoKey: "calories",
+          countup: undefined as string | undefined,
           shareValue: formatNumber(totalCalories, locale),
           shareUnit: t("units.kcal"),
         }]
@@ -75,6 +85,7 @@ export function TotalsCards({ totals, locale, firstDate, lastDate, avgHrBpm, tot
           value: formatNumber(avgHrBpm, locale),
           unit: t("units.bpm"),
           infoKey: "avgHr",
+          countup: undefined as string | undefined,
           shareValue: formatNumber(avgHrBpm, locale),
           shareUnit: t("units.bpm"),
         }]
@@ -84,7 +95,11 @@ export function TotalsCards({ totals, locale, firstDate, lastDate, avgHrBpm, tot
   const categoryLabel = t("stats.totals.title");
 
   return (
-    <section aria-label={t("stats.totals.title")}>
+    <section
+      aria-label={t("stats.totals.title")}
+      className={revealIndex != null ? "summit-beat" : undefined}
+      style={revealIndex != null ? ({ "--beat-index": revealIndex } as CSSProperties) : undefined}
+    >
       <h2 className="section-title">{t("stats.totals.title")}</h2>
       {dateRangeLabel && <p className="section-sub">{dateRangeLabel}</p>}
       <div className="cards">
@@ -96,11 +111,17 @@ export function TotalsCards({ totals, locale, firstDate, lastDate, avgHrBpm, tot
                 {c.label}
                 <InfoButton text={t(`stats.info.${c.infoKey}`)} />
               </div>
-              <div className="value">
+              <div
+                className={c.countup ? "value value--countup" : "value"}
+                {...(c.countup ? { "data-countup": "", "data-metric": c.countup } : {})}
+              >
                 {integer}
                 {decimal && <span className="value__frac">{decimal}</span>}
                 {c.unit && <span className="unit">{c.unit}</span>}
               </div>
+              {/* Frontend inserta aquí <div className="card__equiv"> con la
+                  equivalencia humana (equivalence.ts, umbral ≥1, i18n) cuando
+                  aplique. No se renderiza vacío para no ocupar espacio. */}
               <ShareButton
                 getData={() => ({
                   category: categoryLabel,
