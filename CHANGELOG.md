@@ -15,6 +15,9 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 - **Panel de privacidad actualizado:** se añade la declaración de uso de Google AdSense (qué datos recoge, que no incluyen datos de actividad) y un enlace a la Política de Privacidad de Google. Los textos anteriores de "sin tracking / ningún dato sale del dispositivo" se han ajustado para distinguir con precisión los datos de actividad (permanecen locales) de las cookies publicitarias (sujetas a consentimiento).
 - **Nuevo tagline:** "Premium training analytics — free. Your activity data never leaves this browser."
 
+### Fixed
+- **Tests de `computeStreak` dependientes del reloj real:** los tests de racha de actividad usaban fechas fijas junto con la fecha real del sistema para decidir si la racha seguía "activa", por lo que fallaban a medida que pasaba el tiempo real. Se fija la fecha del sistema en los tests con `vi.setSystemTime` para que dejen de depender de cuándo se ejecutan. Sin cambios en el comportamiento de la aplicación.
+
 ## [0.12.0] — 2026-06-17
 
 ### Added
