@@ -7,7 +7,16 @@ y el proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.13.0] — 2026-07-17
+
 ### Added
+- **Nueva experiencia visual del panel ("Summit"):** al procesar tu archivo o entrar en el modo demo, el panel de control se revela de forma escalonada y fluida (menos de 1,5 s en total), dando una sensación más viva y motivadora a tus datos. Cuando reabres la app con tus datos ya guardados, el panel aparece de inmediato, sin espera.
+- **Conteo animado de las cifras clave:** las cifras principales de tus totales (actividades, distancia, desnivel, tiempo) cuentan desde cero hasta su valor final al aparecer, para destacar la magnitud de lo que has acumulado. El valor final es exactamente el mismo de siempre.
+- **Equivalencias humanas de tus totales:** junto a las cifras principales aparecen ahora referencias tangibles que ayudan a dimensionar tu esfuerzo — por ejemplo, cuántos maratones suma tu distancia total, cuántas vueltas a la Tierra, cuántos ascensos al Everest equivale tu desnivel acumulado o cuántos días enteros llevas en movimiento. Solo se muestran cuando la cifra alcanza al menos una unidad completa.
+- **Records y rachas destacados con un halo cálido:** tus mejores marcas y rachas activas lucen ahora un resplandor ámbar sutil que las hace resaltar. Los valores triviales o vacíos (una racha en cero, sin marca significativa) no reciben el halo.
+- **Mapa de actividad con aparición en cascada:** el calendario de actividad (heatmap) se dibuja columna a columna con un breve efecto de cascada al aparecer.
+- **Encabezado reforzado:** la cabecera del panel se ha realzado para dar más presencia a la vista de conjunto de tu historial.
+- **Respeto por la preferencia de "reducir movimiento":** si tu sistema tiene activada la opción de reducir el movimiento, todas estas animaciones se desactivan automáticamente y los datos aparecen de forma directa, conservando el color y el contraste.
 - **Soporte para Google AdSense:** la aplicación incluye ahora dos posiciones publicitarias (entre secciones y al final del panel). Los anuncios solo se muestran si las variables de entorno `VITE_ADSENSE_PUBLISHER_ID`, `VITE_ADSENSE_SLOT_BETWEEN` y `VITE_ADSENSE_SLOT_BOTTOM` están configuradas; en caso contrario la UI no cambia. Se añade `.env.example` con la documentación de estas variables.
 - **Banner de consentimiento publicitario (ePrivacy):** al entrar por primera vez, aparece un banner en el pie de la página con las opciones Aceptar/Rechazar igualmente accesibles. El script de AdSense solo se carga si el usuario acepta; el rechazo se persiste en localStorage. El `<head>` solo incluye el meta de verificación de AdSense (sin cookies ni tracking).
 

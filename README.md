@@ -8,7 +8,7 @@ TrailStats es una aplicación web 100% cliente para deportistas. Cargas el expor
 
 Está pensada para quien quiere una foto global de su volumen y su progresión sin depender de la API de ninguna plataforma ni subir sus datos a ningún servidor. **Tus archivos de actividad nunca abandonan tu dispositivo:** no hay backend, no hay cuentas, el procesamiento ocurre íntegramente en el navegador. La app se financia con publicidad de Google AdSense — al aceptar el banner de consentimiento, AdSense puede usar cookies e información de navegación general; los datos de actividad no se comparten con anunciantes.
 
-La interfaz es bilingüe (inglés por defecto, castellano) y todo el procesamiento pesado corre en un Web Worker para que la UI siga fluida incluso con exports de miles de actividades.
+La interfaz es bilingüe (inglés por defecto, castellano) y todo el procesamiento pesado corre en un Web Worker para que la UI siga fluida incluso con exports de miles de actividades. El panel se revela con una presentación animada, las cifras clave se acompañan de equivalencias tangibles (cuántos maratones, ascensos al Everest o días en movimiento suman tus totales) y las animaciones se desactivan automáticamente si tu sistema tiene activada la preferencia de reducir el movimiento.
 
 ## Stack tecnológico
 

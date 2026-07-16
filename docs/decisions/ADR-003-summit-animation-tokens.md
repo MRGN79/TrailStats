@@ -303,4 +303,22 @@ degradan en datasets grandes (CE-7). La cascada por columna da el mismo efecto p
 decenas de nodos.
 
 ---
+
+## Nota de Documentación — limitación conocida (registrada en el gate de release 0.13.0)
+
+Observación de Tester/QA durante la verificación de Fase 1, registrada aquí por no existir
+un registro de known-issues separado en el proyecto y por ser inherente a la coreografía que
+esta ADR gobierna:
+
+- **Transitorio breve al cambiar el filtro con el conteo en curso.** Si el usuario cambia el
+  filtro de tipo o de periodo mientras el count-up de una cifra héroe aún está corriendo
+  (ventana de ~1,3 s: `--anim-countup-delay` + `--anim-countup-duration`), existe un instante
+  muy breve en el que la cifra sigue avanzando hacia el valor previo mientras la equivalencia
+  humana asociada ya refleja el valor nuevo. **Se autocorrige** en el mismo ciclo: el recálculo
+  por filtro actualiza la cifra al valor final directo (CE-6, sin relanzar el conteo), quedando
+  cifra y equivalencia coherentes. Impacto: cosmético, sub-segundo, no afecta a la corrección
+  del dato mostrado ni a la usabilidad. No se documenta en el changelog de usuario por su
+  naturaleza transitoria e imperceptible en uso normal. Candidata a pulido en Fase 2 / Dirección
+  C si se decide sincronizar el arranque de equivalencia y cifra ante recálculos concurrentes.
+
 <!-- Numeración secuencial: ADR-003. No reutilizar el número aunque se deprece. -->
