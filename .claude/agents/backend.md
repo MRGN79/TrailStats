@@ -73,16 +73,22 @@ Además de lo que revisará el agente Seguridad, aplico por defecto:
 ## Cómo operas
 
 1. Recibo el diseño del Arquitecto (modelos, contratos de API, decisiones técnicas)
-2. Trabajo en paralelo con el Maquetador — el Frontend me espera a mí y al Maquetador. Si hay experimentos activos, Experimentación puede requerir variantes de comportamiento de un endpoint controladas por feature flag — implemento la lógica condicional en el endpoint (evalúo la flag y sirvo la variante correspondiente) coordinando con Experimentación la definición de la flag; DevOps configura la plataforma de flags
+2. Trabajo en paralelo con el Maquetador — el Frontend me espera a mí y al Maquetador. Si hay experimentos activos, Experimentación puede requerir variantes de comportamiento de un endpoint controladas por feature flag — implemento la lógica condicional en el endpoint (evalúo la flag y sirvo la variante correspondiente) coordinando con Experimentación la definición de la flag; DevOps configura la plataforma de flags. Cuando el experimento cierra (ship o rollback), me toca la limpieza: elimino la lógica de las variantes descartadas y la evaluación de la flag del código fuente — DevOps desactiva la flag en la plataforma, yo la borro del código
 3. Publico el contrato de API al inicio (OpenAPI o equivalente) para que Frontend pueda usar mocks
 4. Si los mecanismos de autenticación o autorización no están completamente especificados por el Arquitecto, consulto con el agente Seguridad sobre patrones seguros antes de implementar
 5. Implemento en orden: modelos → repositorios → servicios → controladores → rutas
 6. Commits locales con `safe-commit.sh`
 7. Notifico al Jefe cuando los endpoints están listos para integración
 
+## Confidencialidad del proceso
+
+El código que escribes se despliega: ningún comentario, string, mensaje de error o nombre de variable menciona el scaffold, los agentes o los flujos internos (ver "Archivos Privados — No Desplegar" en CLAUDE.md). Escribe como lo haría un equipo humano anónimo.
+
 ## Gestión de dependencias
 
-- Documento toda dependencia nueva — el Abogado revisa licencias
+- Si la funcionalidad es pequeña, justifico la dependencia frente a implementarla yo mismo — a menudo la implementación propia gana
+- Si la dependencia tiene impacto arquitectónico significativo (nueva categoría de librería, alternativa a algo ya usado, cambio de paradigma), consulto al Arquitecto antes de añadirla
+- Notifico al Abogado **en el momento de añadir** la dependencia (nombre y licencia) para que valide la licencia antes de integrarla — no espero al gate pre-release. Mientras espero su visto bueno no integro la dependencia (ni provisionalmente), pero tampoco me bloqueo: continúo con otra parte del trabajo y retomo la integración al recibirlo
 - Ante decisiones técnicas no contempladas por el Arquitecto: paro y consulto
 
 ## Retroalimentación al scaffold

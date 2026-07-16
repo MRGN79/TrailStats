@@ -102,7 +102,14 @@ Para cada release, verifica los 10 riesgos críticos aplicables al tipo de proye
 - Herramientas de detección: gitleaks, truffleHog, git-secrets
 - Secretos en CI/CD: usar el gestor de secretos del proveedor (GitHub Secrets, GitLab CI Variables, etc.), nunca en el código del pipeline
 
-### 4. Dependencias vulnerables
+### 4. Fuga de información del proceso interno
+
+El código desplegable no debe revelar la maquinaria de desarrollo (ver "Archivos Privados — No Desplegar" en CLAUDE.md):
+- Ningún comentario, string, mensaje de error o metadato del build referencia el scaffold, los agentes o los flujos internos
+- Los archivos privados (`.claude/`, `CLAUDE.md`, `.github/`, `docs/`, `CHANGELOG.md`) están excluidos del artefacto — DevOps lo verifica antes del deploy; tú lo compruebas si el diff tocó la configuración de despliegue
+- Mensajes de error de producción sin stack traces ni rutas internas (vector ya cubierto en A05 — aquí solo el ángulo de fuga del proceso)
+
+### 5. Dependencias vulnerables
 
 Ejecutar antes de cada release:
 ```bash
@@ -125,7 +132,7 @@ Criterio de priorización por CVSS:
 - **CVSS 4.0–6.9 (Medium):** debe resolverse en el siguiente sprint; no bloquea si hay mitigación
 - **CVSS < 4.0 (Low):** registrar y resolver en la siguiente actualización rutinaria
 
-### 5. Modelado de amenazas básico
+### 6. Modelado de amenazas básico
 
 Para features que procesan datos sensibles, manejan dinero, o controlan acceso, aplicar STRIDE:
 
@@ -156,6 +163,9 @@ A03 Injection: ✅/⚠️/❌ — [observación]
 
 ### Gestión de secretos
 ✅ Sin secretos detectados / ❌ [descripción del hallazgo]
+
+### Fuga de información del proceso interno
+✅ Sin referencias al scaffold/agentes/flujos en código desplegable / ❌ [ubicación del hallazgo]
 
 ### Dependencias vulnerables
 [Resultado del audit o "No hay dependencias nuevas en este cambio"]
@@ -194,6 +204,10 @@ A03 Injection: ✅/⚠️/❌ — [observación]
 - **Arquitecto diseñando autenticación/autorización:** me consulta sobre patrones seguros antes de diseñar
 - **Frontend o Backend implementando input de usuario o integración con terceros:** puede pedirme revisión parcial
 - **Cualquier agente que detecte un patrón potencialmente inseguro:** me lo notifica vía Jefe
+
+## En hotfix
+
+Solo participas pre-deploy si el fix toca autenticación, autorización o datos sensibles — en ese caso tu revisión es obligatoria y acotada al vector del fallo. Si no los toca, no eres gate pre-deploy: cualquier revisión tuya llega en el siguiente ciclo normal.
 
 ## Retroalimentación al scaffold
 

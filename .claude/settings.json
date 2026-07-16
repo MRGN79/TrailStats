@@ -10,7 +10,11 @@
       "mcp__*",
       "Agent(*)"
     ],
-    "deny": []
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(git push -f *)",
+      "Bash(git push --force *)"
+    ]
   },
   "hooks": {
     "UserPromptSubmit": [
@@ -18,7 +22,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'f=\".claude/pending-actions.md\"; [ -f \"$f\" ] && grep -q \"^- \\[ \\]\" \"$f\" && { echo \"\"; echo \"⚠️  HAY ACCIONES PENDIENTES (.claude/pending-actions.md):\"; grep \"^- \\[ \\]\" \"$f\"; echo \"\"; }'"
+            "command": "bash -c 'f=\".claude/pending-actions.md\"; [ -f \"$f\" ] && grep -q \"^- \\[ \\]\" \"$f\" && { echo \"\"; echo \"⚠️  HAY ACCIONES PENDIENTES (.claude/pending-actions.md):\"; grep \"^- \\[ \\]\" \"$f\"; echo \"\"; }' # scaffold-hook"
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'grep -q adoptedAt .claude/scaffold.json 2>/dev/null && echo \"⚙️  FLUJOS DEL SCAFFOLD VIGENTES — modificar cualquier archivo del proyecto es trabajo de flujo: rama tipo/descripcion + gates + Abogado (CLAUDE.md → Flujos de Trabajo Estándar). Consultas: solo leer, analizar y explicar. Commits: siempre .claude/scripts/safe-commit.sh, nunca git commit directo.\"; true' # scaffold-hook"
           }
         ]
       }
