@@ -84,6 +84,17 @@
       "avgHr": "Avg heart rate",
       "dateRange": "{{first}} – {{last}}"
     },
+    "equivalence": {
+      "prefix": "That's",
+      "marathons_one": "≈ {{value}} marathon",
+      "marathons_other": "≈ {{value}} marathons",
+      "earthLaps_one": "≈ {{value}} lap around the Earth",
+      "earthLaps_other": "≈ {{value}} laps around the Earth",
+      "everests_one": "≈ {{value}} Everest climbed",
+      "everests_other": "≈ {{value}} Everests climbed",
+      "daysMoving_one": "≈ {{value}} full day in motion",
+      "daysMoving_other": "≈ {{value}} full days in motion"
+    },
     "view": {
       "weekly": "Weekly",
       "monthly": "Monthly"
@@ -245,6 +256,12 @@
     },
     "from": "From",
     "to": "To"
+  },
+  "summit": {
+    "a11y": {
+      "achievement": "Achievement: {{label}}",
+      "countupFinal": "{{label}}: {{value}}"
+    }
   },
   "units": {
     "km": "km",

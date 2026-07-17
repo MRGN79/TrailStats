@@ -1,5 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
+import { prefersReducedMotion, readTimingMs } from "./lib/animationTokens";
+import { useScrollReveal } from "./lib/useScrollReveal";
 import { version } from "../package.json";
 import { UploadZone } from "./components/UploadZone";
 import { TotalsCards } from "./components/TotalsCards";
@@ -106,6 +108,10 @@ export default function App() {
   }, []);
 
   const [status, setStatus] = useState<Status>({ kind: "restoring" });
+  // Nonce de celebración (CE-1): se incrementa solo al procesar un export o
+  // cargar la demo, nunca al restaurar desde IndexedDB. Dispara la coreografía
+  // "wow marcado" (revelación + count-up + cascada) una única vez por origen.
+  const [celebrateNonce, setCelebrateNonce] = useState(0);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [dateRange, setDateRange] = useState<DateRangeState>(initialDateRange);
   const [showSummaryCard, setShowSummaryCard] = useState(false);
@@ -122,7 +128,33 @@ export default function App() {
   const [saveError, setSaveError] = useState(false);
 
   const dashHeadingRef = useRef<HTMLHeadingElement>(null);
+  const choreoRef = useRef<HTMLDivElement>(null);
   const saveGenRef = useRef(0);
+
+  // Coreografía de revelación (US-1): añade `.is-revealing` a `.summit-choreo`
+  // en un useLayoutEffect (antes del paint) para evitar el flash de un frame.
+  // Solo en celebración activa (nonce > 0) y con movimiento permitido; la clase
+  // se retira al agotarse el presupuesto para liberar `will-change`.
+  useLayoutEffect(() => {
+    if (celebrateNonce <= 0) return;
+    if (prefersReducedMotion()) return;
+    const el = choreoRef.current;
+    if (!el) return;
+    el.classList.add("is-revealing");
+    const budget = Math.max(
+      readTimingMs("--anim-reveal-budget", 1500),
+      readTimingMs("--anim-records-halo", 2600)
+    );
+    const timer = window.setTimeout(() => {
+      el.classList.remove("is-revealing");
+    }, budget + 150);
+    return () => {
+      window.clearTimeout(timer);
+      el.classList.remove("is-revealing");
+    };
+  }, [celebrateNonce]);
+
+  useScrollReveal(choreoRef, celebrateNonce);
 
   // Move focus to the dashboard heading when data finishes loading,
   // but only when no interactive element currently has focus.
@@ -175,6 +207,7 @@ export default function App() {
         return;
       }
       setStatus({ kind: "ready", dataset });
+      setCelebrateNonce((n) => n + 1);
       repository.save(dataset)
         .then(() => { if (saveGenRef.current === saveGen) setHasStoredData(true); })
         .catch(() => { if (saveGenRef.current === saveGen) setSaveError(true); });
@@ -197,6 +230,7 @@ export default function App() {
     clearBannerDismissed();
     setCacheBannerDismissed(false);
     setStatus({ kind: "ready", dataset: generateDemoDataset(), demo: true });
+    setCelebrateNonce((n) => n + 1);
   }
 
   async function handleClearData() {
@@ -316,6 +350,24 @@ export default function App() {
       <main id="main-content">
         {!dataset && (
           <div className="hero">
+            {/* Acentos Summit decorativos (aria-hidden): resplandor alpenglow y
+                silueta de cresta. Detrás del contenido (z-index 0). */}
+            <div className="hero__glow" aria-hidden="true" />
+            <svg
+              className="hero__ridge"
+              aria-hidden="true"
+              focusable="false"
+              viewBox="0 0 1200 120"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M0 120 L0 78 L120 52 L240 70 L360 30 L480 58 L600 20 L720 54 L840 34 L960 64 L1080 40 L1200 66 L1200 120 Z"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                vectorEffect="non-scaling-stroke"
+              />
+            </svg>
             <div className="topbar">
               <div className="brand">
                 Trail<span>Stats</span>
@@ -397,7 +449,7 @@ export default function App() {
                 </button>
               </div>
 
-              <div className="dashboard__main">
+              <div className="dashboard__main summit-choreo" ref={choreoRef}>
                 {showSummaryCard && (
                   <SummaryCardModal
                     data={summaryCardData}
@@ -410,11 +462,16 @@ export default function App() {
                   </p>
                 )}
                 <div className="dash-section">
-                  <h2 className="dash-section__title" ref={dashHeadingRef} tabIndex={-1}>
+                  <h2
+                    className="dash-section__title summit-beat"
+                    ref={dashHeadingRef}
+                    tabIndex={-1}
+                    style={{ "--beat-index": 0 } as CSSProperties}
+                  >
                     {t("stats.sections.social")}
                   </h2>
-                  <TotalsCards totals={totals} locale={locale} firstDate={filteredFirstDate} lastDate={filteredLastDate} avgHrBpm={avgHrBpm} totalCalories={totalCalories} />
-                  <StreakRecords streak={streak} records={records} locale={locale} />
+                  <TotalsCards totals={totals} locale={locale} firstDate={filteredFirstDate} lastDate={filteredLastDate} avgHrBpm={avgHrBpm} totalCalories={totalCalories} revealIndex={1} celebrateNonce={celebrateNonce} />
+                  <StreakRecords streak={streak} records={records} locale={locale} revealIndex={2} />
                   {showRunningMetrics && (
                     <>
                       <BestEfforts efforts={bestEfforts} locale={locale} />
@@ -432,13 +489,18 @@ export default function App() {
                 <AdUnit slot={AD_SLOT_BETWEEN} consent={adConsent === "accepted"} className="ad-unit--between-sections" />
 
                 <div className="dash-section">
-                  <h2 className="dash-section__title">{t("stats.sections.training")}</h2>
+                  <h2
+                    className="dash-section__title summit-beat"
+                    style={{ "--beat-index": 3 } as CSSProperties}
+                  >
+                    {t("stats.sections.training")}
+                  </h2>
                   {dataset.discardedRows > 0 && (
                     <p className="notice" role="status">
                       {t("upload.discarded", { count: dataset.discardedRows })}
                     </p>
                   )}
-                  <ActivityHeatmap data={heatmap} locale={locale} />
+                  <ActivityHeatmap data={heatmap} locale={locale} revealIndex={4} />
                   <TrainingLoad load={trainingLoad} locale={locale} />
                   <FitnessChart data={fitnessData} locale={locale} />
                   <TrendsChart activities={filtered} locale={locale} />
