@@ -1,0 +1,31 @@
+{
+  "$schema": "https://mrgnlabs.com/schemas/project-card/v1.json",
+  "schemaVersion": "1.0.0",
+  "id": "mi-app-nativa",
+  "name": "Mi App Nativa",
+  "kind": "desktop-app",
+  "description": {
+    "en": "One-sentence description of this native app or executable.",
+    "es": "Descripción en una frase de esta app nativa o ejecutable."
+  },
+  "version": "1.2.0",
+  "status": "active",
+  "updatedAt": "2026-01-01T00:00:00Z",
+  "stack": [
+    { "name": "Kotlin", "version": "2.0.0", "url": "https://kotlinlang.org", "category": "runtime" },
+    { "name": "Jetpack Compose", "version": "1.7.0", "url": "https://developer.android.com/jetpack/compose", "category": "runtime" }
+  ],
+  "links": [
+    { "rel": "download", "href": "https://play.google.com/store/apps/details?id=com.mrgnlabs.miapp", "platform": "android", "label": { "en": "Google Play", "es": "Google Play" } },
+    { "rel": "download", "href": "https://mi-app-nativa.mrgnlabs.com/downloads/MiApp-Setup.exe", "platform": "windows", "label": { "en": "Windows installer", "es": "Instalador para Windows" } },
+    { "rel": "privacy", "href": "https://mi-app-nativa.mrgnlabs.com/privacy" },
+    { "rel": "repo", "href": "https://github.com/MRGN79/mi-app-nativa", "private": true }
+  ],
+  "activity": {
+    "source": "github",
+    "commits": 87,
+    "openIssues": 2,
+    "lastPushedAt": "2026-01-01T00:00:00Z",
+    "fetchedAt": "2026-01-01T00:00:00Z"
+  }
+}

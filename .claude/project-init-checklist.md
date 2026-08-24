@@ -22,7 +22,8 @@ scaffold (ver el discriminador de contexto en `jefe.md`).
 branch protection) los commits van directamente a `main` con `safe-commit.sh` — aún no hay
 flujo de features. La regla "nunca commits directos a main" aplica desde que la branch
 protection se activa. Aviso: el push inicial queda registrado con hora real — si se hace en
-ventana sensible (lun–vie 08:00–19:00 Madrid), decidirlo con eso en mente.
+ventana sensible (lun–vie 08:00–19:00 Madrid) y el repo es público, decidirlo con eso en mente
+(en repos privados la ventana no aplica — ver "Visibilidad de Actividad en GitHub" en CLAUDE.md).
 
 ---
 
@@ -40,6 +41,7 @@ ventana sensible (lun–vie 08:00–19:00 Madrid), decidirlo con eso en mente.
 ### Repositorio y acceso
 - [ ] **Usuario**: repositorio creado en GitHub (o proveedor elegido), privado inicialmente. Antes de hacerlo público algún día: la carpeta `.claude/`, `CLAUDE.md`, `docs/` y el historial de PRs con sus checkboxes de gates (la maquinaria del scaffold) serían visibles en GitHub aunque nunca se desplieguen — el Jefe lo advierte y el usuario decide (ver "Archivos Privados" en CLAUDE.md)
 - [ ] **Usuario**: accesos configurados (quién puede leer, escribir, administrar)
+- [ ] **Jefe**: visibilidad declarada en `.claude/scaffold.json` (`"repoVisibility": "private"` o `"public"`) — gobierna si aplica la ventana sensible de timestamps. Declararlo no es opcional en la práctica: la detección automática es imposible en entornos de ejecución remota y el override por `git config` no sobrevive a un contenedor efímero. Si el repo nace privado pero se prevé publicarlo, declarar `public` (ver "Visibilidad de Actividad en GitHub" en CLAUDE.md)
 - [ ] Plantilla de PR e issue templates activas (llegan con la adopción del Paso 0: `.github/`)
 
 ### Stack y arquitectura
@@ -86,11 +88,17 @@ feature si ya se construyó — los gates revisan lo que exista, acotados a ese 
 - [ ] Todos los gates de release han pasado al menos una vez, acotados al alcance del primer deploy: QA, Seguridad, Accesibilidad, Responsabilidad Social, Documentación, Abogado
 - [ ] **Documentación**: propone la versión del primer release (`0.1.0` si el manifiesto no ha cambiado) y renombra `[Unreleased]` en el changelog
 - [ ] **DevOps**: verificar la exclusión de archivos privados del artefacto (`.claude/`, `CLAUDE.md`, `.github/`, `docs/`, `CHANGELOG.md`) según el mecanismo del deploy (.dockerignore, --exclude, ignore del proveedor), y que el artefacto construido no contiene referencias al scaffold, agentes o flujos internos
+- [ ] **DevOps + Documentación** (si el proyecto se despliega a un subdominio propio `<proyecto>.mrgnlabs.com`): publicar el manifiesto de catálogo DevDeck en `/.well-known/project-card.json` como parte del primer deploy:
+  - Copiar `.claude/templates/project-card.example.json` (web) o `.claude/templates/project-card.example-native.json` (app nativa / ejecutable — el manifiesto no es solo para sitios con frontend) a `project-card.config.json` en la raíz del proyecto y **rellenarlo con los datos reales**: `id`, `name`, `kind`, descripción `{ en, es }`, stack y enlaces. La plantilla solo da la estructura
+  - Copiar `.claude/templates/generate-project-card.mjs` a `scripts/generate-project-card.mjs` y engancharlo al build (`node scripts/generate-project-card.mjs --out <dir-de-salida>`) para que el manifiesto se genere en cada deploy con la versión, la fecha y las métricas al día — nunca a mano. Requiere Node ≥ 18; en stacks sin Node, adaptar la lógica al lenguaje del proyecto
+  - Añadir `node scripts/generate-project-card.mjs --check` al job de CI: valida el contrato y falla si el manifiesto está roto (sin esa comprobación el fallo es silencioso — DevDeck se limita a no pintar la tarjeta)
+  - Configurar CORS y caché de esa ruta con `.claude/templates/_headers` (Cloudflare Pages): `Access-Control-Allow-Origin: https://mrgnlabs.com` (no `*`) y `Cache-Control: max-age=600`
+  - Referencia normativa del contrato: ADR-005 de DevDeck — https://github.com/MRGN79/devdeck/blob/main/docs/decisions/ADR-005-manifiesto-de-proyecto-por-subdominio.md
 - [ ] **DevOps**: backups de base de datos configurados y testados (si hay BD)
 - [ ] **DevOps**: alertas básicas configuradas (errores críticos, disponibilidad)
 - [ ] **DevOps**: plan de rollback definido y documentado
 - [ ] **Documentación**: README refleja el estado real del proyecto
-- [ ] **DevOps**: ejecuta el deploy tras confirmación del usuario y crea el tag `v0.1.0` en `main` — recordar el aviso de ventana sensible para push/PR/deploy
+- [ ] **DevOps**: ejecuta el deploy tras confirmación del usuario y crea el tag `v0.1.0` en `main` — recordar el aviso de ventana sensible para push/PR/deploy (solo si el repo es público; en privados no aplica)
 
 ---
 
@@ -106,6 +114,7 @@ memoria, confirmando cada uno con su responsable, igual que el checklist de cier
 - [ ] `/locales/en/` y `/locales/es/` existen y la solución i18n está implementada
 - [ ] ADR de stack existe; `docs/backlog.md`, README y CHANGELOG creados
 - [ ] Primer deploy ejecutado con los archivos privados excluidos del artefacto
+- [ ] Si el proyecto se despliega a un subdominio propio: manifiesto DevDeck publicado en `/.well-known/project-card.json` con CORS/caché configurados (`_headers`)
 
 ---
 

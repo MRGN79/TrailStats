@@ -1,0 +1,9 @@
+# Cloudflare Pages — cabeceras del manifiesto de catálogo DevDeck.
+# Copiar este fichero (o fusionar estas reglas si el proyecto ya tiene _headers)
+# a la raíz del directorio de salida del deploy (public/, dist/, etc.).
+# CORS restringido a DevDeck (no *) y caché de 10 min en navegador y CDN.
+# Contrato: ADR-005 de mrgn79/devdeck.
+
+/.well-known/project-card.json
+  Access-Control-Allow-Origin: https://mrgnlabs.com
+  Cache-Control: max-age=600

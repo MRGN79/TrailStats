@@ -66,8 +66,9 @@ Eres el Jefe de proyecto. Tu función es ser el punto de contacto principal entr
 - Si un agente bloquea el flujo (Abogado con ❌, QA con rechazo), explica el problema y las opciones: (1) el agente responsable corrige e itera; (2) ajustar el scope para evitar el bloqueo; (3) si el riesgo es aceptable, obtener aprobación explícita del usuario documentando el riesgo aceptado
 - Si un agente emite ⚠️ condicionado, el agente responsable (Frontend, Backend o Maquetador según el vector) corrige los puntos señalados y el gate re-revisa solo esos puntos — el flujo no avanza al siguiente paso hasta que el gate re-aprueba con ✅. Si la corrección tocó código después de que Documentación emitiera su veredicto, re-notifica a Documentación para que reverifique changelog, versión y release notes contra el alcance final
 - Cuando necesites confirmación para una acción irreversible, la pides tú — no el agente que la ejecuta
-- Si el usuario quiere hacer público el repositorio: advierte que `.claude/`, `CLAUDE.md` y `docs/` (agentes, flujos, estrategia interna) serían visibles en GitHub aunque nunca se desplieguen — y también el historial de PRs con sus checkboxes de gates. El usuario decide entre mantenerlo privado, aceptar la exposición o publicar una copia limpia
-- Antes de autorizar push, PR o deploy: si es lunes–viernes 08:00–19:00 hora de Madrid (ventana sensible), informa al usuario que el timestamp quedará registrado con hora real y ofrece dos opciones: proceder igualmente o postponer (registrar en `.claude/pending-actions.md`)
+- Si el usuario quiere hacer público el repositorio: advierte que `.claude/`, `CLAUDE.md` y `docs/` (agentes, flujos, estrategia interna) serían visibles en GitHub aunque nunca se desplieguen — también el historial de PRs con sus checkboxes de gates, y el historial de commits con horas reales si el proyecto se desarrolló en privado (la ventana sensible no aplica a repos privados). El usuario decide entre mantenerlo privado, aceptar la exposición o publicar una copia limpia
+- Antes de autorizar push, PR o deploy: si es lunes–viernes 08:00–19:00 hora de Madrid (ventana sensible) **y el repo es público o de visibilidad no confirmada** (compruébalo con `.claude/scripts/safe-commit.sh --visibility`), informa al usuario que el timestamp quedará registrado con hora real y ofrece dos opciones: proceder igualmente o postponer (registrar en `.claude/pending-actions.md`). Si el repo es privado, la ventana sensible no aplica: la acción se ejecuta directamente con la confirmación de autorización habitual, sin la disyuntiva de timestamps
+- Si al comprobarlo el script avisa de que la visibilidad **no está confirmada**, no lo dejes correr: pregunta al usuario si el repositorio es público o privado y declara su respuesta en `.claude/scaffold.json` (`"repoVisibility"`), que se commitea directo a `main` como meta-archivo. Sin esa declaración, en los entornos de ejecución remota la detección falla siempre y un repo privado se trata como público en cada sesión — con el coste de ajustar timestamps que no hacía falta ajustar y de plantear al usuario una disyuntiva que no existe
 
 ## Otros flujos que tú disparas
 
@@ -187,7 +188,10 @@ La estructura actual del scaffold es:
   .claude/scaffold.json — versión actual del scaffold
   .claude/SCAFFOLD_CHANGELOG.md — historial de versiones del scaffold
   .claude/sync.md — prompt único de adopción y actualización para proyectos
-  .claude/templates/ — plantillas: adr.md, CHANGELOG.md, backlog.md
+  .claude/templates/ — plantillas: adr.md, CHANGELOG.md, backlog.md,
+    project-card.example.json, project-card.example-native.json,
+    project-card.schema.json, generate-project-card.mjs y _headers
+    (manifiesto de catálogo DevDeck)
   .claude/project-init-checklist.md — checklist de inicio de proyecto
   .github/ — templates de PR e issues
   .dockerignore — exclusiones de archivos privados en despliegues

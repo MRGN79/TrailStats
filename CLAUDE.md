@@ -258,9 +258,9 @@ El Jefe consulta esta tabla al delegar para asegurarse de que el agente receptor
 | **Accesibilidad** | UI implementada (Maquetador + Frontend, y Backend si hay endpoints que impactan la UX); especificaciones de UX-UI como referencia | Veredicto de gate ✅/⚠️/❌, issues WCAG si los hay |
 | **Responsabilidad Social** | Feature o release a revisar; contexto de usuarios e impacto esperado | Veredicto de gate ✅/⚠️/❌, issues de ética o sostenibilidad si los hay |
 | **Seguridad** | Código cambiado (Frontend/Backend/Maquetador según el vector); lista de dependencias nuevas; descripción de cambios del Analista Funcional | Veredicto de gate ✅/⚠️/❌, findings OWASP o vulnerabilidades si los hay |
-| **Documentación** | Cambios de la feature; spec OpenAPI si hay API nueva; contexto para propuesta de versión | README actualizado, entrada en changelog, docs de API, verificación de que existen los ADRs (los crea el Arquitecto), release notes, propuesta de versión con anuncio explícito |
+| **Documentación** | Cambios de la feature; spec OpenAPI si hay API nueva; contexto para propuesta de versión | README actualizado, entrada en changelog, docs de API, verificación de que existen los ADRs (los crea el Arquitecto), release notes, propuesta de versión con anuncio explícito; verificación del manifiesto DevDeck en el gate de release si el proyecto lo publica (`project-card.config.json` al día y `--check` en verde — ver `documentacion.md`) |
 | **Abogado** | Todos los cambios del release; dependencias nuevas con sus licencias; contexto de tratamiento de datos. En modo Día 0 (inicialización): contexto del proyecto (usuarios, mercados, datos, intención comercial). Bajo demanda: dependencia que Frontend/Backend/Maquetador quiere añadir, con su licencia | Veredicto de gate ✅/⚠️/❌, issues legales si los hay, estado de compatibilidad de licencias. En modo Día 0: regulación aplicable y documentos legales necesarios. Bajo demanda: visto bueno o veto de la licencia antes de integrar la dependencia |
-| **DevOps** | Trabajo con todos los gates aprobados; confirmación del usuario para PR/deploy; propuesta de versión de Documentación | PR abierta y mergeada (squash) con CI verde, tag git `vX.Y.Z` en main, aplicación desplegada, pipeline CI/CD configurado/actualizado; en pausas: infraestructura con coste apagada y lista de reanudación en `pending-actions.md`; en hotfix de infraestructura: reparación directa + post-mortem |
+| **DevOps** | Trabajo con todos los gates aprobados; confirmación del usuario para PR/deploy; propuesta de versión de Documentación | PR abierta y mergeada (squash) con CI verde, tag git `vX.Y.Z` en main, aplicación desplegada, pipeline CI/CD configurado/actualizado; manifiesto DevDeck generado en el build y servido en `/.well-known/project-card.json` si el proyecto despliega a subdominio propio (ver área 8 de `devops.md`); en pausas: infraestructura con coste apagada y lista de reanudación en `pending-actions.md`; en hotfix de infraestructura: reparación directa + post-mortem |
 | **Growth (consultor)** | Descripción del proyecto: tipo de usuarios, mercado, propuesta de valor, intención comercial | Dictamen de potencial comercial 🟢/🟡/🟠/🔴 con justificación; el dictamen caduca si el proyecto pivota (el Jefe reinvoca) |
 | **Growth (estratega)** | Decisión del usuario de explorar la vía comercial (la primera vez crea el plan él mismo); en iteraciones posteriores: Plan de Growth activo, métricas del producto, datos de conversión/retención | Plan de Growth en `docs/growth/plan.md`, brief de conversión para UX-UI, backlog de hipótesis para Experimentación (registradas también en `docs/backlog.md`) |
 | **Experimentación** | Hipótesis del usuario, de Growth o de `docs/backlog.md`; para lanzar un experimento: feature en producción o staging (para consultas de diseño basta el diseño en curso, con feedback orientativo) | Plan de experimento (hipótesis, métricas, tamaño de muestra), análisis estadístico al cierre, recomendación ship/rollback/extender/iterar |
@@ -339,8 +339,9 @@ El Abogado revisa siempre:
 
 ### Ramas protegidas
 - `main` es la única rama permanente — nunca commits directos, siempre vía PR
-- **Excepción — meta-archivos de proceso:** `docs/backlog.md`, `docs/growth/plan.md`, `.claude/pending-actions.md`, `.claude/scaffold-suggestions.md` y `.claude/scaffold.json` registran el estado del proceso, no producto: se commitean directamente en `main` con `safe-commit.sh`, sin PR. (La excepción regula CÓMO se committean; el contenido de `scaffold.json` lo gestiona la sincronización — en un proyecto nadie lo edita a mano, y en el repo scaffold solo el Jefe al publicar una versión.) Quien edite el backlog durante un flujo (QA registrando deuda, el Analista moviendo features) lo hace en `main`, no en la rama de feature — así dos ramas paralelas nunca entran en conflicto por el backlog y el estado es siempre el más reciente
-- **Excepción — bootstrap de proyecto nuevo:** durante la inicialización (project-init-checklist.md), los commits van directamente a `main` hasta que se activa la branch protection — aún no hay flujo de features. Desde ese momento, la regla aplica sin excepciones (salvo los meta-archivos)
+- **Excepción — meta-archivos de proceso:** `docs/backlog.md`, `docs/growth/plan.md`, `.claude/pending-actions.md`, `.claude/scaffold-suggestions.md` y `.claude/scaffold.json` registran el estado del proceso, no producto: se commitean directamente en `main` con `safe-commit.sh`, sin PR. (La excepción regula CÓMO se committean; el contenido de `scaffold.json` lo gestiona la sincronización — en un proyecto solo se edita a mano el campo `repoVisibility`, y en el repo scaffold solo el Jefe al publicar una versión.) Quien edite el backlog durante un flujo (QA registrando deuda, el Analista moviendo features) lo hace en `main`, no en la rama de feature — así dos ramas paralelas nunca entran en conflicto por el backlog y el estado es siempre el más reciente
+- **Excepción — bootstrap de proyecto nuevo:** durante la inicialización (project-init-checklist.md), los commits van directamente a `main` hasta que se activa la branch protection — aún no hay flujo de features. Desde ese momento, la regla aplica sin excepciones (salvo los meta-archivos y la sincronización)
+- **Excepción — sincronización del scaffold:** el commit de adopción o actualización que ejecuta `.claude/sync.md` (FASE 7) va directamente a `main` con `safe-commit.sh`, sin rama ni PR — como el bootstrap, no es trabajo de flujo: sincroniza exclusivamente archivos gestionados por el scaffold, con `git add` dirigido a esas rutas y con confirmación explícita del usuario antes del commit
 - Las ramas de feature son de vida corta: días, no semanas
 - Eliminar la rama tras el merge
 
@@ -415,6 +416,14 @@ X.Y.Z — scaffold A.B.C     (ej.: 2.3.1 — scaffold 1.14.1)
 
 Cuando hay duda sobre si un cambio es MINOR o MAJOR, el **Arquitecto** decide. Documentación propone el número de versión y actualiza el manifiesto; DevOps crea el tag en `main` con confirmación del Jefe.
 
+### Cuando el push del tag falla de forma persistente
+
+En algunos entornos de ejecución remota, `git push origin vX.Y.Z` es rechazado de forma consistente (no transitoria) — p. ej. un proxy que bloquea el ref namespace `refs/tags/*` mientras el push de ramas funciona con normalidad. DevOps confirma que el fallo es persistente (reintentos agotados, no un error de red puntual) antes de aplicar esta salida:
+
+1. **No reintenta indefinidamente** — registra el bloqueo en `.claude/pending-actions.md` (qué versión quedó sin tag y por qué) en vez de insistir en cada release
+2. **Si hay un workflow de CI cuyo disparador depende del tag** (`on: push: tags:`), lo sustituye operativamente disparándolo vía `workflow_dispatch` en la API de GitHub Actions en cada release — así el pipeline no queda huérfano en silencio. El disparador por tag se deja tal cual en el workflow por si el entorno deja de bloquear el push más adelante
+3. **Acepta explícitamente el coste** de no tener el tag `vX.Y.Z` en git mientras el bloqueo persista — el rastro de versión sigue vivo en `CHANGELOG.md`, el manifiesto y el historial de commits, así que el release no queda indocumentado, solo sin ese tag concreto
+
 ---
 
 ## Versión del Scaffold
@@ -444,7 +453,9 @@ puede añadir las suyas propias.
   `.claude/pending-actions.md`, `.claude/scaffold-suggestions.md` y `.claude/settings.json`
   (las permissions y hooks propios del proyecto se preservan al sincronizar; los hooks que
   vienen del scaffold llevan la marca `# scaffold-hook` en su comando y la sincronización
-  sí los actualiza)
+  sí los actualiza). De `.claude/scaffold.json`, que por lo demás gestiona la sincronización,
+  el proyecto es dueño del campo `repoVisibility` (ver "Visibilidad de Actividad en GitHub"):
+  la sincronización conserva ese campo y solo actualiza `scaffoldVersion`
 
 ### Actualizar un proyecto al scaffold más reciente
 
@@ -537,6 +548,7 @@ Todo proyecto es multiidioma desde el primer día. No es una feature que se aña
 - No se crean documentos de planificación o análisis intermedios sin pedirlo
 - El Jefe siempre resume los resultados en lenguaje no técnico para el usuario
 - Los agentes se comunican entre sí de forma asíncrona; el Jefe coordina el orden
+- Si el proyecto se despliega a un subdominio propio del ecosistema, publica el manifiesto de catálogo DevDeck en `/.well-known/project-card.json`, generado en cada build (nunca a mano): DevOps lo engancha al build y al CI (área 8 de `devops.md`) y Documentación lo verifica en su gate de release
 
 ---
 
@@ -556,7 +568,7 @@ Los siguientes archivos y directorios son **internos al proceso de desarrollo** 
 
 **Estos archivos deben estar en git** (Claude Code los necesita y son parte del flujo de trabajo). La exclusión ocurre en el momento del despliegue, no en `.gitignore`.
 
-**Repositorio público — decisión consciente:** la exclusión protege los despliegues, no el repositorio. Si el repo se hace público, `.claude/`, `CLAUDE.md` y `docs/` quedan visibles en GitHub (y con ellos toda la maquinaria del scaffold), igual que las PRs con sus checkboxes de gates. Antes de hacer público un repo, el Jefe lo advierte al usuario y este decide: mantenerlo privado, aceptar la exposición, o publicar una copia limpia (mirror sin los archivos de proceso).
+**Repositorio público — decisión consciente:** la exclusión protege los despliegues, no el repositorio. Si el repo se hace público, `.claude/`, `CLAUDE.md` y `docs/` quedan visibles en GitHub (y con ellos toda la maquinaria del scaffold), igual que las PRs con sus checkboxes de gates — y también el historial de commits con sus horas reales, si el proyecto se desarrolló en privado con la ventana sensible desactivada (ver "Visibilidad de Actividad en GitHub"). Antes de hacer público un repo, el Jefe lo advierte al usuario y este decide: mantenerlo privado, aceptar la exposición, o publicar una copia limpia (mirror sin los archivos de proceso).
 
 **Mecanismos de exclusión por tipo de despliegue:**
 - **Docker:** `.dockerignore` (ya configurado en este scaffold)
@@ -576,6 +588,21 @@ Para evitar que la actividad del repositorio quede registrada en horario laboral
 
 > Si tu zona horaria de trabajo es diferente a Madrid, edita la variable `TIMEZONE` en `.claude/scripts/safe-commit.sh` (formato IANA, ej. `America/New_York`, `Asia/Tokyo`) y adapta la descripción de la ventana sensible a tus horarios reales.
 
+### La ventana solo aplica a repositorios públicos
+
+Esta sección existe para que la actividad no quede expuesta públicamente en horario laboral; en un **repositorio privado** no hay exposición que evitar, así que la ventana sensible **no se tiene en cuenta**: los commits van con hora real (`safe-commit.sh` lo detecta solo) y los push, PRs, merges y deploys se ejecutan directamente, sin el protocolo de informar/postponer descrito más abajo. Lo que **no** desaparece es la confirmación de las Reglas de Autonomía (push y deploy siguen requiriendo confirmación del usuario): esa es una decisión de autorización, no de horario — en privado se pregunta una sola vez y sin la disyuntiva de timestamps.
+
+- **Cómo se determina la visibilidad:** la resuelve `safe-commit.sh` en cascada, del más específico al más general:
+  1. `git config scaffold.repoVisibility` (`private`/`public`) — override por clon, vive en `.git/config`
+  2. `"repoVisibility"` en `.claude/scaffold.json` (`private`/`public`) — **declaración del proyecto**, versionada y por tanto duradera
+  3. Detección automática (`gh` o la API pública de GitHub, cacheada 24h en `.git/`)
+
+  Cualquier agente puede consultar el resultado con `.claude/scripts/safe-commit.sh --visibility` (imprime `public` o `private`) antes de aplicar el protocolo de push/PR/deploy.
+- **Declarar la visibilidad es lo recomendable, y en entornos efímeros es lo único que funciona:** `.git/config` no viaja en el repositorio, así que en un entorno de ejecución remota se destruye con el contenedor; y en esos entornos la detección automática suele ser imposible (sin `gh` y con la API de GitHub bloqueada por el proxy), de modo que un repo privado pasaría por público en cada sesión. La declaración en `scaffold.json` sobrevive a ambas cosas y a la sincronización. Es el único campo de ese archivo que un proyecto edita a mano; el resto lo gestiona la sincronización
+- **Si la detección no es concluyente** (sin red, sin `gh`, remote que no es GitHub, proxy que bloquea la API): se asume **público** y se sigue protegiendo el timestamp — el comportamiento conservador es el seguro. El script lo avisa por `stderr` y recuerda declararlo; el aviso desaparece en cuanto la declaración existe
+- **Repo privado que podría hacerse público:** los timestamps reales commiteados en privado afloran retroactivamente el día que el repo se publique. Si esa publicación es plausible, declarar `"repoVisibility": "public"` para seguir ajustando timestamps también en privado. El Jefe incluye este punto en la advertencia previa a hacer público un repo (ver "Archivos Privados — No Desplegar")
+- **No confundir con el manifiesto DevDeck:** el `private` del enlace `rel: "repo"` en `project-card.config.json` gobierna solo si DevDeck pinta las métricas, y vive ahí porque el generador es código desplegable del proyecto, que nunca referencia al scaffold (ver Archivos Privados). Son dos declaraciones con propósitos distintos que conviene mantener coherentes, no unificar
+
 ### Commits — timestamp modificable ✅
 
 Usar **siempre** el script wrapper en lugar de `git commit` directamente:
@@ -584,13 +611,13 @@ Usar **siempre** el script wrapper en lugar de `git commit` directamente:
 .claude/scripts/safe-commit.sh [opciones de git commit]
 ```
 
-El script detecta si estamos en ventana sensible y ajusta automáticamente `GIT_AUTHOR_DATE` y `GIT_COMMITTER_DATE` a la víspera entre las 20:00 y las 22:59 — salvo si el commit padre es más reciente que ese candidato, en cuyo caso fecha el commit 1–10 minutos después del padre para mantener el historial monotónico. Si el sistema no puede calcular la víspera (variante de `date` no soportada), el script avisa y committea con hora real en vez de bloquear el trabajo. Fuera de la ventana sensible, el commit se hace con la hora real.
+El script detecta si estamos en ventana sensible y ajusta automáticamente `GIT_AUTHOR_DATE` y `GIT_COMMITTER_DATE` a la víspera entre las 20:00 y las 22:59 — salvo si el commit padre es más reciente que ese candidato, en cuyo caso fecha el commit 1–10 minutos después del padre para mantener el historial monotónico. Si el sistema no puede calcular la víspera (variante de `date` no soportada), el script avisa y committea con hora real en vez de bloquear el trabajo. Fuera de la ventana sensible, el commit se hace con la hora real. En un repo privado el script no ajusta nada: avisa de que la ventana no aplica y committea con hora real (ver "La ventana solo aplica a repositorios públicos"). Se usa igualmente en todos los casos — el script decide solo; no hace falta elegir entre él y `git commit`.
 
 ### Push, PRs y deploys — timestamp NO modificable ⚠️
 
 GitHub registra el push y la creación de PR con la hora real del servidor. Esto **no se puede cambiar**.
 
-Antes de ejecutar cualquiera de estas acciones durante la ventana sensible, el agente responsable **informa al Jefe**, y el Jefe traslada al usuario:
+**En repositorios públicos** (o de visibilidad no confirmada — ver `--visibility` arriba), antes de ejecutar cualquiera de estas acciones durante la ventana sensible, el agente responsable **informa al Jefe**, y el Jefe traslada al usuario:
 
 1. La información de que la acción quedará registrada con hora real
 2. Las dos opciones posibles:
@@ -598,6 +625,8 @@ Antes de ejecutar cualquiera de estas acciones durante la ventana sensible, el a
    - **Postponer** — el Jefe registra la acción en `.claude/pending-actions.md` y el agente espera instrucción explícita para ejecutarla
 
 Ni el agente ejecutor ni el Jefe toman esta decisión por su cuenta. Siempre se pregunta al usuario. (Si el usuario habla directamente con el agente ejecutor sin Jefe de por medio, el agente le pregunta directamente.)
+
+**En repositorios privados** este protocolo no aplica: la acción se ejecuta directamente (con la confirmación de autorización de las Reglas de Autonomía, que es independiente del horario).
 
 **Excepción — hotfix:** con producción rota, la urgencia prevalece sobre la visibilidad del timestamp. El deploy del hotfix no se bloquea esperando la decisión: se informa al usuario de que quedará registrado con hora real y se procede. Postponer un hotfix nunca es la opción por defecto.
 

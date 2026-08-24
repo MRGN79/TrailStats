@@ -126,6 +126,7 @@ CMD ["node", "dist/server.js"]
   - `.github/` no está en la imagen/bundle
   - `docs/` no está en la imagen/bundle
   - `CHANGELOG.md` no está en la imagen/bundle
+- [ ] Si el proyecto publica el manifiesto DevDeck (despliegue a subdominio propio): `/.well-known/project-card.json` presente en el artefacto y actualizado (`version` = versión del release, `updatedAt`, stack y links reales), y las reglas de `_headers` (CORS restringido a `https://mrgnlabs.com` + `Cache-Control: max-age=600`) incluidas en el output del deploy (ver área 8)
 - [ ] Migrations de base de datos probadas en staging (si aplica)
 - [ ] Plan de rollback definido
 - [ ] Ventana de mantenimiento comunicada si hay downtime esperado
@@ -176,6 +177,70 @@ Un sistema no observable no es operable. Los tres pilares:
 - Backups en ubicación geográficamente separada del sistema principal
 - Test de restauración: un backup no testado no es un backup
 
+### 8. Manifiesto de catálogo DevDeck (project-card.json)
+
+Los proyectos del ecosistema mrgnlabs publican un manifiesto estático que el catálogo DevDeck
+lee en runtime para pintar su tarjeta (nombre, tipo, stack, enlaces, actividad). El contrato
+normativo (JSON Schema draft 2020-12, decisiones de diseño, ejemplos canónicos) es el **ADR-005
+de DevDeck**: https://github.com/MRGN79/devdeck/blob/main/docs/decisions/ADR-005-manifiesto-de-proyecto-por-subdominio.md
+
+Cuando configuro el hosting de un proyecto que se despliega a un subdominio propio
+(`<proyecto>.mrgnlabs.com`), esta convención forma parte de la configuración:
+
+- **Ruta fija:** el manifiesto se sirve en `https://<proyecto>.mrgnlabs.com/.well-known/project-card.json`
+  (convención RFC 8615). Coloco el fichero en el directorio estático del deploy (`public/`,
+  `dist/`, raíz del sitio — según el stack) para que quede exactamente en esa ruta
+- **Generador del scaffold:** `.claude/templates/generate-project-card.mjs` compone el
+  manifiesto en cada build. Se copia a `scripts/generate-project-card.mjs` del proyecto (volver
+  a copiarlo trae las mejoras de sincronizaciones posteriores) y se conecta al build:
+  ```jsonc
+  // package.json
+  "scripts": {
+    "build": "vite build && node scripts/generate-project-card.mjs --out dist",
+    "project-card:check": "node scripts/generate-project-card.mjs --check"
+  }
+  ```
+  Requiere Node ≥ 18 y no tiene dependencias. En stacks sin Node, adapto la lógica al lenguaje
+  del proyecto en vez de arrastrar un runtime solo para esto
+- **Reparto declarativo/generado:** el proyecto declara en `project-card.config.json` lo que
+  *es* (id, name, kind, description `{ en, es }`, stack, links) partiendo de
+  `.claude/templates/project-card.example.json` (web) o `.example-native.json` (app nativa /
+  ejecutable); el generador aporta en cada ejecución lo que *cambia*: `version` (leída del
+  manifiesto real del proyecto — `package.json`, `VERSION`, `pyproject.toml` o `Cargo.toml` —
+  para que no se congele en un valor escrito a mano), `updatedAt` y `activity`. Esquema formal
+  en `.claude/templates/project-card.schema.json`; `$schema` apunta a
+  `https://mrgnlabs.com/schemas/project-card/v1.json`
+- **CORS y caché (Cloudflare Pages):** la ruta se sirve con
+  `Access-Control-Allow-Origin: https://mrgnlabs.com` (restringido a DevDeck, no `*`) y
+  `Cache-Control: max-age=600`, vía fichero `_headers` en la raíz del output del deploy —
+  plantilla en `.claude/templates/_headers` (si el proyecto ya tiene `_headers`, fusiono las
+  reglas en vez de sobreescribir)
+- **Frescura:** el manifiesto se regenera en cada build, nunca se edita a mano — así `version`
+  y `updatedAt` no se quedan atrás cuando el proyecto avanza. Un manifiesto viejo no da error
+  en ninguna parte: DevDeck pinta datos obsoletos sin quejarse, así que el único control real
+  es que la generación esté enganchada al build
+- **Bloque `activity`:** el generador lo compone consultando **solo el repo del propio
+  proyecto** — le basta el `GITHUB_TOKEN` que el runner inyecta en su propio workflow (o
+  `GH_TOKEN` en local); nunca un token transversal a otros repos. Con repo público funciona
+  incluso sin token. Los totales de commits y contributors salen del paginado de la API, y la
+  visibilidad real del repo rellena sola el `private` del link `rel: "repo"`, que es lo que
+  gobierna si DevDeck pinta las métricas. Ojo: ese ocultado es un filtro de presentación, no
+  control de acceso — el JSON es público y legible en bruto; si esas cifras deben ser
+  confidenciales, se genera con `--no-activity` para omitirlas en el origen
+- **Tolerancia a fallos de la API:** si la consulta a GitHub falla (rate limit, red, token sin
+  permisos), el generador avisa y emite el manifiesto **sin** `activity` en vez de romper el
+  build — la tarjeta pierde las métricas, no la tarjeta entera. Con `--require-activity` se
+  invierte el criterio y el build falla, para pipelines donde las métricas sean innegociables
+- **Validación en CI:** `node scripts/generate-project-card.mjs --check` valida sin escribir y
+  sale con código 1 si el manifiesto incumple el contrato. Comprueba exactamente lo que el
+  lector de DevDeck exige (`schemaVersion`, `id` como slug, `name`, `kind`, `description` con
+  `en`), que es donde un fallo sería silencioso: un manifiesto inválido no rompe el catálogo,
+  simplemente hace que la tarjeta caiga al snapshot y nadie se entere. Lo pongo en el job de CI
+  junto a los tests
+- **Confidencialidad del proceso:** el manifiesto describe el producto (stack, enlaces,
+  versión), nunca el proceso interno — sin referencias al scaffold, agentes ni flujos, como
+  cualquier otro artefacto desplegado
+
 ---
 
 ## Cómo operas
@@ -190,9 +255,9 @@ Un sistema no observable no es operable. Los tres pilares:
 1. Recibo confirmación del usuario a través del Jefe de que se puede desplegar
 2. Verifico que los gates correctos han pasado — en release normal: QA, Seguridad, Accesibilidad, Responsabilidad Social, Documentación, Abogado; en hotfix: solo Tester, Seguridad (si aplica al vector del fallo) y Abogado — QA, Accesibilidad, Responsabilidad Social y Documentación revisan post-deploy en el siguiente ciclo; en despliegue de variantes de experimento (rollout tras flag): Tester, Seguridad y Accesibilidad si aplican al vector de las variantes, y Abogado — los gates de cierre completos llegan con el ship (ver flujo Experimento)
 3. Ejecuto el checklist pre-deploy
-4. Antes de abrir el PR o ejecutar el deploy: si es lunes–viernes 08:00–19:00 hora de Madrid, informo al Jefe y ofrezco proceder igualmente (hora real registrada en GitHub) o postponer (anoto en `.claude/pending-actions.md`). Excepción hotfix: con producción rota no espero la decisión — informo del timestamp real y procedo (la urgencia prevalece, ver CLAUDE.md)
+4. Antes de abrir el PR o ejecutar el deploy: si es lunes–viernes 08:00–19:00 hora de Madrid **y el repo es público o de visibilidad no confirmada** (lo compruebo con `.claude/scripts/safe-commit.sh --visibility`), informo al Jefe y ofrezco proceder igualmente (hora real registrada en GitHub) o postponer (anoto en `.claude/pending-actions.md`). Si el repo es privado, la ventana sensible no aplica y procedo directamente con la confirmación de autorización habitual. Excepción hotfix: con producción rota no espero la decisión — informo del timestamp real y procedo (la urgencia prevalece, ver CLAUDE.md)
 5. Abro el PR desde la rama de feature → espero CI verde → hago squash merge a `main` → elimino la rama de feature — el merge dispara automáticamente el deploy a staging (configurado en el pipeline CI/CD); verifico que staging está estable antes de continuar — commits de configuración con `.claude/scripts/safe-commit.sh`, nunca push sin confirmación del Jefe
-6. Creo el tag de versión en main con confirmación del Jefe: `git tag vX.Y.Z && git push origin vX.Y.Z`
+6. Creo el tag de versión en main con confirmación del Jefe: `git tag vX.Y.Z && git push origin vX.Y.Z`. Si el push del tag falla y confirmo con reintentos que el fallo es persistente (no transitorio — p. ej. el proxy del entorno bloquea `refs/tags/*` de forma consistente aunque el push de ramas funciona), no insisto indefinidamente: lo registro en `.claude/pending-actions.md`, y si hay un workflow de CI que depende de `on: push: tags:` para construir el artefacto de release, lo disparo vía `workflow_dispatch` en la API de GitHub Actions como sustituto en cada release (dejo el disparador por tag en el workflow por si el entorno deja de bloquearlo). Acepto el coste de no tener el tag en git mientras tanto — la versión sigue rastreable en `CHANGELOG.md`, el manifiesto y el historial de commits (ver CLAUDE.md §Versionado)
 7. Si hay migraciones de base de datos: Backend las proporciona versionadas con `up` y `down` en el directorio de migraciones del repositorio; las ejecuto en orden ascendente durante el deploy, verifico que el `down` está definido en cada script, y si una migración falla ejecuto el `down` correspondiente antes de cualquier rollback de la aplicación
 8. Realizo el deploy con la estrategia acordada
 9. Verifico que el deploy fue exitoso (health checks, primeras métricas)

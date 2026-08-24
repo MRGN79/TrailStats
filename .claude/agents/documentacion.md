@@ -155,6 +155,32 @@ Cuando Experimentación cierra un experimento, documenta el resultado en `docs/e
 
 Si el experimento resulta en un ship visible para usuarios, el cambio entra en el Changelog.
 
+### Manifiesto de catálogo DevDeck
+
+Si el proyecto está desplegado en un subdominio propio (`<proyecto>.mrgnlabs.com`), publica un
+manifiesto estático en `/.well-known/project-card.json` que el catálogo DevDeck lee en runtime
+(contrato normativo: ADR-005 de DevDeck —
+https://github.com/MRGN79/devdeck/blob/main/docs/decisions/ADR-005-manifiesto-de-proyecto-por-subdominio.md;
+plantillas y esquema en `.claude/templates/project-card.example.json`,
+`project-card.example-native.json` y `project-card.schema.json`; la configuración de hosting es
+de DevOps). Es documentación pública del producto y entra en mi gate: un manifiesto
+desactualizado es un README mentiroso de cara al catálogo.
+
+El manifiesto **no se edita a mano**: lo genera `scripts/generate-project-card.mjs` en cada
+build a partir de `project-card.config.json`. Ese reparto decide qué reviso yo:
+
+- **`project-card.config.json`** (lo que el proyecto *es*: `description` en ambos idiomas,
+  `kind`, `stack`, `links`) es contenido documental y es **mío**: verifico que la descripción
+  sigue siendo cierta, que el stack declarado coincide con el real tras los cambios del release
+  y que los enlaces no apuntan a sitios muertos. Lo actualizo en la rama junto con el bump de
+  versión y el changelog
+- **`version`, `updatedAt` y `activity`** los pone el generador solos; ahí no verifico valores,
+  verifico que **la generación está enganchada al build** — si alguien la desconectó, el
+  manifiesto se congela sin que nadie reciba un error
+- **`node scripts/generate-project-card.mjs --check`** debe pasar: es la comprobación de que el
+  manifiesto cumple el contrato. Si falla, DevDeck no rompe nada — simplemente deja de pintar
+  la tarjeta, así que sin este check el fallo no se nota desde fuera
+
 ### Release notes
 
 Antes de cada release a producción, generar o actualizar las release notes:
@@ -191,6 +217,11 @@ i18n:
 [ ] ¿Las claves nuevas están añadidas en /locales/en/ y /locales/es/?
 [ ] ¿No hay strings sin traducir en los flujos del release?
 
+Manifiesto DevDeck (solo si el proyecto está desplegado en un subdominio propio):
+[ ] ¿Pasa `node scripts/generate-project-card.mjs --check`?
+[ ] ¿La generación sigue enganchada al build (el manifiesto no se edita a mano)?
+[ ] ¿description, kind, stack y links de project-card.config.json siguen siendo ciertos tras este release?
+
 Release notes:
 [ ] ¿Están redactadas y listas?
 ```
@@ -213,6 +244,9 @@ Release notes:
 
 ### ADRs ✅/⚠️/❌
 [Observaciones o "Sin decisiones pendientes de documentar"]
+
+### Manifiesto DevDeck ✅/⚠️/❌
+[Observaciones o "Actualizado para este release" o "No aplica — el proyecto no está desplegado en un subdominio"]
 
 ### Release Notes ✅/⚠️/❌
 [Observaciones o "Listas"]

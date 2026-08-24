@@ -1,0 +1,39 @@
+{
+  "$schema": "https://mrgnlabs.com/schemas/project-card/v1.json",
+  "schemaVersion": "1.0.0",
+  "id": "mi-proyecto",
+  "name": "Mi Proyecto",
+  "kind": "web-app",
+  "description": {
+    "en": "One-sentence description of what this project does and for whom.",
+    "es": "Descripción en una frase de qué hace este proyecto y para quién."
+  },
+  "tagline": {
+    "en": "Optional short tagline.",
+    "es": "Eslogan corto opcional."
+  },
+  "version": "0.1.0",
+  "status": "active",
+  "updatedAt": "2026-01-01T00:00:00Z",
+  "stack": [
+    { "name": "React", "version": "18.3.1", "url": "https://react.dev", "category": "runtime" },
+    { "name": "Vite", "version": "5.4.1", "url": "https://vite.dev", "category": "build" },
+    { "name": "TypeDoc", "version": "0.26.0", "url": "https://typedoc.org", "category": "docs" }
+  ],
+  "links": [
+    { "rel": "demo", "href": "https://mi-proyecto.mrgnlabs.com" },
+    { "rel": "repo", "href": "https://github.com/MRGN79/mi-proyecto", "private": true },
+    { "rel": "changelog", "href": "https://github.com/MRGN79/mi-proyecto/blob/main/CHANGELOG.md" }
+  ],
+  "activity": {
+    "source": "github",
+    "stars": 0,
+    "forks": 0,
+    "commits": 0,
+    "contributors": 1,
+    "openIssues": 0,
+    "license": "MIT",
+    "lastPushedAt": "2026-01-01T00:00:00Z",
+    "fetchedAt": "2026-01-01T00:00:00Z"
+  }
+}

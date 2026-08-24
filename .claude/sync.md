@@ -203,12 +203,16 @@ al inicio del bloque).
    solo añade las que falten. Aplica en ambos modos: las versiones antiguas del scaffold
    generaban solo 3 entradas y la actualización debe completarlas
 
-6. **ADR de adopción** *(solo MODO A)*: busca directorio de ADRs (`docs/decisions/`, `docs/adr/`,
-   `adr/`). Si no existe ninguno, crea `docs/decisions/` (crea también `docs/` si hace falta —
-   el proyecto lo va a necesitar de todos modos para backlog y ADRs).
+6. **ADR de adopción** *(MODO A; en MODO B, solo si el proyecto no tiene ya un ADR de adopción
+   del scaffold — proyectos adoptados antes de que este paso existiera)*: busca directorio de
+   ADRs (`docs/decisions/`, `docs/adr/`, `adr/`). Si no existe ninguno, crea `docs/decisions/`
+   (crea también `docs/` si hace falta — el proyecto lo va a necesitar de todos modos para
+   backlog y ADRs).
    Crea el ADR con la numeración secuencial estándar: `ADR-001-adopcion-scaffold.md` si no hay
-   ningún ADR previo, o el siguiente número libre si ya existen. Usa la estructura de la
-   plantilla `.claude/templates/adr.md`:
+   ningún ADR previo, o el siguiente número libre si ya existen. En MODO B, usa como **Fecha**
+   el `adoptedAt` de `.claude/scaffold.json` (la adopción que documenta ocurrió entonces) y
+   añade al final del Contexto: "ADR creado retroactivamente durante la actualización a
+   v[SCAFFOLD_VERSION]". Usa la estructura de la plantilla `.claude/templates/adr.md`:
 
    ```markdown
    # ADR-NNN: Adopción del Scaffold de Agentes Claude
@@ -229,7 +233,8 @@ al inicio del bloque).
 
    ## Consecuencias
    - Los commits usan `.claude/scripts/safe-commit.sh` para control de visibilidad de
-     actividad en GitHub (lun–vie 08–19h Madrid → timestamp ajustado)
+     actividad en GitHub (en repos públicos, lun–vie 08–19h Madrid → timestamp ajustado;
+     en repos privados no hay exposición que evitar y se committea con hora real)
    - Para futuras actualizaciones: pegar `.claude/sync.md` en Claude Code abierto en el
      proyecto detecta automáticamente la versión y sincroniza a la última
    - `.claude/scaffold.json` registra la versión adoptada para seguimiento
@@ -251,7 +256,24 @@ al inicio del bloque).
 ```
 
 **En MODO B:** actualiza `.claude/scaffold.json` — conserva el resto de campos existentes
-(p. ej. `adoptedAt`) y actualiza solo `scaffoldVersion` a `[SCAFFOLD_VERSION]`.
+(p. ej. `adoptedAt`, `repoVisibility`) y actualiza solo `scaffoldVersion` a `[SCAFFOLD_VERSION]`.
+
+**En ambos modos — declaración de visibilidad del repositorio:** si `.claude/scaffold.json` no
+tiene el campo `repoVisibility`, ejecuta `.claude/scripts/safe-commit.sh --visibility`. Si el
+script avisa de que la visibilidad no está confirmada (no puede detectarla), pregunta al usuario
+si el repositorio es público o privado y añade el campo con su respuesta:
+
+```json
+{ "scaffoldVersion": "…", "adoptedAt": "…", "repoVisibility": "private" }
+```
+
+Por qué se pregunta aquí y no se deja al azar: la detección automática es imposible en los
+entornos de ejecución remota (sin `gh` y con la API de GitHub bloqueada), y el override por
+`git config` no sobrevive a un contenedor efímero — sin la declaración versionada, un repo
+privado se trataría como público en cada sesión. Si el usuario prevé publicar un repo hoy
+privado, la respuesta correcta es `public`: así los timestamps se siguen protegiendo (ver
+"Visibilidad de Actividad en GitHub" en CLAUDE.md). Si el script sí detecta la visibilidad
+sin avisar, declara ese mismo valor sin preguntar.
 
 **En ambos modos:** si existe `docs/backlog.md` con la línea `**Versión actual:**`, actualiza
 la parte `scaffold A.B.C` de esa línea a `scaffold [SCAFFOLD_VERSION]` (formato combinado
@@ -308,9 +330,18 @@ git add .claude/ CLAUDE.md .github/ .dockerignore docs/
 
 **En MODO B:**
 ```bash
-git add -A
+git add .claude/ CLAUDE.md .github/ .dockerignore docs/
 .claude/scripts/safe-commit.sh -m "chore: actualizar scaffold de v[PROJECT_VERSION] a v[SCAFFOLD_VERSION]"
 ```
+
+En ambos modos el `git add` es dirigido — solo las rutas que la sincronización gestiona, nunca
+`git add -A` (arrastraría al commit cualquier archivo suelto del working tree). Omite del
+comando las rutas que no existan en el proyecto.
+
+Este commit va directamente a `main`, sin rama ni PR: es la excepción de sincronización
+documentada en la sección "Ramas protegidas" del bloque scaffold de CLAUDE.md — sincroniza
+exclusivamente archivos gestionados por el scaffold y se ejecuta con la confirmación explícita
+del usuario que acabas de pedir.
 
 Limpia el directorio temporal si se clonó desde GitHub:
 ```bash

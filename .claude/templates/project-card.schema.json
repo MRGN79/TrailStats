@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mrgnlabs.com/schemas/project-card/v1.json",
+  "title": "DevDeck Project Card Manifest",
+  "description": "Manifiesto público que cada proyecto publica en /.well-known/project-card.json de su subdominio para alimentar su tarjeta en el catálogo DevDeck.",
+  "type": "object",
+  "required": ["schemaVersion", "id", "name", "kind", "description"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri",
+      "description": "Opcional. URL de esta especificación (https://mrgnlabs.com/schemas/project-card/v1.json); habilita validación y autocompletado en editores."
+    },
+    "schemaVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Versión SemVer del contrato. La URL de $id fija el MAJOR (/v1.json); este campo da MAJOR.MINOR.PATCH."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "Identidad canónica (slug), estable e independiente de name."
+    },
+    "name": { "type": "string", "minLength": 1 },
+    "kind": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Tipo de proyecto. Cadena ABIERTA: DevDeck reconoce web-app, api, mobile-app, desktop-app, library, cli, service; cualquier otro valor usa render genérico y nunca rompe el catálogo.",
+      "examples": ["web-app", "api", "mobile-app", "desktop-app", "library", "cli", "service"]
+    },
+    "description": { "$ref": "#/$defs/localizedText" },
+    "tagline": { "$ref": "#/$defs/localizedText" },
+    "version": { "type": "string", "description": "Versión del producto (no del contrato)." },
+    "status": {
+      "type": "string",
+      "description": "Opcional. Estado declarado por el proyecto. Cadena abierta.",
+      "examples": ["active", "wip", "archived"]
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Momento (ISO 8601) en que el proyecto generó este manifiesto."
+    },
+    "stack": {
+      "type": "array",
+      "description": "Tecnologías Y estándares (incluidos los de documentación: OpenAPI, JSDoc, TypeDoc...) usados por el proyecto, todos con el mismo formato.",
+      "items": { "$ref": "#/$defs/stackEntry" }
+    },
+    "links": {
+      "type": "array",
+      "description": "Enlaces y capacidades del proyecto, dirigidos por datos. DevDeck pinta los que existan.",
+      "items": { "$ref": "#/$defs/link" }
+    },
+    "activity": {
+      "$ref": "#/$defs/activity"
+    }
+  },
+  "$defs": {
+    "localizedText": {
+      "description": "Texto localizado: objeto con 'en' obligatorio (idioma por defecto de DevDeck) y 'es'/otros opcionales; o una cadena simple (un solo idioma).",
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        {
+          "type": "object",
+          "required": ["en"],
+          "properties": {
+            "en": { "type": "string", "minLength": 1 },
+            "es": { "type": "string" }
+          },
+          "additionalProperties": { "type": "string" }
+        }
+      ]
+    },
+    "stackEntry": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "version": { "type": "string" },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Sitio oficial de la tecnología o del estándar (React -> https://react.dev; OpenAPI -> https://www.openapis.org)."
+        },
+        "category": {
+          "type": "string",
+          "description": "Opcional. Agrupación visual sugerida; DevDeck puede ignorarla.",
+          "examples": ["runtime", "build", "docs", "test"]
+        }
+      }
+    },
+    "link": {
+      "type": "object",
+      "required": ["rel", "href"],
+      "properties": {
+        "rel": {
+          "type": "string",
+          "description": "Relación semántica. Conocidas: demo, repo, download, docs, privacy, changelog, status, homepage. Cadena abierta.",
+          "examples": ["demo", "repo", "download", "docs", "privacy", "changelog", "status", "homepage"]
+        },
+        "href": { "type": "string", "format": "uri" },
+        "platform": {
+          "type": "string",
+          "description": "Opcional, para descargas/apps. Cadena abierta.",
+          "examples": ["web", "android", "ios", "windows", "macos", "linux"]
+        },
+        "label": { "$ref": "#/$defs/localizedText" },
+        "private": {
+          "type": "boolean",
+          "description": "Si true (p.ej. repo privado), DevDeck lo pinta como insignia no clicable en vez de un enlace muerto."
+        }
+      }
+    },
+    "activity": {
+      "type": "object",
+      "description": "Metricas de GitHub. El manifiesto siempre puede incluirla. DevDeck oculta el bloque en la tarjeta cuando el link repo esta marcado private:true (filtro de presentacion, no control de acceso: el JSON servido es publico y legible en bruto).",
+      "properties": {
+        "source": { "type": "string", "examples": ["github"] },
+        "stars": { "type": "integer", "minimum": 0 },
+        "forks": { "type": "integer", "minimum": 0 },
+        "commits": { "type": "integer", "minimum": 0 },
+        "contributors": { "type": "integer", "minimum": 0 },
+        "openIssues": { "type": "integer", "minimum": 0 },
+        "license": { "type": ["string", "null"] },
+        "lastPushedAt": { "type": "string", "format": "date-time" },
+        "fetchedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

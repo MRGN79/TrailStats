@@ -19,7 +19,7 @@
 **Problema que resuelve:** Da a un deportista una foto global de su volumen y progresión histórica sin depender de la API de ninguna plataforma ni subir sus datos a ningún servidor.
 **Usuarios objetivo:** Deportistas (running, ciclismo, multideporte) con un export de su plataforma; nivel técnico variado; interfaz bilingüe EN/ES.
 **Stack:** React 18.3 + TypeScript 5.4 + Vite 5.3; zip.js, PapaParse, fit-file-parser, DOMParser; Recharts 2.12; react-i18next/i18next; Vitest. Sin backend (procesamiento en Web Worker + IndexedDB).
-**Versión actual:** 0.12.0 — scaffold 1.16.0
+**Versión actual:** 0.12.0 — scaffold 1.21.0
 **Estado:** En desarrollo
 **Entornos:** dev (local) — sitio estático desplegable a cualquier hosting de estáticos
 
